@@ -198,7 +198,7 @@ app.get('/', (req, res) => {
 </head>
 <body>
   <div class="container">
-    <div class="logo">🟠</div>
+    <div class="logo">🍊</div>
     <h1>grok-faf-mcp</h1>
     <div class="tagline">🏎️⚡️ FAST AF Edition</div>
     <div class="dedication">Dedicated to @elonmusk and the #1 model on Earth</div>

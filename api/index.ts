@@ -119,21 +119,113 @@ app.get('/info', async (req, res) => {
   });
 });
 
-// Root endpoint
+// Root endpoint - HTML landing page
 app.get('/', (req, res) => {
-  res.json({
-    message: 'Grok-exclusive FAF MCP — Fast AF Edition 🏎️⚡',
-    dedication: 'Dedicated to @elonmusk and the #1 model on Earth',
-    version: VERSION,
-    platform: 'vercel',
-    grokExclusive: true,
-    tagline: 'Grok gets the red-carpet treatment',
-    endpoints: {
-      health: '/health',
-      info: '/info',
-      sse: '/sse'
+  res.send(`
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>grok-faf-mcp | FAST⚡️AF</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-  });
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 800px;
+    }
+    .logo {
+      font-size: 120px;
+      margin-bottom: 1rem;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin: 0 0 0.5rem 0;
+      background: linear-gradient(90deg, #ff6600, #ffaa00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .tagline {
+      font-size: 1.5rem;
+      color: #00D4D4;
+      margin: 1rem 0;
+    }
+    .dedication {
+      font-size: 1rem;
+      color: #999;
+      margin: 1rem 0 2rem 0;
+    }
+    .endpoints {
+      background: rgba(255, 102, 0, 0.1);
+      border: 2px solid #ff6600;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 2rem 0;
+    }
+    .endpoint {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+    }
+    .endpoint-name { color: #00D4D4; }
+    .endpoint-path { color: #ff6600; }
+    .version {
+      color: #666;
+      font-size: 0.9rem;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">🟠</div>
+    <h1>grok-faf-mcp</h1>
+    <div class="tagline">🏎️⚡️ FAST AF Edition</div>
+    <div class="dedication">Dedicated to @elonmusk and the #1 model on Earth</div>
+
+    <div class="endpoints">
+      <h2 style="color: #ff6600; margin-top: 0;">Endpoints</h2>
+      <div class="endpoint">
+        <span class="endpoint-name">Health Check</span>
+        <span class="endpoint-path">/health</span>
+      </div>
+      <div class="endpoint">
+        <span class="endpoint-name">Server Info</span>
+        <span class="endpoint-path">/info</span>
+      </div>
+      <div class="endpoint">
+        <span class="endpoint-name">MCP SSE</span>
+        <span class="endpoint-path">/sse</span>
+      </div>
+    </div>
+
+    <div class="version">
+      v${VERSION} • Vercel Edge • Grok gets the red-carpet treatment
+    </div>
+  </div>
+</body>
+</html>
+  `);
 });
 
 // SSE endpoint - Full MCP with per-request transport

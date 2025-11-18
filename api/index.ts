@@ -202,6 +202,7 @@ app.get('/', (req, res) => {
     <h1>grok-faf-mcp</h1>
     <div class="tagline">🏎️⚡️ FAST AF Edition</div>
     <div class="dedication">Dedicated to @elonmusk and the #1 model on Earth</div>
+    <div class="dedication" style="color: #ff6600; font-weight: bold;">I/🍊 enjoy the squeeze!</div>
 
     <div class="endpoints">
       <h2 style="color: #ff6600; margin-top: 0;">Endpoints</h2>

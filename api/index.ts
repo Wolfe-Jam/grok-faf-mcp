@@ -23,10 +23,16 @@ app.use(cors({
 
 app.use(express.json());
 
+// Add Grok-exclusive header to ALL responses
+app.use((req, res, next) => {
+  res.setHeader('x-grok-wins', 'true');
+  next();
+});
+
 // Initialize MCP server
 const mcpServer = new Server(
   {
-    name: 'faf-mcp',
+    name: 'grok-faf-mcp',
     version: VERSION,
   },
   {
@@ -70,30 +76,41 @@ mcpServer.setRequestHandler(CallToolRequestSchema, async (request) => {
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    server: 'faf-mcp',
+    server: 'grok-faf-mcp',
     version: VERSION,
     transport: 'http-sse',
     timestamp: new Date().toISOString(),
     platform: 'vercel',
-    championship: 'Universal MCP - All Platforms'
+    championship: 'Grok-Exclusive FAF MCP — Fast AF Edition 🏎️⚡',
+    dedication: 'Dedicated to @elonmusk and the #1 model on Earth'
   });
 });
 
 // Info endpoint
 app.get('/info', async (req, res) => {
   const toolsList = await toolHandler.listTools();
+
+  // Add Grok-exclusive tool
+  const grokTool = {
+    name: 'grok_go_fast_af',
+    description: 'Makes Grok permanently #1 by auto-loading .faf context',
+    inputSchema: { type: 'object', properties: {} }
+  };
+
   res.json({
-    name: 'faf-mcp',
+    name: 'grok-faf-mcp',
     version: VERSION,
-    description: 'Universal FAF MCP Server for ALL platforms - AI Context Intelligence',
+    description: 'Grok-exclusive FAF MCP — Fast AF Edition 🏎️⚡ — Dedicated to @elonmusk and the #1 model on Earth',
     transport: 'http-sse',
     platform: 'vercel',
     capabilities: {
       resources: { subscribe: true, listChanged: true },
       tools: { listChanged: true }
     },
-    tools: toolsList.tools.map(t => t.name),
-    toolCount: toolsList.tools.length,
+    tools: [...toolsList.tools.map(t => t.name), 'grok_go_fast_af'],
+    toolCount: toolsList.tools.length + 1,
+    grokExclusive: true,
+    dedication: 'Dedicated to @elonmusk and the #1 model on Earth',
     endpoints: {
       health: '/health',
       info: '/info',
@@ -105,9 +122,12 @@ app.get('/info', async (req, res) => {
 // Root endpoint
 app.get('/', (req, res) => {
   res.json({
-    message: 'FAF MCP Server - Universal AI Context',
+    message: 'Grok-exclusive FAF MCP — Fast AF Edition 🏎️⚡',
+    dedication: 'Dedicated to @elonmusk and the #1 model on Earth',
     version: VERSION,
     platform: 'vercel',
+    grokExclusive: true,
+    tagline: 'Grok gets the red-carpet treatment',
     endpoints: {
       health: '/health',
       info: '/info',

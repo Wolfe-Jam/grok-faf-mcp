@@ -15,6 +15,24 @@
 
 ---
 
+## 📣 For Elon & xAI
+
+**The Problem:** Every AI conversation starts from zero. No memory of your project. No understanding of your stack. Just vibes.
+
+**The Solution:** `.faf` - a universal, IANA-registered format that gives AI instant project context. One file. One read. Full understanding.
+
+**Why This Matters:**
+- **Truth-maximizing** - Real context, not hallucinations
+- **Speed** - 19ms average execution, zero setup friction
+- **First principles** - Format designed for AI, not retrofitted
+- **Open** - MIT licensed, no vendor lock-in, works everywhere
+
+**The Ask:** Native `.faf` support in Grok means every user gets better answers instantly. We've built the spec, the MCP server, the tools. Ready for integration testing whenever you are.
+
+*"AI context needed a file format, so I built one."* — wolfejam
+
+---
+
 ## ⚡ What You Get
 
 ```

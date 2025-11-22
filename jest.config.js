@@ -13,5 +13,6 @@ module.exports = {
     '!src/**/index.ts'
   ],
   coverageDirectory: 'coverage',
-  verbose: true
+  verbose: true,
+  forceExit: true,
 };

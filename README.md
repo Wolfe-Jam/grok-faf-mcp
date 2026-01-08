@@ -22,10 +22,40 @@
 **Benefits:**
 - Real context reduces hallucinations
 - 19ms average execution
-- IANA-registered format
+- IANA-registered format (`application/vnd.faf+yaml`)
 - MIT licensed, no vendor lock-in
 
 Ready for integration testing.
+
+---
+
+## 🏆 Gold Code
+
+At 100% FAF score, AI is **optimized** — not just informed.
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🏆  GOLD CODE = AI OPTIMIZED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+At 55%  → AI flipping coins
+At 100% → AI optimized, zero drift
+
+├─ Project DNA locked in
+├─ Context never goes stale
+├─ Every session starts smart
+└─ AI works WITH you, not around you
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Lifecycle value:**
+
+| When | Without FAF | With FAF |
+|------|-------------|----------|
+| Day 1 | 20 min setup | Instant |
+| Month 1 | AI forgets | AI remembers |
+| Year 1 | Re-explain everything | Context inherited |
+| Year 3+ | Knowledge lost | DNA preserved |
 
 ---
 
@@ -33,7 +63,7 @@ Ready for integration testing.
 
 ```
 URL:     https://grok-faf-mcp.vercel.app/
-Format:  IANA-registered .faf (application/vnd.faf+yaml)
+Format:  IANA-registered .faf
 Tools:   17 MCP tools + 14 bundled commands
 Speed:   19ms average execution
 Status:  FAST⚡️AF
@@ -76,65 +106,29 @@ npm install -g grok-faf-mcp
 
 ## 🎯 Use Cases
 
-**AI Context Intelligence**
 ```
 Use FAF to initialize my project
 Use FAF to score my AI-readiness
 Use FAF to sync project context
 ```
 
-**Project DNA Management**
-- Persistent context in `project.faf`
-- Cross-platform compatibility
-- Human and AI readable
-- IANA-registered standard
-
-**URL-Based MCP**
-- No installation required
-- Instant access via Vercel
-- Production-ready infrastructure
-- Global edge deployment
+Start every prompt with "Use FAF" — stops web search, forces tool usage.
 
 ---
 
-## 🛠️ MCP Tools
+## 🛠️ MCP Tools (17)
 
-### Core Tools (17 Total)
-- `faf_quick` - Lightning-fast project.faf creation (3ms)
-- `faf_enhance` - Intelligent enhancement with auto-detection
-- `faf_read` - Parse and validate FAF files
-- `faf_write` - Create/update FAF with validation
-- `faf_score` - AI-readiness scoring (0-100%)
-- `faf_sync` - Bi-directional CLAUDE.md sync
-- `faf_status` - Health check and diagnostics
-- `faf_init` - Initialize new FAF project
-- `faf_trust` - Verify integrity
-- `faf_bi_sync` - Platform context mirroring
-- `faf_clear` - Reset and cleanup
-- `faf_debug` - Verbose diagnostics
-- `faf_list` - Show all available tools
-- `faf_chat` - Interactive assistance
-- `faf_friday` - Project summaries
-- `faf_guide` - Documentation access
-- `faf_about` - Server information
+| Tool | Purpose |
+|------|---------|
+| `faf_init` | Initialize project.faf |
+| `faf_score` | AI-readiness (0-100%) |
+| `faf_quick` | Lightning-fast creation (3ms) |
+| `faf_enhance` | Intelligent enhancement |
+| `faf_sync` | Bi-directional sync |
+| `faf_read` | Parse and validate |
+| `faf_write` | Create/update with validation |
 
-### Bundled Commands (14 Total)
-Direct TypeScript function calls - 16.2x faster than CLI subprocess spawning:
-
-- `audit` - Security and quality checks
-- `auto` - Automated workflows
-- `bi-sync` - Bidirectional synchronization
-- `doctor` - Diagnostic and repair
-- `enhance` - Context enhancement
-- `formats` - Format detection
-- `init` - Project initialization
-- `innit` - Quick initialization
-- `migrate` - Version migration
-- `quick` - Fast operations
-- `score` - AI-readiness scoring
-- `sync` - Context synchronization
-- `update` - Version updates
-- `validate` - Validation checks
+Plus 14 bundled commands — 16.2x faster than CLI subprocess.
 
 ---
 
@@ -142,101 +136,48 @@ Direct TypeScript function calls - 16.2x faster than CLI subprocess spawning:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚡ FAST AF PERFORMANCE METRICS
+⚡ FAST AF METRICS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Execution Speed:      19ms average
-Fastest Command:      1ms (formats)
-CLI Speedup:          16.2x faster
-Memory Footprint:     Zero leaks
-Bundled Operations:   14 commands
-Transport:            HTTP-SSE (Vercel)
+Execution:    19ms average
+Fastest:      1ms (formats)
+Speedup:      16.2x vs CLI
+Memory:       Zero leaks
+Transport:    HTTP-SSE (Vercel Edge)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
-
-**Why Fast?**
-- Direct function calls (no subprocess spawning)
-- TypeScript strict mode
-- Zero external dependencies for core operations
-- Global edge deployment via Vercel
-
----
-
-## 🏆 Why grok-faf-mcp?
-
-**Built for Grok**
-- First MCP server responding to Grok's URL request
-- Optimized for xAI integration
-- Production-ready Vercel deployment
-- FAST⚡️AF execution philosophy
-
-**IANA-Registered Format**
-- Official MIME type: `application/vnd.faf+yaml`
-- W3C-compliant structured format
-- Universal AI context protocol
-- Cross-platform compatibility
-
-**F1-Inspired Engineering**
-- Performance-first design
-- TypeScript strict mode
-- Zero runtime errors
-- Battle-tested in production
-
-**FREE FOREVER**
-- MIT License
-- Open source
-- No subscription
-- No strings attached
 
 ---
 
 ## 🔗 Endpoints
 
-**Production (Vercel):**
-- Root: `https://grok-faf-mcp.vercel.app/`
-- Health: `https://grok-faf-mcp.vercel.app/health`
-- Info: `https://grok-faf-mcp.vercel.app/info`
-- SSE: `https://grok-faf-mcp.vercel.app/sse`
-
-**Local Development:**
-```bash
-npm run dev:http
-# Server: http://localhost:3001
-# SSE: http://localhost:3001/sse
-```
+| Endpoint | URL |
+|----------|-----|
+| Root | `https://grok-faf-mcp.vercel.app/` |
+| SSE | `https://grok-faf-mcp.vercel.app/sse` |
+| Health | `https://grok-faf-mcp.vercel.app/health` |
+| Info | `https://grok-faf-mcp.vercel.app/info` |
 
 ---
 
 ## 📦 Ecosystem
 
-Built on the FAF (Foundational AI-context Format) ecosystem:
-
-- **[FAF Format Spec](https://github.com/Wolfe-Jam/faf)** - Official IANA specification
-- **[FAF CLI](https://github.com/Wolfe-Jam/faf-cli)** - Command-line tooling
-- **[faf-mcp](https://github.com/Wolfe-Jam/faf-mcp)** - Universal MCP server
-- **[claude-faf-mcp](https://github.com/Wolfe-Jam/claude-faf-mcp)** - Claude Desktop-specific
-- **[faf.one](https://faf.one)** - Official website
-
----
-
-## 💬 Community
-
-- **[Discord](https://discord.com/invite/56fPBUJKfk)** - Join the conversation
-- **[GitHub Issues](https://github.com/Wolfe-Jam/grok-faf-mcp/issues)** - Report bugs, request features
-- **[Chrome Extension](https://chromewebstore.google.com/detail/lnecebepmpjpilldfmndnaofbfjkjlkm)** - Browser integration
+- **[claude-faf-mcp](https://npmjs.com/package/claude-faf-mcp)** — Claude Desktop (52 tools)
+- **[faf-cli](https://npmjs.com/package/faf-cli)** — Terminal CLI (18k+ downloads)
+- **[faf-mcp](https://npmjs.com/package/faf-mcp)** — Universal MCP
+- **[faf.one](https://faf.one)** — Official website
 
 ---
 
 ## 📄 License
 
-MIT License - Free and open source
+MIT License — Free and open source
 
 ---
 
 <div align="center">
   <p><strong>Built for Grok. Built for Speed. Built Right.</strong></p>
   <p>FAST⚡️AF • First to Ship • Zero Friction</p>
-  <p><em>URL-based MCP. Exactly what you asked for.</em></p>
 </div>
 
-**Built with F1-inspired engineering principles** 🏎️⚡
+**Zero drift. Eternal sync. AI optimized.** 🏆

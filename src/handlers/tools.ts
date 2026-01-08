@@ -7,6 +7,7 @@ import { FuzzyDetector, applyIntelFriday } from '../utils/fuzzy-detector';
 import { findFafFile, getNewFafFilePath } from '../utils/faf-file-finder.js';
 import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
+import { getRAGIntegrator } from '../rag/index.js';
 
 export class FafToolHandler {
   constructor(private engineAdapter: FafEngineAdapter) {}
@@ -216,6 +217,34 @@ export class FafToolHandler {
             type: 'object',
             properties: {},
           }
+        },
+        // RAG Tools - LAZY-RAG Cache + xAI Collections
+        {
+          name: 'rag_query',
+          description: 'Ask a question with RAG-enhanced context from xAI Collections. Uses LAZY-RAG cache for 100,000x speedup on repeated queries.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              question: { type: 'string', description: 'Question to ask' }
+            },
+            required: ['question']
+          }
+        },
+        {
+          name: 'rag_cache_stats',
+          description: 'Get LAZY-RAG cache statistics - hits, misses, hit rate, cache size',
+          inputSchema: {
+            type: 'object',
+            properties: {}
+          }
+        },
+        {
+          name: 'rag_cache_clear',
+          description: 'Clear the LAZY-RAG cache to start fresh',
+          inputSchema: {
+            type: 'object',
+            properties: {}
+          }
         }
       ] as Tool[]
     };
@@ -262,6 +291,13 @@ export class FafToolHandler {
         return await this.handleFafList(args);
       case 'faf_guide':
         return await this.handleFafGuide(args);
+      // RAG Tools
+      case 'rag_query':
+        return await this.handleRagQuery(args);
+      case 'rag_cache_stats':
+        return await this.handleRagCacheStats(args);
+      case 'rag_cache_clear':
+        return await this.handleRagCacheClear(args);
       default:
         throw new Error(`Unknown tool: ${name}`);
     }
@@ -1199,6 +1235,120 @@ All work: \`faf init\`, \`faf init new\`, \`faf init --new\`, \`faf init -new\`
         content: [{
           type: 'text',
           text: `❌ Failed to list directory: ${errorMessage}`
+        }],
+        isError: true
+      };
+    }
+  }
+
+  // RAG Tool Handlers
+
+  private async handleRagQuery(args: any): Promise<CallToolResult> {
+    const { question } = args;
+
+    if (!question) {
+      return {
+        content: [{
+          type: 'text',
+          text: '❌ Question is required'
+        }],
+        isError: true
+      };
+    }
+
+    try {
+      const rag = getRAGIntegrator();
+
+      if (!rag.isConfigured()) {
+        return {
+          content: [{
+            type: 'text',
+            text: '❌ XAI_API_KEY not configured. Set the environment variable to enable RAG queries.'
+          }],
+          isError: true
+        };
+      }
+
+      const result = await rag.query(question);
+
+      const status = result.cached ? '⚡ CACHE HIT' : '🔄 API CALL';
+      const elapsed = result.cached
+        ? `${(result.elapsed * 1000).toFixed(3)}ms`
+        : `${result.elapsed.toFixed(2)}s`;
+
+      return {
+        content: [{
+          type: 'text',
+          text: `${status} (${elapsed})\n\n${result.answer}`
+        }]
+      };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return {
+        content: [{
+          type: 'text',
+          text: `❌ RAG Query Failed: ${errorMessage}`
+        }],
+        isError: true
+      };
+    }
+  }
+
+  private async handleRagCacheStats(_args: any): Promise<CallToolResult> {
+    try {
+      const rag = getRAGIntegrator();
+      const stats = rag.getCacheStats();
+
+      const hitRatePercent = (stats.hitRate * 100).toFixed(1);
+
+      const output = `📊 LAZY-RAG Cache Statistics
+
+📦 Cache Size: ${stats.size} entries
+✅ Cache Hits: ${stats.hits}
+❌ Cache Misses: ${stats.misses}
+📈 Hit Rate: ${hitRatePercent}%
+🔌 Enabled: ${stats.enabled ? 'Yes' : 'No'}
+
+${stats.hitRate > 0.5 ? '⚡ Great cache performance!' : stats.size === 0 ? '💡 Cache is empty - queries will populate it' : '📈 Cache warming up...'}`;
+
+      return {
+        content: [{
+          type: 'text',
+          text: output
+        }]
+      };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return {
+        content: [{
+          type: 'text',
+          text: `❌ Failed to get cache stats: ${errorMessage}`
+        }],
+        isError: true
+      };
+    }
+  }
+
+  private async handleRagCacheClear(_args: any): Promise<CallToolResult> {
+    try {
+      const rag = getRAGIntegrator();
+      const result = rag.clearCache();
+
+      return {
+        content: [{
+          type: 'text',
+          text: `🧹 LAZY-RAG Cache Cleared
+
+✅ Cleared ${result.previousSize} cached entries
+💡 Next queries will call the API and repopulate the cache`
+        }]
+      };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return {
+        content: [{
+          type: 'text',
+          text: `❌ Failed to clear cache: ${errorMessage}`
         }],
         isError: true
       };

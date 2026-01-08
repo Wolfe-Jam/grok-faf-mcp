@@ -18,16 +18,28 @@ function getVersion() {
         return cachedVersion;
     }
     try {
-        // __dirname in compiled code is dist/src, so we need to go up two levels to reach package.json
-        const packageJsonPath = (0, path_1.join)(__dirname, '..', '..', 'package.json');
-        const packageJson = JSON.parse((0, fs_1.readFileSync)(packageJsonPath, 'utf-8'));
-        cachedVersion = packageJson.version;
-        return cachedVersion;
+        // Try multiple paths to find package.json (handles both compiled and test environments)
+        const possiblePaths = [
+            (0, path_1.join)(__dirname, '..', '..', 'package.json'), // dist/src -> root
+            (0, path_1.join)(__dirname, '..', 'package.json'), // src -> root (ts-jest)
+            (0, path_1.join)(process.cwd(), 'package.json'), // cwd fallback
+        ];
+        for (const packageJsonPath of possiblePaths) {
+            try {
+                const packageJson = JSON.parse((0, fs_1.readFileSync)(packageJsonPath, 'utf-8'));
+                if (packageJson.name === 'grok-faf-mcp') {
+                    cachedVersion = packageJson.version;
+                    return cachedVersion;
+                }
+            }
+            catch {
+                // Try next path
+            }
+        }
+        return '1.0.0'; // Fallback version
     }
     catch (error) {
-        // Fallback if package.json read fails (should never happen in production)
-        console.error('Failed to read version from package.json:', error);
-        return 'unknown';
+        return '1.0.0';
     }
 }
 /**

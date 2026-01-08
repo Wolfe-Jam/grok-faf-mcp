@@ -22,4 +22,7 @@ export declare class FafToolHandler {
     private handleFafFriday;
     private handleFafGuide;
     private handleFafList;
+    private handleRagQuery;
+    private handleRagCacheStats;
+    private handleRagCacheClear;
 }

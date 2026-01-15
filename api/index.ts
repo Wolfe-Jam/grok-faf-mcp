@@ -225,6 +225,7 @@ app.get('/', (req, res) => {
       We needed a Big-Orange, we got one!
     </div>
   </div>
+  <script defer src="https://va.vercel-scripts.com/v1/script.debug.js"></script>
 </body>
 </html>
   `);

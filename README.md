@@ -1,7 +1,7 @@
 # grok-faf-mcp | FAST⚡️AF
 
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Wolfe-Jam/faf/main/assets/logos/orange-smiley.svg" alt="FAF" width="80" />
+  <img src="https://www.faf.one/orange-smiley.svg" alt="FAF" width="80" />
 
   <h3>Grok asked for MCP on a URL. This is it.</h3>
 
@@ -162,6 +162,7 @@ Transport:    HTTP-SSE (Vercel Edge)
 
 ## 📦 Ecosystem
 
+- **[MCPaaS](https://mcpaas.live)** — MCP as a Service (The Endpoint for Context)
 - **[claude-faf-mcp](https://npmjs.com/package/claude-faf-mcp)** — Claude Desktop (52 tools)
 - **[faf-cli](https://npmjs.com/package/faf-cli)** — Terminal CLI (18k+ downloads)
 - **[faf-mcp](https://npmjs.com/package/faf-mcp)** — Universal MCP

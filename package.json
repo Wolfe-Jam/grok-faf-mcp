@@ -1,6 +1,6 @@
 {
   "name": "grok-faf-mcp",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "mcpName": "io.github.Wolfe-Jam/grok-faf-mcp",
   "description": "grok-faf-mcp | FAST⚡️AF • First MCP server for Grok • URL-based AI context • IANA-registered .faf format (application/vnd.faf+yaml)",
   "icon": "./assets/icons/faf-icon-256.png",
@@ -98,8 +98,9 @@
     "access": "public"
   },
   "dependencies": {
-    "faf-cli": ">=3.1.1",
     "@modelcontextprotocol/sdk": "^1.20.1",
+    "@vercel/analytics": "^1.6.1",
+    "faf-cli": ">=3.1.1",
     "yaml": "^2.4.1"
   },
   "devDependencies": {

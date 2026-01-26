@@ -4,7 +4,7 @@
  * Post-install check: Verify faf-cli is installed
  *
  * This script runs after npm install to ensure users installed
- * faf-cli BEFORE claude-faf-mcp (required installation order).
+ * faf-cli BEFORE grok-faf-mcp (required installation order).
  */
 
 const { execSync } = require('child_process');
@@ -39,7 +39,7 @@ function checkFafCli() {
     console.error('Please install faf-cli now:');
     console.error('  npm install -g faf-cli');
     console.error('');
-    console.error('Then restart Claude Desktop to use all MCP features.');
+    console.error('Then restart Grok/your IDE to use all MCP features.');
     console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.error('');
     return false;

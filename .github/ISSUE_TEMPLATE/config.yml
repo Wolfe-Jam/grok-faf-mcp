@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Documentation
-    url: https://faf.one
-    about: Read the full documentation
-  - name: Live Demo
-    url: https://grok-faf-mcp.vercel.app
-    about: Try the live Vercel deployment
+    url: https://faf.one/docs
+    about: Check the docs before opening an issue
+  - name: Discussions
+    url: https://github.com/Wolfe-Jam/grok-faf-mcp/discussions
+    about: Ask questions and discuss ideas

@@ -1,33 +1,17 @@
-## Description
+## Summary
 
-<!-- Provide a clear and concise description of your changes -->
+<!-- Brief description of what this PR does -->
 
-## Type of Change
-
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation update
-
-## Related Issue
-
-Fixes #(issue number)
-
-## Changes Made
+## Changes
 
 -
--
--
 
-## Testing
+## Test Plan
 
-- [ ] All existing tests pass
-- [ ] Manually tested
-- [ ] Performance verified (sub-50ms target)
+- [ ] Tests pass locally
+- [ ] Tested with Grok/xAI integration
+- [ ] No breaking changes
 
-## Checklist
+## Related Issues
 
-- [ ] Code follows TypeScript strict mode requirements
-- [ ] Self-review completed
-- [ ] Documentation updated if needed
-- [ ] CHANGELOG.md updated if needed
+<!-- Link any related issues: Fixes #123 -->

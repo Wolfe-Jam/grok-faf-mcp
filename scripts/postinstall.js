@@ -1,50 +1,18 @@
 #!/usr/bin/env node
 
 /**
- * Post-install check: Verify faf-cli is installed
+ * Post-install message: Confirm successful installation
  *
- * This script runs after npm install to ensure users installed
- * faf-cli BEFORE grok-faf-mcp (required installation order).
+ * Shows clear success message with version, tool count, and usage info.
  */
 
-const { execSync } = require('child_process');
-const os = require('os');
+const packageJson = require('../package.json');
 
-function checkFafCli() {
-  try {
-    // Try to find faf CLI
-    const command = os.platform() === 'win32' ? 'where faf' : 'which faf';
-    execSync(command, { stdio: 'ignore' });
-
-    // CLI found - success!
-    console.log('✅ faf-cli detected - installation order correct');
-    console.log('');
-    console.log('⭐ Love it? Star us: https://github.com/Wolfe-Jam/grok-faf-mcp');
-    console.log('💬 Questions? https://github.com/Wolfe-Jam/grok-faf-mcp/discussions');
-    console.log('');
-    return true;
-  } catch (error) {
-    // CLI not found - warn user
-    console.error('');
-    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.error('⚠️  WARNING: faf-cli NOT DETECTED');
-    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.error('');
-    console.error('grok-faf-mcp requires faf-cli to be installed FIRST.');
-    console.error('');
-    console.error('CORRECT INSTALLATION ORDER:');
-    console.error('  1️⃣  npm install -g faf-cli        (DO THIS FIRST)');
-    console.error('  2️⃣  npm install -g grok-faf-mcp   (ALREADY DONE)');
-    console.error('');
-    console.error('Please install faf-cli now:');
-    console.error('  npm install -g faf-cli');
-    console.error('');
-    console.error('Then restart Grok/your IDE to use all MCP features.');
-    console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.error('');
-    return false;
-  }
-}
-
-// Run check
-checkFafCli();
+console.log('');
+console.log('\x1b[32m✓\x1b[0m grok-faf-mcp@' + packageJson.version + ' installed successfully');
+console.log('  17 MCP tools ready');
+console.log('  URL: https://grok-faf-mcp.vercel.app/sse');
+console.log('');
+console.log('Test in Grok:');
+console.log('  Point MCP client to the URL above');
+console.log('');

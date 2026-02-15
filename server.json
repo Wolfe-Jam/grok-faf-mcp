@@ -1,35 +1,13 @@
 {
-  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-09-29/server.schema.json",
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.Wolfe-Jam/grok-faf-mcp",
-  "title": ".faf 🧡⚡️ for Grok",
   "description": "grok-faf-mcp | FAST⚡️AF • First MCP server for Grok • URL-based AI context • IANA-registered .faf format (application/vnd.faf+yaml)",
-  "icons": [
-    {
-      "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-48.png",
-      "mimeType": "image/png",
-      "sizes": ["48x48"]
-    },
-    {
-      "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-128.png",
-      "mimeType": "image/png",
-      "sizes": ["128x128"]
-    },
-    {
-      "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-256.png",
-      "mimeType": "image/png",
-      "sizes": ["256x256"]
-    },
-    {
-      "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-512.png",
-      "mimeType": "image/png",
-      "sizes": ["512x512"]
-    }
-  ],
+  "version": "1.0.4",
   "repository": {
     "url": "https://github.com/Wolfe-Jam/grok-faf-mcp",
     "source": "github"
   },
-  "version": "1.0.4",
+  "websiteUrl": "https://grok-faf-mcp.vercel.app",
   "packages": [
     {
       "registryType": "npm",

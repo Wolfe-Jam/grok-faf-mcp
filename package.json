@@ -1,6 +1,6 @@
 {
   "name": "grok-faf-mcp",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "mcpName": "io.github.Wolfe-Jam/grok-faf-mcp",
   "description": "grok-faf-mcp | FAST⚡️AF • First MCP server for Grok • URL-based AI context • IANA-registered .faf format (application/vnd.faf+yaml)",
   "icon": "./assets/icons/faf-icon-256.png",

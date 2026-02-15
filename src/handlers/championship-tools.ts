@@ -1900,7 +1900,7 @@ faf_score --save      # Save this scorecard
           `📊 ESSENTIAL FIVE:\n` +
           `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
           `1. faf_auto      → 🏆 Complete setup (start here!)\n` +
-          `2. faf_score     → 📊 Check your rating (aim for 105%!)\n` +
+          `2. faf_score     → 📊 Check your rating (aim for 100%!)\n` +
           `3. faf_bi_sync   → 🔄 Context-Mirroring (40ms magic)\n` +
           `4. faf_list      → 📁 See your files (1ms fast)\n` +
           `5. faf_trust     → ✅ Validation modes (4 levels)\n\n` +
@@ -1943,7 +1943,8 @@ faf_score --save      # Save this scorecard
           `• 0-84%: Keep building\n` +
           `• 85-98%: Race ready\n` +
           `• 99%: Maximum technical\n` +
-          `• 🍊 105%: BIG ORANGE CHAMPIONSHIP!\n\n` +
+          `• 🏆 100%: TROPHY - Championship Complete!\n` +
+          `• 🍊 Big Orange: BADGE (awarded separately)\n\n` +
 
           `That's it! You're ready to race! 🏎️⚡`;
         break;
@@ -2063,7 +2064,7 @@ faf_score --save      # Save this scorecard
           `• Award-winning intent\n` +
           `• No reverse gear, only forward!\n\n` +
 
-          `Result: 🍊 105% Big Orange!`;
+          `Result: 🏆 100% Trophy - Championship Complete!`;
         break;
 
       default:

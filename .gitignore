@@ -3,3 +3,28 @@ target/
 node_modules/
 .vercel
 .env*.local
+
+# Build output (added by repo-maintainer)
+dist/
+build/
+*.tsbuildinfo
+
+# Coverage
+coverage/
+.nyc_output
+
+# Logs
+logs/
+*.log
+
+# MCP Registry tokens
+.mcpregistry_*
+*_token
+*.token
+
+# Test results
+test-results/
+
+# Environment files
+.env
+.env.test

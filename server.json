@@ -1,7 +1,7 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.Wolfe-Jam/grok-faf-mcp",
-  "description": "grok-faf-mcp | FAST⚡️AF • First MCP server for Grok • URL-based AI context • IANA-registered .faf format (application/vnd.faf+yaml)",
+  "description": "First MCP server for Grok. URL-based AI context using IANA .faf format.",
   "version": "1.0.4",
   "repository": {
     "url": "https://github.com/Wolfe-Jam/grok-faf-mcp",

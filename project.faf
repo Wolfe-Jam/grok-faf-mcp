@@ -27,10 +27,13 @@ context_quality:
   missing_context:
     - CI/CD pipeline
     - Database
+slot_ignore:
+  - database
+  - connection
 project:
-  name: Faf Mcp
-  goal: USE>FAF™ - IANA-registered format (application/vnd.faf+yaml) • Universal
-    AI context • MCP server for all platforms • Start with 'Use FAF'
+  name: grok-faf-mcp
+  goal: grok-faf-mcp | FAST⚡️AF • First MCP server for Grok • URL-based AI context
+    • IANA-registered .faf format (application/vnd.faf+yaml)
   main_language: TypeScript
   type: cli-ts
   generated: 2025-11-13T20:02:03.291Z
@@ -38,15 +41,16 @@ project:
   revolution: 30 seconds replaces 20 minutes of questions
   brand: F1-Inspired Software Engineering - Championship AI Context
 ai_instructions:
-  how_to_start: "Just USE FAF - Start every prompt with 'Use FAF to...' and MCP tools handle the rest"
+  how_to_start: Just USE FAF - Start every prompt with 'Use FAF to...' and MCP
+    tools handle the rest
   priority_order:
     - 1. Read THIS .faf file first
     - 2. Check CLAUDE.md for session context
     - 3. Review package.json for dependencies
   quick_commands:
-    - "Use FAF to initialize your project"
-    - "Use FAF to sync my project.faf to all platforms"
-    - "Use FAF to score my AI-readiness"
+    - Use FAF to initialize your project
+    - Use FAF to sync my project.faf to all platforms
+    - Use FAF to score my AI-readiness
   working_style:
     code_first: true
     explanations: minimal
@@ -68,7 +72,12 @@ stack:
   package_manager: npm
   api_type: CLI
   hosting: npm registry
-  cicd: None
+  cicd: Vercel
+  targetUser: developers
+  coreProblem: understanding project
+  missionPurpose: project documentation
+  packageManager: npm/yarn/pnpm
+  mainLanguage: JavaScript/TypeScript
 preferences:
   quality_bar: zero_errors
   commit_style: conventional_emoji
@@ -100,13 +109,20 @@ tags:
     - open-source
   user_defined: null
 human_context:
-  who: Development teams
-  what: "everything:"
-  why: To MCP work for everyone
-  where: Web platform
-  when: Production/Stable
-  how: Use FAF to initialize your project
-  additional_context: null
+  who: Grok/xAI developers and teams
+  what: URL-based MCP server for Grok
+  why: Zero-config MCP on a URL - Grok asked for it
+  where: Vercel production + Local dev
+  when: Grok integration testing, xAI projects
+  how: Point to https://grok-faf-mcp.vercel.app/sse
+  additional_context:
+    what:
+      - First ever MCP for Grok
+      - First FAF MCP on web
+    why:
+      - Grok asked for MCP on a URL
+      - Zero installation, instant access
+      - FAST⚡️AF (19ms average)
   context_score: 0
   total_prd_score: 85
   success_rate: 50%
@@ -123,3 +139,16 @@ faf_dna:
   birth_certificate: FAF-2025-FAFMCP-NR94
   birth_date: 2025-11-13T20:02:03.306Z
   current_score: 83
+generated: 2026-02-15T05:07:07.238Z
+stack_signature: typescript-nodejs-javascript
+detected_frameworks:
+  - Claude Code
+  - Jest
+  - Node.js
+  - JavaScript
+  - TypeScript
+  - Vercel
+turbo_cat_intelligence: 205
+stats:
+  last_auto_time: 0.2
+  times_run: 3

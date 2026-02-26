@@ -13,6 +13,7 @@
   [![npm version](https://img.shields.io/npm/v/grok-faf-mcp?color=00CCFF)](https://www.npmjs.com/package/grok-faf-mcp)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Vercel](https://img.shields.io/badge/Vercel-Live-black?logo=vercel)](https://grok-faf-mcp.vercel.app)
+  [![project.faf](https://img.shields.io/badge/project.faf-inside-00D4D4)](https://github.com/Wolfe-Jam/faf)
 </div>
 
 ---

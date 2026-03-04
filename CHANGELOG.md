@@ -5,6 +5,26 @@ All notable changes to faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-03-04
+
+### Added
+- Premium black/gold landing page with IANA provenance stamp
+- Deploy with Vercel button in README
+- Three Ways to Deploy section (Hosted / Self-Deploy / Local)
+- OG meta tags for social sharing with thumbnail
+- Vercel template thumbnail (black/white/gold)
+
+### Changed
+- MCP SDK bumped to 1.27.1 (from 1.26.0)
+- faf-cli bumped to 5.0.1 (from 4.5.0)
+- README tool table now lists all 21 tools (was 7)
+- CI actions updated (setup-node v6, artifacts v7/v8)
+
+### Fixed
+- ESM import crash on Vercel (hardcoded VERSION, removed import assert)
+- Added express and cors to production dependencies
+- Regenerated lockfile to match express@4
+
 ## [1.0.4] - 2026-02-15
 
 ### Fixed

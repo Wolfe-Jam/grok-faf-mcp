@@ -7,7 +7,7 @@ import { FafEngineAdapter } from '../src/handlers/engine-adapter.js';
 import express from 'express';
 import cors from 'cors';
 // Hardcode version for Vercel serverless compatibility (import assert crashes)
-const VERSION = '1.0.4';
+const VERSION = '1.1.0';
 
 // Full MCP server for Vercel deployment
 const app = express();
@@ -125,107 +125,185 @@ app.get('/', (req, res) => {
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>grok-faf-mcp | FAST⚡️AF</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>">
+  <title>Grok MCP Server — AI Context for xAI</title>
+  <meta name="description" content="First MCP server built for Grok. 17 tools. Zero config. IANA-registered .FAF format.">
+  <meta property="og:title" content="Grok MCP Server — AI Context for xAI">
+  <meta property="og:description" content="First MCP server built for Grok. 17 tools, zero config, persistent AI context.">
+  <meta property="og:image" content="https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/thumbnail.png">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E2%9A%A1</text></svg>">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: #0a0a0a;
       color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(255, 215, 0, 0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .accent-line {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent 0%, #333 20%, #FFD700 50%, #333 80%, transparent 100%);
+      z-index: 10;
     }
     .container {
-      text-align: center;
-      padding: 2rem;
+      position: relative;
+      z-index: 1;
       max-width: 800px;
+      margin: 0 auto;
+      padding: 80px 40px 40px;
+      text-align: center;
     }
-    .logo {
-      font-size: 120px;
-      margin-bottom: 1rem;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
+    .lightning { font-size: 80px; margin-bottom: 16px; filter: drop-shadow(0 0 30px rgba(255, 215, 0, 0.4)); }
     h1 {
-      font-size: 2.5rem;
-      margin: 0 0 0.5rem 0;
-      background: linear-gradient(90deg, #ff6600, #ffaa00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
     }
+    h1 .gold { color: #FFD700; }
     .tagline {
-      font-size: 1.5rem;
-      color: #00D4D4;
-      margin: 1rem 0;
-    }
-    .dedication {
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: #999;
-      margin: 1rem 0 2rem 0;
+      font-weight: 600;
+      margin-bottom: 8px;
     }
+    .tagline .white { color: #fff; }
+    .iana {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #FFD700;
+      letter-spacing: 1.5px;
+      margin-bottom: 40px;
+    }
+    .iana .since { display: block; font-size: 10px; color: #666; letter-spacing: 1.5px; }
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-bottom: 40px;
+    }
+    .stat-value { font-size: 2rem; font-weight: 800; color: #fff; }
+    .stat-label { font-size: 11px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 1px; }
     .endpoints {
-      background: rgba(255, 102, 0, 0.1);
-      border: 2px solid #ff6600;
+      background: rgba(255, 215, 0, 0.04);
+      border: 1px solid rgba(255, 215, 0, 0.15);
       border-radius: 12px;
-      padding: 1.5rem;
-      margin: 2rem 0;
+      padding: 24px;
+      margin-bottom: 32px;
+      text-align: left;
     }
+    .endpoints h2 { font-size: 14px; color: #FFD700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
     .endpoint {
       display: flex;
       justify-content: space-between;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      background: rgba(0, 0, 0, 0.3);
+      padding: 10px 12px;
+      margin: 6px 0;
+      background: rgba(0, 0, 0, 0.4);
       border-radius: 6px;
       font-family: 'Courier New', monospace;
+      font-size: 14px;
     }
-    .endpoint-name { color: #00D4D4; }
-    .endpoint-path { color: #ff6600; }
-    .version {
-      color: #666;
-      font-size: 0.9rem;
-      margin-top: 2rem;
+    .endpoint-name { color: #ccc; }
+    .endpoint-path { color: #FFD700; }
+    .deploy {
+      margin-bottom: 32px;
     }
+    .deploy h2 { font-size: 14px; color: #FFD700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+    .deploy-grid {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+    .deploy-option {
+      background: rgba(255, 215, 0, 0.04);
+      border: 1px solid rgba(255, 215, 0, 0.15);
+      border-radius: 8px;
+      padding: 16px 24px;
+      flex: 1;
+      max-width: 220px;
+    }
+    .deploy-option .label { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .deploy-option .desc { font-size: 12px; color: #666; }
+    .deploy-option code { font-size: 12px; color: #FFD700; font-family: 'Courier New', monospace; }
+    .bottom-bar {
+      border-top: 1px solid rgba(255, 215, 0, 0.1);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #555;
+    }
+    .bottom-bar .platforms { display: flex; gap: 16px; color: #777; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+    .bottom-bar .dot { color: #FFD700; }
+    a { color: #FFD700; text-decoration: none; }
+    a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
+  <div class="accent-line"></div>
   <div class="container">
-    <div class="logo">🍊</div>
-    <h1>grok-faf-mcp</h1>
-    <div class="tagline">🏎️⚡️ FAST AF Edition</div>
-    <div class="dedication">Dedicated to @elonmusk and the #1 model on Earth</div>
-    <div class="dedication" style="color: #fff; font-weight: bold;">I/🍊 enjoy the squeeze!</div>
+    <div class="lightning">&#9889;</div>
+    <h1>Grok<span class="gold">&#9889;</span>MCP</h1>
+    <div class="tagline">First MCP server built for <span class="white">xAI</span></div>
+    <div class="iana">IANA REGISTERED<span class="since">SINCE OCT 2025</span></div>
+
+    <div class="stats">
+      <div><div class="stat-value">17</div><div class="stat-label">MCP Tools</div></div>
+      <div><div class="stat-value">0</div><div class="stat-label">Config Required</div></div>
+      <div><div class="stat-value">19ms</div><div class="stat-label">Avg Response</div></div>
+    </div>
 
     <div class="endpoints">
-      <h2 style="color: #ff6600; margin-top: 0;">Endpoints</h2>
-      <div class="endpoint">
-        <span class="endpoint-name">Health Check</span>
-        <span class="endpoint-path">/health</span>
-      </div>
-      <div class="endpoint">
-        <span class="endpoint-name">Server Info</span>
-        <span class="endpoint-path">/info</span>
-      </div>
-      <div class="endpoint">
-        <span class="endpoint-name">MCP SSE</span>
-        <span class="endpoint-path">/sse</span>
+      <h2>Endpoints</h2>
+      <div class="endpoint"><span class="endpoint-name">MCP SSE</span><span class="endpoint-path">/sse</span></div>
+      <div class="endpoint"><span class="endpoint-name">Health Check</span><span class="endpoint-path">/health</span></div>
+      <div class="endpoint"><span class="endpoint-name">Server Info</span><span class="endpoint-path">/info</span></div>
+    </div>
+
+    <div class="deploy">
+      <h2>Three Ways to Deploy</h2>
+      <div class="deploy-grid">
+        <div class="deploy-option">
+          <div class="label">Hosted</div>
+          <div class="desc">Point to this URL</div>
+          <code>/sse</code>
+        </div>
+        <div class="deploy-option">
+          <div class="label">Self-Deploy</div>
+          <div class="desc">Your own Vercel</div>
+          <code>Deploy button</code>
+        </div>
+        <div class="deploy-option">
+          <div class="label">Local</div>
+          <div class="desc">Run anywhere</div>
+          <code>npx grok-faf-mcp</code>
+        </div>
       </div>
     </div>
 
-    <div class="version">
-      v${VERSION} • Vercel Edge • Grok gets the red-carpet treatment<br>
-      We needed a Big-Orange, we got one!
+    <div class="bottom-bar">
+      <span>v${VERSION} &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a></span>
+      <div class="platforms">
+        <span>Grok</span><span class="dot">&bull;</span>
+        <span>Claude</span><span class="dot">&bull;</span>
+        <span>Gemini</span><span class="dot">&bull;</span>
+        <span>Cursor</span><span class="dot">&bull;</span>
+        <span>Any MCP</span>
+      </div>
     </div>
   </div>
-  <script defer src="https://va.vercel-scripts.com/v1/script.debug.js"></script>
 </body>
 </html>
   `);

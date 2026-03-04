@@ -31,7 +31,7 @@ Every README should answer these questions. Here's ours:
 | **🌍 WHERE** does it work? | Vercel (production) • Local dev • Any MCP client supporting HTTP-SSE |
 | **🎯 WHY** do you need it? | Zero-config MCP on a URL - Grok asked for it, we built it first |
 | **⏰ WHEN** should you use it? | Grok integration testing, xAI projects, URL-based MCP deployments |
-| **🚀 HOW** does it work? | Point to `https://grok-faf-mcp.vercel.app/sse` - 17 tools instantly available |
+| **🚀 HOW** does it work? | Point to `https://grok-faf-mcp.vercel.app/sse` - 21 tools instantly available |
 
 **For AI:** Read the detailed sections below for full context.
 **For humans:** Use this pattern in YOUR README. Answer these 6 questions clearly.
@@ -87,7 +87,7 @@ At 100% → AI optimized, zero drift
 ```
 URL:     https://grok-faf-mcp.vercel.app/
 Format:  IANA-registered .faf
-Tools:   17 MCP tools + 14 bundled commands
+Tools:   21 MCP tools (including RAG + Grok-exclusive)
 Speed:   19ms average execution
 Status:  FAST⚡️AF
 ```
@@ -139,19 +139,31 @@ Start every prompt with "Use FAF" — stops web search, forces tool usage.
 
 ---
 
-## 🛠️ MCP Tools (17)
+## 🛠️ MCP Tools (21)
 
 | Tool | Purpose |
 |------|---------|
-| `faf_init` | Initialize project.faf |
-| `faf_score` | AI-readiness (0-100%) |
-| `faf_quick` | Lightning-fast creation (3ms) |
-| `faf_enhance` | Intelligent enhancement |
-| `faf_sync` | Bi-directional sync |
-| `faf_read` | Parse and validate |
-| `faf_write` | Create/update with validation |
-
-Plus 14 bundled commands — 16.2x faster than CLI subprocess.
+| `faf_init` | Create project.faf — make your project AI-readable |
+| `faf_score` | AI-readiness assessment (0-100%) |
+| `faf_about` | Learn what .faf format is |
+| `faf_what` | Quick format explanation |
+| `faf_status` | Check AI-readability status |
+| `faf_enhance` | AI-powered optimization |
+| `faf_sync` | Sync project.faf with CLAUDE.md |
+| `faf_bi_sync` | Platform-aware sync (.cursorrules, .windsurfrules, etc.) |
+| `faf_read` | Read any file |
+| `faf_write` | Write any file |
+| `faf_list` | Discover projects with .faf files |
+| `faf_trust` | Validate .faf integrity |
+| `faf_chat` | Conversation context |
+| `faf_guide` | Path resolution guidance |
+| `faf_clear` | Reset caches and state |
+| `faf_debug` | Debug environment info |
+| `faf_friday` | Fun Easter egg |
+| `rag_query` | RAG-powered context retrieval |
+| `rag_cache_stats` | RAG cache statistics |
+| `rag_cache_clear` | Clear RAG cache |
+| `grok_go_fast_af` | Grok-exclusive: auto-load .faf context |
 
 ---
 

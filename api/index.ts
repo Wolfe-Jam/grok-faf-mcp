@@ -6,9 +6,8 @@ import { FafToolHandler } from '../src/handlers/tools.js';
 import { FafEngineAdapter } from '../src/handlers/engine-adapter.js';
 import express from 'express';
 import cors from 'cors';
-// Import version directly from package.json for Vercel
-import packageJson from '../package.json' assert { type: 'json' };
-const VERSION = packageJson.version;
+// Hardcode version for Vercel serverless compatibility (import assert crashes)
+const VERSION = '1.0.4';
 
 // Full MCP server for Vercel deployment
 const app = express();

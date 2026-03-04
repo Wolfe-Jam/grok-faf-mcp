@@ -8,6 +8,8 @@
   <p><strong>First MCP server built for Grok</strong></p>
   <p><code>URL-based • Zero config • Just works</code></p>
 
+  [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Wolfe-Jam/grok-faf-mcp)
+
   [![CI](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml)
   [![NPM Downloads](https://img.shields.io/npm/dt/grok-faf-mcp?label=downloads&color=00CCFF)](https://www.npmjs.com/package/grok-faf-mcp)
   [![npm version](https://img.shields.io/npm/v/grok-faf-mcp?color=00CCFF)](https://www.npmjs.com/package/grok-faf-mcp)
@@ -94,23 +96,23 @@ Status:  FAST⚡️AF
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Three Ways to Deploy
 
-### Option 1: URL-Based (Vercel)
-
+### 1. Hosted (Instant)
 ```
 https://grok-faf-mcp.vercel.app/sse
 ```
+Point your MCP client to this endpoint. All 17 tools available instantly.
 
-Point your MCP client to this endpoint. All tools available instantly.
+### 2. Self-Deploy (Your Own Vercel)
+Click the **Deploy with Vercel** button above. Zero config — get your own instance in 30 seconds.
 
-### Option 2: Local Install
-
+### 3. Local (npx)
 ```bash
-npm install -g grok-faf-mcp
+npx grok-faf-mcp
 ```
 
-**Add to your MCP config:**
+**Or add to your MCP config:**
 
 ```json
 {

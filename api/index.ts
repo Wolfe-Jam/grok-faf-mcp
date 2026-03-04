@@ -145,14 +145,14 @@ app.get('/', (req, res) => {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at 50% 30%, rgba(255, 215, 0, 0.06) 0%, transparent 60%);
+      background: radial-gradient(ellipse at 50% 30%, rgba(255, 102, 0, 0.06) 0%, transparent 60%);
       pointer-events: none;
     }
     .accent-line {
       position: fixed;
       top: 0; left: 0; right: 0;
       height: 3px;
-      background: linear-gradient(90deg, transparent 0%, #333 20%, #FFD700 50%, #333 80%, transparent 100%);
+      background: linear-gradient(90deg, transparent 0%, #333 20%, #ff6600 50%, #333 80%, transparent 100%);
       z-index: 10;
     }
     .container {
@@ -178,10 +178,7 @@ app.get('/', (req, res) => {
       font-weight: 900;
       letter-spacing: -1px;
       margin-bottom: 8px;
-      background: linear-gradient(90deg, #FFD700, #ffaa00);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #fff;
     }
     .tagline {
       font-size: 1.3rem;
@@ -209,14 +206,14 @@ app.get('/', (req, res) => {
     .stat-value { font-size: 2rem; font-weight: 800; color: #fff; }
     .stat-label { font-size: 11px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 1px; }
     .endpoints {
-      background: rgba(255, 215, 0, 0.04);
-      border: 1px solid rgba(255, 215, 0, 0.2);
+      background: rgba(255, 102, 0, 0.04);
+      border: 1px solid rgba(255, 102, 0, 0.2);
       border-radius: 12px;
       padding: 24px;
       margin-bottom: 32px;
       text-align: left;
     }
-    .endpoints h2 { font-size: 14px; color: #FFD700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+    .endpoints h2 { font-size: 14px; color: #ff6600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
     .endpoint {
       display: flex;
       justify-content: space-between;
@@ -228,17 +225,17 @@ app.get('/', (req, res) => {
       font-size: 14px;
     }
     .endpoint-name { color: #ccc; }
-    .endpoint-path { color: #FFD700; }
+    .endpoint-path { color: #ff6600; }
     .deploy { margin-bottom: 32px; }
-    .deploy h2 { font-size: 14px; color: #FFD700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
+    .deploy h2 { font-size: 14px; color: #ff6600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
     .deploy-grid {
       display: flex;
       gap: 16px;
       justify-content: center;
     }
     .deploy-option {
-      background: rgba(255, 215, 0, 0.04);
-      border: 1px solid rgba(255, 215, 0, 0.15);
+      background: rgba(255, 102, 0, 0.04);
+      border: 1px solid rgba(255, 102, 0, 0.15);
       border-radius: 8px;
       padding: 16px 24px;
       flex: 1;
@@ -246,9 +243,9 @@ app.get('/', (req, res) => {
     }
     .deploy-option .label { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .deploy-option .desc { font-size: 12px; color: #666; }
-    .deploy-option code { font-size: 12px; color: #FFD700; font-family: 'Courier New', monospace; }
+    .deploy-option code { font-size: 12px; color: #ff6600; font-family: 'Courier New', monospace; }
     .bottom-bar {
-      border-top: 1px solid rgba(255, 215, 0, 0.1);
+      border-top: 1px solid rgba(255, 102, 0, 0.1);
       padding-top: 24px;
       text-align: center;
       font-size: 12px;
@@ -256,7 +253,7 @@ app.get('/', (req, res) => {
     }
     .bottom-bar .links { margin-bottom: 8px; }
     .bottom-bar .big-orange { color: #777; font-style: italic; }
-    a { color: #FFD700; text-decoration: none; }
+    a { color: #ff6600; text-decoration: none; }
     a:hover { text-decoration: underline; }
   </style>
 </head>
@@ -265,7 +262,7 @@ app.get('/', (req, res) => {
   <div class="container">
     <div class="logo">🍊</div>
     <h1>grok-faf-mcp</h1>
-    <div class="tagline">🏎️⚡️ FAST AF Edition</div>
+    <div class="tagline">🏎️⚡️ FAST AF Edition v${VERSION}</div>
     <div class="dedication">Dedicated to @elonmusk and the #1 model on Earth</div>
     <div class="squeeze">I/🍊 enjoy the squeeze!</div>
 

@@ -5,6 +5,16 @@ All notable changes to faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-03-04
+
+### Fixed
+- Landing page and OG meta tags: 17 → 21 tools
+- README deploy section: 17 → 21 tools
+- Trimmed npm tarball from 874KB to ~306KB (65% smaller)
+- Removed thumbnail.png from npm package (GitHub-only, for OG tags)
+- Removed discord-sync scripts from npm package (dev tooling, not user-facing)
+- Removed oversized icons (400px, 512px) from npm package
+
 ## [1.1.0] - 2026-03-04
 
 ### Added

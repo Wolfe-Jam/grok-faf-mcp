@@ -102,7 +102,7 @@ Status:  FAST⚡️AF
 ```
 https://grok-faf-mcp.vercel.app/sse
 ```
-Point your MCP client to this endpoint. All 17 tools available instantly.
+Point your MCP client to this endpoint. All 21 tools available instantly.
 
 ### 2. Self-Deploy (Your Own Vercel)
 Click the **Deploy with Vercel** button above. Zero config — get your own instance in 30 seconds.

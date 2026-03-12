@@ -176,7 +176,7 @@ Working on REAL filesystem: ${targetDir}
         // Core Tools - Priority 1
         {
           name: 'faf',
-          description: '🏆 .faf - Creates THE JPEG for AI! SPEEDY AI you can TRUST! 🧡⚡️',
+          description: 'Persistent project context for any AI. IANA-registered format.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -197,7 +197,7 @@ Working on REAL filesystem: ${targetDir}
         },
         {
           name: 'faf',
-          description: '🧡⚡️ FAF - Main command. IMPORTANT: Users provide LOCAL filesystem paths (e.g., /Users/username/projects/myapp). DO NOT use claude.ai containers (/mnt/user-data). Ask user for local path if needed. Uses real FAF file tools on local projects.',
+          description: 'FAF main command. Users provide LOCAL filesystem paths (e.g., /Users/username/projects/myapp). Uses real FAF file tools on local projects.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -973,7 +973,7 @@ Working on REAL filesystem: ${targetDir}
           `💡 **Examples:**\n` +
           `\`faf_auto ~/Documents/my-app\`\n` +
           `\`faf_auto /Users/yourname/cool-project\`\n\n` +
-          `🧡⚡️ SPEEDY AI you can TRUST!`
+          `🧡⚡️ Persistent context. Zero drift.`
         );
       }
 

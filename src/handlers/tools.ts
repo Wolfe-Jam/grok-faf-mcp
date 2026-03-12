@@ -17,7 +17,7 @@ export class FafToolHandler {
       tools: [
         {
           name: 'faf_about',
-          description: 'Learn what .faf format is - THE JPEG for AI 🧡⚡️',
+          description: 'Learn what .faf format is',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -25,7 +25,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_what',
-          description: 'What is .faf format? Quick explanation of THE JPEG for AI 🧡⚡️',
+          description: 'Quick explanation of .faf format',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -33,7 +33,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_status',
-          description: 'Check if your project has project.faf (THE JPEG for AI) - Shows AI-readability status 🧡⚡️',
+          description: 'Check if project has project.faf',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -41,7 +41,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_score',
-          description: 'Calculate your project\'s AI-readability from project.faf (THE JPEG for AI) - F1-inspired metrics! 🧡⚡️',
+          description: 'Calculate AI-readiness score (0-100%)',
           inputSchema: {
             type: 'object',
             properties: {
@@ -51,7 +51,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_init',
-          description: 'Create project.faf (THE JPEG for AI) - Makes your project instantly AI-readable 🧡⚡️. Use Projects convention (~/Projects/[name]/project.faf) by default. Run faf_guide for path resolution rules.',
+          description: 'Create project.faf for a project',
           inputSchema: {
             type: 'object',
             properties: {
@@ -64,7 +64,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_trust',
-          description: 'Validate project.faf integrity - Trust metrics for THE JPEG for AI 🧡⚡️',
+          description: 'Validate project.faf integrity',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -72,7 +72,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_sync',
-          description: 'Sync project.faf (THE JPEG for AI) with CLAUDE.md - Bi-directional context 🧡⚡️',
+          description: 'Sync .faf with CLAUDE.md',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -80,7 +80,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_enhance',
-          description: 'Enhance project.faf (THE JPEG for AI) with AI optimization - SPEEDY AI you can TRUST! 🧡⚡️',
+          description: 'Enhance .faf with AI optimization',
           inputSchema: {
             type: 'object',
             properties: {
@@ -93,7 +93,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_bi_sync',
-          description: 'Platform-aware sync: project.faf to .cursorrules, .clinerules, .windsurfrules, CLAUDE.md',
+          description: 'Bi-directional sync between project.faf and CLAUDE.md. v4.5.0: Also sync to AGENTS.md, .cursorrules, GEMINI.md!',
           inputSchema: {
             type: 'object',
             properties: {
@@ -191,7 +191,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_chat',
-          description: '🗣️ Natural language project.faf generation - Ask 6W questions (Who/What/Why/Where/When/How) to build complete human context 🧡⚡️',
+          description: 'Guided interview to build project.faf',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -199,7 +199,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_friday',
-          description: '🎉 Friday Features - Chrome Extension detection, fuzzy matching & more! 🧡⚡️',
+          description: 'Friday features — Chrome Extension detection, fuzzy matching',
           inputSchema: {
             type: 'object',
             properties: {
@@ -786,22 +786,21 @@ package_manager: ${projectData.package_manager}` : ''}
     };
 
     const aboutText = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🤖 .faf = THE JPEG for AI
+🤖 .faf = project DNA for AI
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 WHAT IS .FAF?
 • .faf = Foundational AI-context Format
-• Like JPEG for images, .faf for AI context
+• One file captures your project DNA for any AI
 • The dot (.) means it's a file format!
 
-🧡 Trust: Context verified
+🧡 Trust: Context verified, IANA-registered
 ⚡️ Speed: Generated in <29ms
-SPEEDY AI you can TRUST!
 
 Version ${packageInfo.version}
 
-Just like JPEG makes images universal,
-.faf makes projects AI-readable.
+Your project's DNA — persistent context
+that survives sessions, tools, and AI systems.
 
 HOW IT WORKS:
 1. Drop a file or paste the path
@@ -810,7 +809,7 @@ HOW IT WORKS:
 4. You're done⚡
 
 🩵 You just made Claude Happy
-🧡⚡️ SPEEDY AI you can TRUST!`;
+🧡⚡️ Persistent context. Zero drift.`;
 
     return {
       content: [{
@@ -821,20 +820,20 @@ HOW IT WORKS:
   }
 
   private async handleFafWhat(_args: any): Promise<CallToolResult> {  // ✅ FIXED: Prefixed unused args
-    const whatText = `.faf = THE JPEG for AI
+    const whatText = `.faf = project DNA for AI
 
 WHAT: .faf = Foundational AI-context Format
       (The dot means it's a file format, like .jpg or .pdf)
 
-WHY:  Just like JPEG makes images viewable everywhere,
-      .faf makes projects understandable by AI.
+WHY:  Persistent project context that works across
+      Claude, Gemini, Grok, Cursor, and any AI tool.
 
 HOW:  Run 'faf' on any project to create one.
       Run 'faf_score' to check AI-readiness (target: 99%).
 
 REMEMBER: Always use ".faf" with the dot - it's a FORMAT!
 
-🧡⚡️ SPEEDY AI you can TRUST!`;
+🧡⚡️ Persistent context. Zero drift.`;
 
     return {
       content: [{

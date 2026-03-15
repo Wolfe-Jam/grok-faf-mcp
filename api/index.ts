@@ -379,7 +379,7 @@ app.get('/', (req, res) => {
     <div class="stats">
       <div><div class="stat-value">21</div><div class="stat-label">MCP Tools</div></div>
       <div><div class="stat-value">0</div><div class="stat-label">Config Required</div></div>
-      <div><div class="stat-value">19ms</div><div class="stat-label">Avg Response</div></div>
+      <div><div class="stat-value">0.5ms</div><div class="stat-label">Avg Response</div></div>
     </div>
 
     <div class="endpoints">

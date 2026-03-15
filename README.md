@@ -98,7 +98,7 @@ URL:     https://grok-faf-mcp.vercel.app/
 Format:  IANA-registered .faf (application/vnd.faf+yaml)
 Tools:   21 core MCP tools (55 total with advanced)
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
-Speed:   19ms average execution
+Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
 Tests:   179 passing (7 suites)
 Status:  FAST⚡️AF
 ```
@@ -198,12 +198,16 @@ Plus 34 advanced tools available with `FAF_SHOW_ADVANCED=true`.
 ## Performance
 
 ```
-Execution:    19ms average
-Fastest:      1ms (formats)
-Speedup:      16.2x vs CLI
+Execution:    0.5ms average (97% faster than v1.1)
+Fastest:      0.0ms (about, version, debug)
+Slowest:      1.3ms (score — Mk4 WASM)
+Improvement:  19ms → 0.5ms (3,800% faster)
+Engine:       Mk4 WASM via faf-scoring-kernel
 Memory:       Zero leaks
 Transport:    HTTP-SSE (Vercel Edge)
 ```
+
+Benchmarked 10x per tool, warmed up, on local execution.
 
 ---
 

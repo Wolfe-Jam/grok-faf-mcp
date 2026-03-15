@@ -286,6 +286,5 @@ MIT — Free and open source
 <div align="center">
   <p><strong>Built for Grok. Built for Speed. Built Right.</strong></p>
   <p>FAST⚡️AF • First to Ship • Zero Friction</p>
+  <p><strong>Zero drift. Eternal sync. AI optimized.</strong> 🏆</p>
 </div>
-
-**Zero drift. Eternal sync. AI optimized.** 🏆

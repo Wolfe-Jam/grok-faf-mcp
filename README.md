@@ -199,7 +199,7 @@ Plus 34 advanced tools available with `FAF_SHOW_ADVANCED=true`.
 
 ```
 Execution:    0.5ms average (97% faster than v1.1)
-Fastest:      <1ms (about, version, debug)
+Fastest:      3,360ns (version — nanosecond territory)
 Slowest:      1.3ms (score — Mk4 WASM)
 Improvement:  19ms → 0.5ms (3,800% faster)
 Engine:       Mk4 WASM via faf-scoring-kernel

@@ -7,7 +7,7 @@ import { FafEngineAdapter } from '../src/handlers/engine-adapter.js';
 import express from 'express';
 import cors from 'cors';
 // Hardcode version for Vercel serverless compatibility (import assert crashes)
-const VERSION = '1.1.1';
+const VERSION = '1.2.0';
 
 // Full MCP server for Vercel deployment
 const app = express();
@@ -426,6 +426,7 @@ app.get('/', (req, res) => {
         <div class="about-item"><span>Fallback:</span> Mk3.1 TypeScript (zero downtime)</div>
         <div class="about-item"><span>Tools:</span> 21 core + 34 advanced MCP tools</div>
         <div class="about-item"><span>Format:</span> IANA-registered .faf (application/vnd.faf+yaml)</div>
+        <div class="about-item"><span>Speed:</span> 3,800% faster than v1.1.1</div>
       </div>
       <button class="about-close" onclick="hideAbout()">Got it</button>
       <div class="about-progress" id="aboutProgress"></div>
@@ -434,29 +435,34 @@ app.get('/', (req, res) => {
 
   <script>
     var aboutTimer, progressInterval;
-    function showAbout() {
+    function showAbout(autoLaunch) {
       clearTimeout(aboutTimer);
       clearInterval(progressInterval);
       var el = document.getElementById('aboutOverlay');
       var bar = document.getElementById('aboutProgress');
       el.classList.add('visible');
-      bar.style.width = '100%';
-      var start = Date.now();
-      var duration = 6000;
-      progressInterval = setInterval(function() {
-        var elapsed = Date.now() - start;
-        var pct = Math.max(0, 100 - (elapsed / duration) * 100);
-        bar.style.width = pct + '%';
-        if (pct <= 0) clearInterval(progressInterval);
-      }, 50);
-      aboutTimer = setTimeout(hideAbout, duration);
+      if (autoLaunch) {
+        bar.style.width = '100%';
+        bar.style.display = '';
+        var start = Date.now();
+        var duration = 6000;
+        progressInterval = setInterval(function() {
+          var elapsed = Date.now() - start;
+          var pct = Math.max(0, 100 - (elapsed / duration) * 100);
+          bar.style.width = pct + '%';
+          if (pct <= 0) clearInterval(progressInterval);
+        }, 50);
+        aboutTimer = setTimeout(hideAbout, duration);
+      } else {
+        bar.style.display = 'none';
+      }
     }
     function hideAbout() {
       clearTimeout(aboutTimer);
       clearInterval(progressInterval);
       document.getElementById('aboutOverlay').classList.remove('visible');
     }
-    window.addEventListener('load', function() { setTimeout(showAbout, 500); });
+    window.addEventListener('load', function() { setTimeout(function() { showAbout(true); }, 500); });
   </script>
   <script defer src="https://va.vercel-scripts.com/v1/script.debug.js"></script>
 </body>

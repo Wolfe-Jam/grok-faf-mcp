@@ -5,6 +5,22 @@ All notable changes to faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.0] - 2026-03-15
+
+### Added
+- Mk4 WASM scoring engine via `faf-scoring-kernel`
+  - Type-aware slot detection (The Bouncer)
+  - `slotignored` for inapplicable slots
+  - Graceful fallback to Mk3.1 TypeScript if kernel unavailable
+- Smithery integration (server-card discovery, sandbox support)
+- About box on landing page — shows on load, click v1.2.0 badge to reopen
+- New test suites: compiler scoring, MCP protocol, RAG system
+
+### Changed
+- Landing page version badge now clickable (opens about box)
+- Tool descriptions cleaned up ("project DNA for AI")
+- 179/179 tests passing
+
 ## [1.1.1] - 2026-03-04
 
 ### Fixed

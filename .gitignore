@@ -22,6 +22,10 @@ logs/
 *_token
 *.token
 
+# Smithery build artifacts — bundles full server + source map for their sandbox.
+# Pull smithery.yaml + createSandboxServer() export to kill it if needed.
+.smithery/
+
 # Test results
 test-results/
 

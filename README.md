@@ -43,7 +43,7 @@ Every README should answer these questions. Here's ours:
 `.faf` provides persistent project context for AI systems.
 
 **Benefits:**
-- Real context reduces hallucinations
+- Mk4 WASM scoring engine (type-aware, deterministic)
 - 19ms average execution
 - IANA-registered format (`application/vnd.faf+yaml`)
 - MIT licensed, no vendor lock-in
@@ -87,7 +87,8 @@ At 100% → AI optimized, zero drift
 ```
 URL:     https://grok-faf-mcp.vercel.app/
 Format:  IANA-registered .faf
-Tools:   21 MCP tools (including RAG + Grok-exclusive)
+Tools:   21 core MCP tools (55 total with advanced)
+Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   19ms average execution
 Status:  FAST⚡️AF
 ```
@@ -199,7 +200,7 @@ Transport:    HTTP-SSE (Vercel Edge)
 
 - **[MCPaaS](https://mcpaas.live)** — MCP as a Service (The Endpoint for Context)
 - **[claude-faf-mcp](https://npmjs.com/package/claude-faf-mcp)** — Claude Desktop (52 tools)
-- **[faf-cli](https://npmjs.com/package/faf-cli)** — Terminal CLI (18k+ downloads)
+- **[faf-cli](https://npmjs.com/package/faf-cli)** — Terminal CLI (36k+ downloads)
 - **[faf-mcp](https://npmjs.com/package/faf-mcp)** — Universal MCP
 - **[faf.one](https://faf.one)** — Official website
 

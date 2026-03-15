@@ -255,6 +255,116 @@ app.get('/', (req, res) => {
     .bottom-bar .big-orange { color: #777; font-style: italic; }
     a { color: #ff6600; text-decoration: none; }
     a:hover { text-decoration: underline; }
+
+    /* Version badge */
+    .version-badge {
+      display: inline-block;
+      background: #ff6600;
+      color: #000;
+      font-size: 0.85rem;
+      font-weight: 800;
+      padding: 4px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.15s;
+      user-select: none;
+    }
+    .version-badge:hover {
+      background: #ff8833;
+      transform: scale(1.05);
+    }
+
+    /* About overlay */
+    .about-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    .about-overlay.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .about-box {
+      background: #141414;
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      border-radius: 16px;
+      padding: 40px;
+      max-width: 480px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      transform: scale(0.9);
+      transition: transform 0.3s;
+    }
+    .about-overlay.visible .about-box {
+      transform: scale(1);
+    }
+    .about-version {
+      display: inline-block;
+      background: #ff6600;
+      color: #000;
+      font-size: 1.1rem;
+      font-weight: 900;
+      padding: 6px 20px;
+      border-radius: 6px;
+      margin-bottom: 16px;
+    }
+    .about-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .about-subtitle {
+      font-size: 0.95rem;
+      color: #ff6600;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .about-items {
+      text-align: left;
+      margin: 0 auto 24px;
+      max-width: 340px;
+    }
+    .about-item {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .about-item span {
+      color: #ff6600;
+      font-weight: 700;
+    }
+    .about-close {
+      background: none;
+      border: 1px solid rgba(255, 102, 0, 0.3);
+      color: #888;
+      font-size: 0.8rem;
+      padding: 8px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .about-close:hover {
+      color: #fff;
+      border-color: #ff6600;
+    }
+    .about-progress {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 3px;
+      background: #ff6600;
+      border-radius: 0 0 16px 16px;
+      transition: width 0.1s linear;
+    }
   </style>
 </head>
 <body>
@@ -262,7 +372,7 @@ app.get('/', (req, res) => {
   <div class="container">
     <div class="logo">🍊</div>
     <h1>grok-faf-mcp</h1>
-    <div class="tagline">🏎️⚡️ FAST AF Edition v${VERSION}</div>
+    <div class="tagline">🏎️⚡️ FAST AF Edition <span class="version-badge" onclick="showAbout()">v${VERSION}</span></div>
     <div class="dedication">Dedicated to @elonmusk and the #1 model on Earth</div>
     <div class="squeeze">I/🍊 enjoy the squeeze!</div>
 
@@ -301,10 +411,53 @@ app.get('/', (req, res) => {
     </div>
 
     <div class="bottom-bar">
-      <div class="links">v${VERSION} &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; Grok gets the red-carpet treatment</div>
+      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v${VERSION}</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; Grok gets the red-carpet treatment</div>
       <div class="big-orange">We needed a Big-Orange, we got one! 🍊</div>
     </div>
   </div>
+  <div class="about-overlay" id="aboutOverlay" onclick="if(event.target===this)hideAbout()">
+    <div class="about-box">
+      <div class="about-version">v${VERSION}</div>
+      <div class="about-title">New Engine Dropped</div>
+      <div class="about-subtitle">Mk4 Championship Scoring</div>
+      <div class="about-items">
+        <div class="about-item"><span>Engine:</span> Mk4 WASM via faf-scoring-kernel</div>
+        <div class="about-item"><span>Scoring:</span> 21 slots, type-aware, slotignored</div>
+        <div class="about-item"><span>Fallback:</span> Mk3.1 TypeScript (zero downtime)</div>
+        <div class="about-item"><span>Tools:</span> 21 core + 34 advanced MCP tools</div>
+        <div class="about-item"><span>Format:</span> IANA-registered .faf (application/vnd.faf+yaml)</div>
+      </div>
+      <button class="about-close" onclick="hideAbout()">Got it</button>
+      <div class="about-progress" id="aboutProgress"></div>
+    </div>
+  </div>
+
+  <script>
+    var aboutTimer, progressInterval;
+    function showAbout() {
+      clearTimeout(aboutTimer);
+      clearInterval(progressInterval);
+      var el = document.getElementById('aboutOverlay');
+      var bar = document.getElementById('aboutProgress');
+      el.classList.add('visible');
+      bar.style.width = '100%';
+      var start = Date.now();
+      var duration = 6000;
+      progressInterval = setInterval(function() {
+        var elapsed = Date.now() - start;
+        var pct = Math.max(0, 100 - (elapsed / duration) * 100);
+        bar.style.width = pct + '%';
+        if (pct <= 0) clearInterval(progressInterval);
+      }, 50);
+      aboutTimer = setTimeout(hideAbout, duration);
+    }
+    function hideAbout() {
+      clearTimeout(aboutTimer);
+      clearInterval(progressInterval);
+      document.getElementById('aboutOverlay').classList.remove('visible');
+    }
+    window.addEventListener('load', function() { setTimeout(showAbout, 500); });
+  </script>
   <script defer src="https://va.vercel-scripts.com/v1/script.debug.js"></script>
 </body>
 </html>

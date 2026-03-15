@@ -145,7 +145,7 @@ export const TOOL_REGISTRY: Record<string, ToolMetadata> = {
     name: 'faf_init',
     visibility: 'core',
     category: 'workflow',
-    description: 'Create .faf file (THE JPEG for AI) - Makes your project instantly AI-readable',
+    description: 'Create .faf file (project DNA for AI) - Makes your project instantly AI-readable',
     priority: 3,
   },
   faf_innit: {
@@ -258,7 +258,7 @@ export const TOOL_REGISTRY: Record<string, ToolMetadata> = {
     name: 'faf_enhance',
     visibility: 'core',
     category: 'ai',
-    description: 'Enhance .faf with AI optimization - SPEEDY AI you can TRUST!',
+    description: 'Enhance .faf with AI optimization',
     priority: 2,
   },
 
@@ -281,7 +281,7 @@ export const TOOL_REGISTRY: Record<string, ToolMetadata> = {
     name: 'faf_about',
     visibility: 'core',
     category: 'help',
-    description: 'Learn what .faf is - THE JPEG for AI',
+    description: 'Learn what .faf is - project DNA for AI',
     priority: 3,
   },
 

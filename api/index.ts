@@ -311,6 +311,18 @@ app.get('/', (req, res) => {
   `);
 });
 
+// Smithery server-card.json — allows Smithery to discover capabilities without scanning
+app.get('/.well-known/mcp/server-card.json', async (req, res) => {
+  const toolsList = await toolHandler.listTools();
+  res.json({
+    serverInfo: { name: 'grok-faf-mcp', version: VERSION },
+    authentication: { required: false },
+    tools: toolsList.tools,
+    resources: [],
+    prompts: []
+  });
+});
+
 // SSE endpoint - Full MCP with per-request transport
 app.get('/sse', async (req, res) => {
   // Create SSE transport for this specific connection

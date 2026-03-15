@@ -1,0 +1,17 @@
+# Smithery configuration for grok-faf-mcp
+# https://smithery.ai/docs/build/project-config/smithery-yaml
+
+name: grok-faf-mcp
+description: "Persistent project context for Grok. 21 MCP tools via HTTP-SSE. IANA-registered .faf format. First MCP server built for Grok."
+icon: https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-256.png
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties: {}
+  commandFunction: |-
+    (config) => ({
+      command: "npx",
+      args: ["-y", "grok-faf-mcp@latest"]
+    })

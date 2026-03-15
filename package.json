@@ -84,7 +84,7 @@
   },
   "homepage": "https://grok-faf-mcp.vercel.app",
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.0.0"
   },
   "files": [
     "dist/**/*",
@@ -112,6 +112,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.0",
     "faf-cli": ">=3.1.1",
+    "faf-scoring-kernel": "^2.0.3",
     "yaml": "^2.4.1"
   },
   "devDependencies": {

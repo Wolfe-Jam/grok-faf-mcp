@@ -410,9 +410,17 @@ app.get('/', (req, res) => {
       </div>
     </div>
 
+    <div style="margin:2rem 0;padding:1.5rem;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:12px;text-align:center;">
+      <div style="font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;">Grab a Namepoint — FREE!</div>
+      <div style="color:#aaa;margin-bottom:1rem;font-size:0.9rem;">Your name. Your context. Your endpoint. Use your X handle!</div>
+      <a href="https://mcpaas.live/claim" style="display:inline-block;background:#ff6600;color:#fff;padding:0.7rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;font-size:1rem;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">Claim yours →</a>
+      <div style="color:#666;font-size:0.8rem;margin-top:0.75rem;">2-digit names FREE (Dan88, Eve77) · Prestige names from $2/mo</div>
+    </div>
+
     <div class="bottom-bar">
-      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v${VERSION}</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; Grok gets the red-carpet treatment</div>
+      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v${VERSION}</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; <a href="https://mcpaas.live">mcpaas.live</a></div>
       <div class="big-orange">We needed a Big-Orange, we got one! 🍊</div>
+      <div style="margin-top:0.5rem;font-size:0.75rem;"><a href="https://mcpaas.live/privacy" style="color:#666;text-decoration:none;">Privacy</a> · <a href="https://mcpaas.live/terms" style="color:#666;text-decoration:none;">Terms</a> · <a href="mailto:team@faf.one" style="color:#666;text-decoration:none;">team@faf.one</a></div>
     </div>
   </div>
   <div class="about-overlay" id="aboutOverlay" onclick="if(event.target===this)hideAbout()">
@@ -432,6 +440,14 @@ app.get('/', (req, res) => {
       <div class="about-progress" id="aboutProgress"></div>
     </div>
   </div>
+
+  <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent('grok-faf-mcp — the first MCP server built for Grok. Grab a free namepoint →')}&url=${encodeURIComponent('https://mcpaas.live/claim')}" target="_blank" rel="noopener"
+     style="position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;align-items:center;gap:6px;background:#1a1a1a;color:#fff;border:1px solid #333;border-radius:20px;padding:8px 14px;font-size:0.8rem;font-weight:600;text-decoration:none;transition:all 0.2s;font-family:-apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.3);"
+     onmouseover="this.style.background='#ff6600';this.style.borderColor='#ff6600';"
+     onmouseout="this.style.background='#1a1a1a';this.style.borderColor='#333';">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    Share
+  </a>
 
   <script>
     var aboutTimer, progressInterval;

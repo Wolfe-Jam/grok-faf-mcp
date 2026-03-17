@@ -410,11 +410,9 @@ app.get('/', (req, res) => {
       </div>
     </div>
 
-    <div style="margin:2rem 0;padding:1.5rem;background:rgba(255,107,53,0.08);border:1px solid rgba(255,107,53,0.3);border-radius:12px;text-align:center;">
-      <div style="font-size:1.2rem;font-weight:700;margin-bottom:0.5rem;">Grab a Namepoint — FREE!</div>
-      <div style="color:#aaa;margin-bottom:1rem;font-size:0.9rem;">Your name. Your context. Your endpoint. Use your X handle!</div>
-      <a href="https://mcpaas.live/claim" style="display:inline-block;background:#ff6600;color:#fff;padding:0.7rem 2rem;border-radius:8px;text-decoration:none;font-weight:700;font-size:1rem;transition:transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">Claim yours →</a>
-      <div style="color:#666;font-size:0.8rem;margin-top:0.75rem;">2-digit names FREE (Dan88, Eve77) · Prestige names from $2/mo</div>
+    <div style="margin:1.5rem 0;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+      <div style="font-size:0.85rem;color:#aaa;">Grab a namepoint — use your X handle! <span style="color:#555;font-size:0.75rem;">Dan88, Eve77 etc</span></div>
+      <a href="https://mcpaas.live/claim" style="display:inline-block;background:#222;color:#fff;padding:0.4rem 1rem;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.8rem;border:1px solid #444;transition:all 0.2s;" onmouseover="this.style.borderColor='#ff6600'" onmouseout="this.style.borderColor='#444'">Claim →</a>
     </div>
 
     <div class="bottom-bar">

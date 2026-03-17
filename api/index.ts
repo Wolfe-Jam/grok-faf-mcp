@@ -411,8 +411,7 @@ app.get('/', (req, res) => {
     </div>
 
     <div style="margin:1.5rem 0;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
-      <div style="font-size:0.85rem;color:#aaa;">Grab a namepoint — use your X handle! <span style="color:#555;font-size:0.75rem;">Dan88, Eve77 etc</span></div>
-      <a href="https://mcpaas.live/claim" style="display:inline-block;background:#222;color:#fff;padding:0.4rem 1rem;border-radius:6px;text-decoration:none;font-weight:600;font-size:0.8rem;border:1px solid #444;transition:all 0.2s;" onmouseover="this.style.borderColor='#ff6600'" onmouseout="this.style.borderColor='#444'">Claim →</a>
+      <div style="font-size:0.85rem;color:#aaa;">Your <span style="color:#fff;">@handle</span> is your namepoint. You're early — <a href="https://mcpaas.live/claim" style="color:#ff6600;text-decoration:none;">get yours</a>.</div>
     </div>
 
     <div class="bottom-bar">

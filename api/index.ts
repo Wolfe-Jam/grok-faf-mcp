@@ -65,10 +65,18 @@ mcpServer.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 mcpServer.setRequestHandler(CallToolRequestSchema, async (request) => {
-  return toolHandler.callTool(
+  const start = Date.now();
+  const result = await toolHandler.callTool(
     request.params.name,
     request.params.arguments ?? {}
   );
+  console.log(JSON.stringify({
+    event: 'tool_call',
+    tool: request.params.name,
+    duration_ms: Date.now() - start,
+    ts: new Date().toISOString()
+  }));
+  return result;
 });
 
 // Health endpoint
@@ -478,7 +486,7 @@ app.get('/', (req, res) => {
     }
     window.addEventListener('load', function() { setTimeout(function() { showAbout(true); }, 500); });
   </script>
-  <script defer src="https://va.vercel-scripts.com/v1/script.debug.js"></script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
   `);
@@ -498,13 +506,25 @@ app.get('/.well-known/mcp/server-card.json', async (req, res) => {
 
 // SSE endpoint - Full MCP with per-request transport
 app.get('/sse', async (req, res) => {
+  const start = Date.now();
+  const ua = req.headers['user-agent'] || 'unknown';
+  console.log(JSON.stringify({
+    event: 'sse_connect',
+    ua,
+    ts: new Date().toISOString()
+  }));
+
   // Create SSE transport for this specific connection
   const transport = new SSEServerTransport('/sse', res);
   await mcpServer.connect(transport);
 
   // Handle client disconnect
   req.on('close', () => {
-    // Connection closed
+    console.log(JSON.stringify({
+      event: 'sse_disconnect',
+      duration_ms: Date.now() - start,
+      ts: new Date().toISOString()
+    }));
   });
 });
 

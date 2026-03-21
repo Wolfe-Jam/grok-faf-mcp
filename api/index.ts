@@ -4,10 +4,30 @@ import { CallToolRequestSchema, ListResourcesRequestSchema, ListToolsRequestSche
 import { FafResourceHandler } from '../src/handlers/resources.js';
 import { FafToolHandler } from '../src/handlers/tools.js';
 import { FafEngineAdapter } from '../src/handlers/engine-adapter.js';
+import { Redis } from '@upstash/redis';
 import express from 'express';
 import cors from 'cors';
 // Hardcode version for Vercel serverless compatibility (import assert crashes)
 const VERSION = '1.2.0';
+
+// Persistent analytics via Upstash Redis (fire-and-forget, never blocks MCP)
+const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+  : null;
+
+function trackEvent(key: string, detail?: string) {
+  if (!redis) return;
+  const pipeline = redis.pipeline();
+  pipeline.incr(`stats:${key}`);
+  pipeline.incr(`stats:${key}:${new Date().toISOString().slice(0, 10)}`); // daily bucket
+  if (detail) {
+    pipeline.hincrby(`stats:${key}:detail`, detail, 1);
+  }
+  pipeline.exec().catch(() => {}); // fire-and-forget
+}
 
 // Full MCP server for Vercel deployment
 const app = express();
@@ -76,7 +96,34 @@ mcpServer.setRequestHandler(CallToolRequestSchema, async (request) => {
     duration_ms: Date.now() - start,
     ts: new Date().toISOString()
   }));
+  trackEvent('tool_calls', request.params.name);
   return result;
+});
+
+// Stats endpoint - persistent all-time analytics
+app.get('/stats', async (req, res) => {
+  if (!redis) {
+    return res.json({ error: 'Analytics not configured', hint: 'Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN' });
+  }
+  const [pageViews, sseConnections, toolCalls, toolDetail, uaDetail] = await Promise.all([
+    redis.get<number>('stats:page_views') ?? 0,
+    redis.get<number>('stats:sse_connections') ?? 0,
+    redis.get<number>('stats:tool_calls') ?? 0,
+    redis.hgetall<Record<string, number>>('stats:tool_calls:detail') ?? {},
+    redis.hgetall<Record<string, number>>('stats:sse_connections:detail') ?? {},
+  ]);
+  res.json({
+    server: 'grok-faf-mcp',
+    version: VERSION,
+    allTime: {
+      page_views: pageViews ?? 0,
+      sse_connections: sseConnections ?? 0,
+      tool_calls: toolCalls ?? 0,
+    },
+    tools: toolDetail ?? {},
+    clients: uaDetail ?? {},
+    since: 'all-time (persistent)',
+  });
 });
 
 // Health endpoint
@@ -128,6 +175,7 @@ app.get('/info', async (req, res) => {
 
 // Root endpoint - HTML landing page
 app.get('/', (req, res) => {
+  trackEvent('page_views');
   res.send(`
 <!DOCTYPE html>
 <html>
@@ -513,6 +561,7 @@ app.get('/sse', async (req, res) => {
     ua,
     ts: new Date().toISOString()
   }));
+  trackEvent('sse_connections', ua);
 
   // Create SSE transport for this specific connection
   const transport = new SSEServerTransport('/sse', res);

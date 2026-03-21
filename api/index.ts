@@ -478,7 +478,10 @@ app.get('/', (req, res) => {
     }
     window.addEventListener('load', function() { setTimeout(function() { showAbout(true); }, 500); });
   </script>
-  <script defer src="https://va.vercel-scripts.com/v1/script.debug.js"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
   `);

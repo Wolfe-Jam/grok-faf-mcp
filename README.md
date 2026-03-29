@@ -214,7 +214,7 @@ Benchmarked 10x per tool, warmed up, on local execution.
 ## Architecture
 
 ```
-grok-faf-mcp v1.2.0
+grok-faf-mcp v1.2.1
 ├── api/index.ts              → Vercel serverless (Express + SSE transport)
 ├── src/
 │   ├── server.ts             → MCP server (ClaudeFafMcpServer)
@@ -281,6 +281,10 @@ Same `project.faf`. Same scoring. Same result. Different execution layer.
 
 ---
 
+If `grok-faf-mcp` has been useful, consider starring the repo — it helps others find it.
+
+---
+
 ## 📄 License
 
 MIT — Free and open source
@@ -292,3 +296,15 @@ MIT — Free and open source
   <p>FAST⚡️AF • First to Ship • Zero Friction</p>
   <p><strong>Zero drift. Eternal sync. AI optimized.</strong> 🏆</p>
 </div>
+
+---
+
+### Get the CLI
+
+> **faf-cli** — The original AI-Context CLI. A must-have for every builder.
+
+```bash
+npx faf-cli auto
+```
+
+**Anthropic MCP [#2759](https://github.com/modelcontextprotocol/servers/pull/2759)** · **IANA Registered:** `application/vnd.faf+yaml` · [faf.one](https://faf.one) · [npm](https://www.npmjs.com/package/faf-cli)

@@ -1,3 +1,5 @@
+<!-- faf: grok-faf-mcp | TypeScript | grok-faf-mcp | FAST⚡️AF • First MCP server for Grok • URL-based AI context • IANA-registered .faf format (application/vnd.faf+yaml) -->
+
 # 🏎️ CLAUDE.md - grok-faf-mcp | FAST⚡️AF
 
 ## PROJECT STATE: SHIPPING 🚀

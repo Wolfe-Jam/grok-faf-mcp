@@ -1,0 +1,17 @@
+{
+  "$schema": "https://glama.ai/mcp/schemas/server.json",
+  "maintainers": ["Wolfe-Jam"],
+  "name": "grok-faf-mcp",
+  "description": "First MCP server built for Grok/xAI. 21 core tools for persistent AI context via IANA-registered .faf format. Features RAG system with LAZY-RAG caching for 100,000x speedup. 179 tests passing.",
+  "author": "Wolfe-Jam",
+  "homepage": "https://grok-faf-mcp.vercel.app",
+  "repository": "https://github.com/Wolfe-Jam/grok-faf-mcp",
+  "license": "MIT",
+  "categories": ["RAG Systems", "Developer Tools", "Knowledge & Memory"],
+  "keywords": ["faf", "grok", "xai", "rag", "context", "ai-readiness", "mcp", "project-context", "iana"],
+  "relatedServers": [
+    "claude-faf-mcp",
+    "rust-faf-mcp",
+    "gemini-faf-mcp"
+  ]
+}

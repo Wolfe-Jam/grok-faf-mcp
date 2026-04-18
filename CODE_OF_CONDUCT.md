@@ -10,7 +10,7 @@ This project adopts the [Contributor Covenant, v2.1](https://www.contributor-cov
 
 ## Reporting
 
-If you observe conduct that violates this Code of Conduct, please email **james@wolfejames.com**. Reports are handled confidentially. Maintainers will review, respond, and take appropriate action consistent with the Contributor Covenant's enforcement guidelines.
+If you observe conduct that violates this Code of Conduct, please email **team@faf.one**. Reports are handled confidentially. Maintainers will review, respond, and take appropriate action consistent with the Contributor Covenant's enforcement guidelines.
 
 ## Scope
 

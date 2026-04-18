@@ -6,7 +6,7 @@ We provide security updates for the latest released version. For older versions,
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability, please email **james@wolfejames.com** directly.
+If you discover a security vulnerability, please email **security@faf.one** directly.
 
 **Please do not open a public GitHub issue for security reports.** Responsible disclosure gives us time to fix the issue before it's widely known.
 

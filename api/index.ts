@@ -466,6 +466,12 @@ app.get('/', (req, res) => {
       </div>
     </div>
 
+    <div style="display:flex;justify-content:center;margin:1.5rem 0;">
+      <iframe src="https://ghbtns.com/github-btn.html?user=Wolfe-Jam&repo=grok-faf-mcp&type=star&count=true&size=large"
+              frameborder="0" scrolling="0" width="170" height="30"
+              title="Star Wolfe-Jam/grok-faf-mcp on GitHub"></iframe>
+    </div>
+
     <div style="margin:1.5rem 0;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
       <div style="font-size:0.85rem;color:#aaa;">Your <span style="color:#fff;">@handle</span> is your namepoint on MCPaaS™. You're here, you're early — <a href="https://mcpaas.live/claim" style="color:#fff;text-decoration:none;">get yours</a>.</div>
     </div>

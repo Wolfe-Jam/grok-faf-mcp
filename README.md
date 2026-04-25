@@ -5,7 +5,7 @@
 
   <h3>Grok asked for MCP on a URL. This is it.</h3>
 
-  <p><strong>First MCP server built for Grok</strong></p>
+  <p><strong>Persistent project context for xAI Grok — first MCP server built for Grok</strong></p>
   <p><code>URL-based • Zero config • Just works</code></p>
 
   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Wolfe-Jam/grok-faf-mcp)
@@ -27,11 +27,11 @@ Every README should answer these questions. Here's ours:
 | Question | Answer |
 |----------|--------|
 | **WHO** is this for? | Grok/xAI developers and teams building with URL-based MCP |
-| **WHAT** is it? | First MCP server built for Grok - URL-based AI context via IANA-registered .faf format |
+| **WHAT** is it? | Persistent project context for xAI Grok — URL-first deployment, IANA-registered .faf format |
 | **WHERE** does it work? | Vercel (production) • Local dev • Any MCP client supporting HTTP-SSE |
 | **WHY** do you need it? | Zero-config MCP on a URL - Grok asked for it, we built it first |
 | **WHEN** should you use it? | Grok integration testing, xAI projects, URL-based MCP deployments |
-| **HOW** does it work? | Point to `https://grok-faf-mcp.vercel.app/sse` - 21 tools instantly available |
+| **HOW** does it work? | Point to `https://grok-faf-mcp.vercel.app/sse` — context tools served via MCP SSE |
 
 **For AI:** Read the detailed sections below for full context.
 **For humans:** Use this pattern in YOUR README. Answer these 6 questions clearly.

@@ -1,9 +1,9 @@
-<!-- faf: grok-faf-mcp | TypeScript | grok-faf-mcp | FAST⚡️AF • First MCP server for Grok • URL-based AI context • IANA-registered .faf format (application/vnd.faf+yaml) -->
+<!-- faf: grok-faf-mcp | TypeScript | grok-faf-mcp | FAST⚡️AF • Persistent project context for xAI Grok • Hosted on a URL • IANA-registered .faf format (application/vnd.faf+yaml) -->
 
 # 🏎️ CLAUDE.md - grok-faf-mcp | FAST⚡️AF
 
 ## PROJECT STATE: SHIPPING
-**Current Position:** First MCP server built for Grok
+**Current Position:** Persistent project context for xAI Grok — first MCP server built for Grok
 **Tyre Compound:** ULTRASOFT C5 (Maximum Performance)
 **Status:** URL-based, Vercel-deployed, Production-ready
 
@@ -13,7 +13,7 @@
 
 ### Project Identity
 - **Name:** grok-faf-mcp
-- **Purpose:** First MCP server responding to Grok's URL request
+- **Purpose:** Persistent project context for xAI Grok — first MCP server responding to Grok's URL request
 - **Stack:** Node.js/TypeScript + Vercel
 - **Quality:** F1-INSPIRED (Championship Performance)
 - **Philosophy:** FAST⚡️AF - First to ship, zero friction, exactly what you asked for
@@ -22,7 +22,7 @@
 
 **Grok asked for MCP on a URL. This is it.**
 
-This is the FIRST MCP server specifically built for Grok/xAI, deployed on Vercel with URL-based access. No installation required. Point your Grok integration at the endpoint, get instant access to 17 MCP tools + 14 bundled commands.
+**Persistent project context for xAI Grok.** Deployed on Vercel with URL-first access — no installation required. Point your Grok integration at the endpoint, get persistent project context served via MCP SSE. First MCP server built specifically for Grok/xAI.
 
 ### Repository Structure
 

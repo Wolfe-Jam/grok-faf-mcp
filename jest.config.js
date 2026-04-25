@@ -3,6 +3,10 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/tests'],
   testMatch: ['**/*.test.ts'],
+  // Perf tests run via npm run test:performance (continue-on-error in CI).
+  // Hard timing assertions on shared CI runners are flaky by nature, so they
+  // do NOT gate the main test run — observability, not a gate.
+  testPathIgnorePatterns: ['/node_modules/', 'performance.test.ts'],
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },

@@ -2,14 +2,14 @@
 
 # 🏎️ CLAUDE.md - grok-faf-mcp | FAST⚡️AF
 
-## PROJECT STATE: SHIPPING 🚀
+## PROJECT STATE: SHIPPING
 **Current Position:** First MCP server built for Grok
 **Tyre Compound:** ULTRASOFT C5 (Maximum Performance)
 **Status:** URL-based, Vercel-deployed, Production-ready
 
 ---
 
-## 🎨 CORE CONTEXT
+## CORE CONTEXT
 
 ### Project Identity
 - **Name:** grok-faf-mcp
@@ -44,14 +44,14 @@ grok-faf-mcp/
 - **Why:** Grok asked for MCP on a URL - first to deliver
 - **Format:** IANA-registered .faf (application/vnd.faf+yaml)
 
-### 📊 Context Quality Status
+### Context Quality Status
 - **Overall Assessment:** Production-ready (based on faf-mcp v1.1.1)
 - **Last Updated:** 2025-11-18
 - **Version:** 1.0.0 (First Release)
 
 ---
 
-## 🚀 Deployment Architecture
+## Deployment Architecture
 
 ### Vercel Production
 - **URL:** https://grok-faf-mcp.vercel.app/
@@ -67,7 +67,7 @@ grok-faf-mcp/
 
 ---
 
-## 💡 Quick Start for AI
+## Quick Start for AI
 
 **Q: How do I use grok-faf-mcp?**
 
@@ -102,7 +102,7 @@ Use FAF to sync project context
 
 ---
 
-## 🚨 NPM PUBLISH PROTOCOL - MANDATORY 🚨
+## NPM PUBLISH PROTOCOL - MANDATORY
 
 **CRITICAL RULE: `npm publish` IS FORBIDDEN WITHOUT APPROVAL**
 
@@ -128,7 +128,7 @@ Before ANY npm publish of grok-faf-mcp:
 
 ---
 
-## 🎯 Strategic Position
+## Strategic Position
 
 ### Market Positioning
 
@@ -163,7 +163,7 @@ Before ANY npm publish of grok-faf-mcp:
 
 ---
 
-## 🔧 Development
+## Development
 
 ### Local Development
 
@@ -251,7 +251,7 @@ Status:               Production
 
 ---
 
-## 🌐 Community & Ecosystem
+## Community & Ecosystem
 
 **Official Links:**
 - Website: https://faf.one
@@ -267,7 +267,7 @@ Status:               Production
 
 ---
 
-**STATUS: PRODUCTION 🚀**
+**STATUS: PRODUCTION**
 
 *Built for Grok. Built for Speed. Built Right.*
 *FAST⚡️AF • First to Ship • Zero Friction*
@@ -275,7 +275,7 @@ Status:               Production
 **Built with F1-inspired engineering principles** 🏎️⚡
 ---
 
-**STATUS: BI-SYNC ACTIVE 🔗 - Synchronized with .faf context!**
+**STATUS: BI-SYNC ACTIVE - Synchronized with .faf context!**
 
 *Last Sync: 2026-03-15T19:48:38.492Z*
 *Sync Engine: F1-Inspired Software Engineering*

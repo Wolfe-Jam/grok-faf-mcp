@@ -20,18 +20,18 @@
 
 ---
 
-## 📋 The 6 Ws - Quick Reference
+## The 6 Ws - Quick Reference
 
 Every README should answer these questions. Here's ours:
 
 | Question | Answer |
 |----------|--------|
-| **👥 WHO** is this for? | Grok/xAI developers and teams building with URL-based MCP |
-| **📦 WHAT** is it? | First MCP server built for Grok - URL-based AI context via IANA-registered .faf format |
-| **🌍 WHERE** does it work? | Vercel (production) • Local dev • Any MCP client supporting HTTP-SSE |
-| **🎯 WHY** do you need it? | Zero-config MCP on a URL - Grok asked for it, we built it first |
-| **⏰ WHEN** should you use it? | Grok integration testing, xAI projects, URL-based MCP deployments |
-| **🚀 HOW** does it work? | Point to `https://grok-faf-mcp.vercel.app/sse` - 21 tools instantly available |
+| **WHO** is this for? | Grok/xAI developers and teams building with URL-based MCP |
+| **WHAT** is it? | First MCP server built for Grok - URL-based AI context via IANA-registered .faf format |
+| **WHERE** does it work? | Vercel (production) • Local dev • Any MCP client supporting HTTP-SSE |
+| **WHY** do you need it? | Zero-config MCP on a URL - Grok asked for it, we built it first |
+| **WHEN** should you use it? | Grok integration testing, xAI projects, URL-based MCP deployments |
+| **HOW** does it work? | Point to `https://grok-faf-mcp.vercel.app/sse` - 21 tools instantly available |
 
 **For AI:** Read the detailed sections below for full context.
 **For humans:** Use this pattern in YOUR README. Answer these 6 questions clearly.
@@ -123,7 +123,7 @@ At 55%, Grok guesses half the time. At 100%, Grok knows your project.
 
 ---
 
-## 🚀 Three Ways to Deploy
+## Three Ways to Deploy
 
 ### 1. Hosted (Instant)
 ```
@@ -154,7 +154,7 @@ npx grok-faf-mcp
 
 ---
 
-## 🛠️ MCP Tools (21 Core)
+## MCP Tools (21 Core)
 
 **Create & Detect**
 
@@ -253,7 +253,7 @@ npm test    # runs all 179
 
 ---
 
-## 🔗 Endpoints
+## Endpoints
 
 | Endpoint | URL |
 |----------|-----|
@@ -264,7 +264,7 @@ npm test    # runs all 179
 
 ---
 
-## 📦 Ecosystem
+## Ecosystem
 
 One format, every AI platform.
 
@@ -285,7 +285,7 @@ If `grok-faf-mcp` has been useful, consider starring the repo — it helps other
 
 ---
 
-## 📄 License
+## License
 
 MIT — Free and open source
 

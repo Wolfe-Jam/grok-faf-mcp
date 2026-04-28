@@ -5,7 +5,7 @@
   "description": "Persistent Project Context for xAI Grok. IANA-registered .faf format, MCP server on a URL, Vercel-deployed.",
   "icon": "./assets/icons/faf-icon-256.png",
   "logo": "./assets/icons/faf-icon-256.png",
-  "displayName": ".faf ⚡️ for Grok",
+  "displayName": ".faf 🐘⚡️ for Grok",
   "main": "dist/src/index.js",
   "bin": {
     "grok-faf-mcp": "dist/src/index.js"

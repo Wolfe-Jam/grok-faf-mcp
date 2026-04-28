@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - 'v*'  # Triggers on version tags like v1.0.3
+  workflow_dispatch:  # Manual trigger for re-publish + log capture
 
 permissions:
   id-token: write  # Required for GitHub OIDC authentication

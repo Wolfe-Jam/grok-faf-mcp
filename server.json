@@ -4,22 +4,22 @@
   "description": "Persistent project context for xAI Grok. IANA-registered .faf format.",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/Wolfe-Jam/faf-mcp/main/assets/icons/faf-icon-48.png",
+      "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-48.png",
       "mimeType": "image/png",
       "sizes": ["48x48"]
     },
     {
-      "src": "https://raw.githubusercontent.com/Wolfe-Jam/faf-mcp/main/assets/icons/faf-icon-128.png",
+      "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-128.png",
       "mimeType": "image/png",
       "sizes": ["128x128"]
     },
     {
-      "src": "https://raw.githubusercontent.com/Wolfe-Jam/faf-mcp/main/assets/icons/faf-icon-256.png",
+      "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-256.png",
       "mimeType": "image/png",
       "sizes": ["256x256"]
     },
     {
-      "src": "https://raw.githubusercontent.com/Wolfe-Jam/faf-mcp/main/assets/icons/faf-icon-512.png",
+      "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-512.png",
       "mimeType": "image/png",
       "sizes": ["512x512"]
     }

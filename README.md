@@ -5,7 +5,7 @@
 
   <h3>Grok asked for MCP on a URL. This is it.</h3>
 
-  <p><strong>Persistent project context for xAI Grok — first MCP server built for Grok</strong></p>
+  <p><strong>Persistent Project Context for xAI Grok. URL-based. Zero config.</strong></p>
   <p><code>URL-based • Zero config • Just works</code></p>
 
   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Wolfe-Jam/grok-faf-mcp)
@@ -17,6 +17,8 @@
   [![Vercel](https://img.shields.io/badge/Vercel-Live-black?logo=vercel)](https://grok-faf-mcp.vercel.app)
   [![project.faf](https://img.shields.io/badge/project.faf-inside-00D4D4)](https://github.com/Wolfe-Jam/faf)
 </div>
+
+**FAF defines. MD instructs. AI codes.**
 
 ---
 

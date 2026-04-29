@@ -277,8 +277,8 @@ One format, every AI platform.
 | [claude-faf-mcp](https://npmjs.com/package/claude-faf-mcp) | Anthropic | npm + MCP #2759 |
 | [gemini-faf-mcp](https://pypi.org/project/gemini-faf-mcp/) | Google | PyPI |
 | [rust-faf-mcp](https://crates.io/crates/rust-faf-mcp) | Rust | crates.io |
-| [faf-mcp](https://npmjs.com/package/faf-mcp) | Universal (Cursor, Windsurf, Cline) | npm |
-| [faf-cli](https://npmjs.com/package/faf-cli) | Terminal CLI | npm + Homebrew |
+| [faf-mcp](https://npmjs.com/package/faf-mcp) | Cursor, IDE's, VS Code | npm |
+| [faf-cli](https://npmjs.com/package/faf-cli) | Terminal CLI | bunx, npm + Homebrew |
 
 Same `project.faf`. Same scoring. Same result. Different execution layer.
 

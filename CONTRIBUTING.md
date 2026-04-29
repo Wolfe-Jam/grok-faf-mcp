@@ -1,8 +1,7 @@
 # Contributing
 
 Contributions are welcome. Bug fixes, new MCP tools, performance
-improvements, doc polish — all useful. xAI / Grok devs are the
-primary audience this repo is built for.
+improvements, doc polish — all useful.
 
 This file describes **how to land a change cleanly**.
 

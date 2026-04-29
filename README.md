@@ -308,7 +308,7 @@ xAI / Grok devs welcome — TL;DR setup at the top, F1-inspired tone throughout.
 
 ---
 
-If `grok-faf-mcp` has been useful, consider starring the repo — it helps others find it.
+If grok-faf-mcp has been useful, consider starring the repo ⭐️ it helps others find it.
 
 ---
 

@@ -102,6 +102,14 @@ them.
 
 ---
 
+## Releases
+
+Maintainer ships releases via the FAF `/pubpro` discipline.
+Contributors don't run publish commands — open a PR and the
+maintainer ships it.
+
+---
+
 ## Architecture decisions
 
 The SDK has firm design rules that aren't up for debate in PRs:

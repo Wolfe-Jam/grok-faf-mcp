@@ -1,13 +1,10 @@
 # Contributing
 
-Contributions are welcome. Bug fixes, new MCP tools, performance
-improvements, doc polish — all useful.
-
-This file describes **how to land a change cleanly**.
+Bug fixes, new MCP tools, performance improvements, doc polish — all welcome.
 
 ---
 
-## TL;DR for xAI devs
+## TL;DR
 
 ```bash
 git clone https://github.com/Wolfe-Jam/grok-faf-mcp
@@ -17,11 +14,7 @@ npm run build
 npm test
 ```
 
-Open a PR. Tests must pass. Vercel preview deploy must build. Done.
-
-The hosted endpoint is `https://grok-faf-mcp.vercel.app/sse` —
-point any MCP client at it and the 21 tools are instantly available.
-Local development uses `npm run dev:http` on port 3001.
+Local dev: `npm run dev:http` (port 3001).
 
 ---
 
@@ -42,8 +35,7 @@ Local development uses `npm run dev:http` on port 3001.
 - `main` is always shippable. Tagged releases come from `main`.
 - Vercel auto-deploys `main` to the production URL.
 - Work on feature branches. PR → squash-merge into `main`.
-- Don't open PRs against tagged commits. Tags are immutable; any
-  fix lands on `main` and gets a new version if it's release-worthy.
+- Don't open PRs against tagged commits. Tags are immutable; any fix lands on `main` and gets a new version if it's release-worthy.
 
 ---
 
@@ -52,37 +44,25 @@ Local development uses `npm run dev:http` on port 3001.
 - Imperative mood: "fix: tool registration order" not "fixed".
 - Conventional-commits prefix appreciated: `fix:` / `feat:` / `chore:` / `docs:` / `perf:` / `refactor:`.
 - Body explains the **why** when non-obvious. The diff explains the what.
-- No marketing prose in commit subjects. Technical, not promotional.
 
 ---
 
 ## Code style
 
-- **Names over comments.** Well-named functions don't need comments
-  explaining what they do.
-- **WHY-comments** are welcome where the *why* isn't obvious — a
-  hidden constraint, a subtle invariant, a workaround for a specific
-  edge case.
+- **Names over comments.** Well-named functions don't need explanation.
+- **WHY-comments** welcome where the *why* isn't obvious.
 - Type hints on all public exports. Internal helpers can be looser.
 - TypeScript strict mode is non-negotiable.
-- 19ms execution average is the performance budget — new tools
-  shouldn't degrade that without justification.
+- 19ms execution average is the performance budget.
 
 ---
 
 ## CI doctrine
 
-Two rules:
+1. **Red means real.** A failing test is a real, actionable failure. We don't tolerate flaky tests — if a test fails intermittently, that's a bug in the test.
+2. **Lint is observability, not a gate.** Lint warnings show but don't block merges. Tests are the only gate.
 
-1. **Red means real.** A failing test is a real, actionable failure.
-   We don't tolerate flaky tests — if a test fails intermittently,
-   that's a bug in the test, fix it before merging anything else.
-2. **Lint is observability, not a gate.** Lint warnings show but
-   don't block merges. Cleanup PRs welcome but never urgent. Tests
-   are the only gate.
-
-If `main` goes red after a merge, the breaking change owns the
-fix — revert is on the table, no shame.
+If `main` goes red after a merge, the breaking change owns the fix — revert is on the table.
 
 ---
 
@@ -94,54 +74,34 @@ The hot contribution path. Each new tool:
 - Returns a `CallToolResult` shape that fastmcp / MCP SDK expects
 - Ships with one jest test covering the success path + one error path
 - Documents the tool's purpose in README's "MCP Tools" section
+- Composes with existing tools, doesn't parallel them
 - Doesn't break the 19ms execution budget
-
-The repo's lineage from `faf-mcp` v1.1.1 means the architecture is
-proven — new tools should compose with existing ones, not parallel
-them.
 
 ---
 
 ## Releases
 
-Maintainer ships releases via the FAF `/pubpro` discipline.
-Contributors don't run publish commands — open a PR and the
-maintainer ships it.
+Maintainer ships releases via the FAF `/pubpro` discipline. Contributors don't run publish commands — open a PR and the maintainer ships it.
 
 ---
 
 ## Architecture decisions
 
-The SDK has firm design rules that aren't up for debate in PRs:
+Firm design rules, not up for debate in PRs:
 
-1. **URL-based deployment is the differentiator.** PRs that require
-   a complex local-only setup go against the "Grok asked for MCP on
-   a URL" thesis. New features should preserve the zero-config URL
-   path.
-2. **`.faf` is the format. Don't propose alternatives** in this repo —
-   that's an IETF / IANA-track conversation, not a PR conversation.
-3. **Vercel is the production deploy target.** Self-hosted Express
-   works (per the Dockerfile) but Vercel is the canonical path.
-4. **`grok-faf-mcp` ships the `.faf` Foundational Context Layer.**
-   Voice memory is a different layer (VML / `.fafm`) — see the Voice
-   variant section below.
+1. **URL-based deployment is the differentiator.** New features should preserve the zero-config URL path.
+2. **`.faf` is the format.** Format alternatives are an IETF / IANA conversation, not a PR conversation.
+3. **Vercel is the production deploy target.** Self-hosted Express works (per the Dockerfile) but Vercel is canonical.
+4. **`grok-faf-mcp` ships the `.faf` Foundational Context Layer.** Voice memory is a different layer — see Voice variant below.
 
 ---
 
 ## Voice variant — `grok-faf-voice` (VML)
 
-For the **voice-memory** side of Grok, the sister package is
-[`grok-faf-voice`](https://github.com/Wolfe-Jam/grok-faf-voice) —
-the reference implementation of the Voice Memory Layer (VML), with
-its own `.fafm 🐘🎙️` family mark.
+For the voice-memory side of Grok, the sister package is [`grok-faf-voice`](https://github.com/Wolfe-Jam/grok-faf-voice) — the reference implementation of the Voice Memory Layer (VML), with its own `.fafm 🐘🎙️` family mark.
 
-- **`grok-faf-mcp`** (this) — `.faf` Foundational Context Layer for
-  Grok via MCP-on-a-URL. What the project IS.
-- **`grok-faf-voice`** — `.fafm` Voice Memory Layer (VML) for Grok
-  Voice via LiveKit + xAI realtime. What the agent REMEMBERS.
-
-Different surface, same family. PRs that touch voice persistence
-should target `grok-faf-voice`, not this repo.
+- **`grok-faf-mcp`** (this) — `.faf` Foundational Context Layer for Grok via MCP-on-a-URL. What the project IS.
+- **`grok-faf-voice`** — `.fafm` Voice Memory Layer (VML) for Grok Voice via LiveKit + xAI realtime. What the agent REMEMBERS.
 
 ---
 
@@ -149,8 +109,7 @@ should target `grok-faf-voice`, not this repo.
 
 [github.com/Wolfe-Jam/grok-faf-mcp/issues](https://github.com/Wolfe-Jam/grok-faf-mcp/issues)
 
-For security issues: don't open a public issue. Email
-**team@faf.one** with details.
+Security issues: don't open a public issue. Email **team@faf.one**.
 
 ---
 

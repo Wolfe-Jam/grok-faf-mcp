@@ -101,7 +101,7 @@ Format:  IANA-registered .faf (application/vnd.faf+yaml)
 Tools:   21 core MCP tools (55 total with advanced)
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
-Tests:   179 passing (7 suites)
+Tests:   169 passed · 0 failed · 169 total (7 suites)
 Status:  FAST⚡️AF
 ```
 
@@ -113,13 +113,14 @@ Status:  FAST⚡️AF
 
 | Tier | Score | What it means |
 |------|-------|---------------|
-| 🏆 **TROPHY** | 100% | Gold Code — AI is optimized |
-| ★ **GOLD** | 99%+ | Near-perfect context |
-| ◆ **SILVER** | 95%+ | Excellent |
-| ◇ **BRONZE** | 85%+ | Production ready |
-| ● **GREEN** | 70%+ | Solid foundation |
-| ● **YELLOW** | 55%+ | AI flipping coins |
-| ○ **RED** | <55% | AI working blind |
+| **🏆 TROPHY** | 100% | Gold Code — AI is optimized |
+| **★ GOLD** | 99%+ | Near-perfect context |
+| **◆ SILVER** | 95%+ | Excellent |
+| **◇ BRONZE** | 85%+ | Production ready |
+| **●** GREEN | 70%+ | Solid foundation |
+| ● YELLOW | 55%+ | AI flipping coins |
+| ○ RED | <55% | AI working blind |
+| ♡ WHITE | 0% | Empty — good luck |
 
 At 55%, Grok guesses half the time. At 100%, Grok knows your project.
 
@@ -280,6 +281,30 @@ One format, every AI platform.
 | [faf-cli](https://npmjs.com/package/faf-cli) | Terminal CLI | npm + Homebrew |
 
 Same `project.faf`. Same scoring. Same result. Different execution layer.
+
+---
+
+## Voice variant — `grok-faf-voice` (VML)
+
+`.fafm 🐘🎙️` — the voice variant of the `.faf 🐘` family.
+
+**[grok-faf-voice](https://pypi.org/project/grok-faf-voice/)** is the reference implementation of the **Voice Memory Layer (VML)** — what your voice agent *remembers* across sessions, devices, and model switches. Companion to `grok-faf-mcp`:
+
+- **`grok-faf-mcp`** (this) — `.faf` Foundational Context Layer for Grok via MCP-on-a-URL.
+- **`grok-faf-voice`** — `.fafm` Voice Memory Layer (VML) for Grok Voice via LiveKit + xAI realtime.
+
+Same family. Different surface. *Voice swappable; memory permanent.*
+
+[PyPI](https://pypi.org/project/grok-faf-voice/) · [GitHub](https://github.com/Wolfe-Jam/grok-faf-voice) · [Onboarding](https://wolfe-jam.github.io/grok-faf-voice/onboarding.html)
+
+---
+
+## Contributing
+
+PR conventions, code style, CI doctrine, MCP-tool contribution path,
+npm publish discipline, architecture decisions: **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+
+xAI / Grok devs welcome — TL;DR setup at the top, F1-inspired tone throughout.
 
 ---
 

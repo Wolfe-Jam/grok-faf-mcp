@@ -5,6 +5,37 @@ All notable changes to faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.2] - 2026-04-29
+
+### Added
+- **`CONTRIBUTING.md`** — TL;DR for xAI devs, PR conventions, branch
+  model, code style, CI doctrine, MCP-tool contribution path, npm
+  publish discipline, architecture decisions (`.faf` here / `.fafm`
+  in the Voice variant). Tight (~170 lines), F1-inspired tone.
+  Direct line for high-signal contributors landing on the repo.
+- **Voice variant cross-link** in README — points readers at
+  [`grok-faf-voice`](https://pypi.org/project/grok-faf-voice/), the
+  reference implementation of the **Voice Memory Layer (VML)**.
+  Same family (`.faf 🐘` for context / `.fafm 🐘🎙️` for voice
+  memory), different surface. Routes existing grok-faf-mcp traffic
+  to the new voice-side product.
+
+### Changed
+- **Tier ladder canonical alignment** — README scoring table now
+  matches `faf-cli/src/core/tiers.ts` exactly: 🏆 ★ ◆ ◇ ● ● ○ ♡.
+  Top 4 tiers (TROPHY → BRONZE) bolded to mirror the CLI's
+  orange/cyan emphasis; GREEN's symbol bolded to mirror
+  `bold('●')`; YELLOW/RED/WHITE plain to mirror `dim()`. Adds the
+  WHITE 0% row that was previously missing.
+- README test count corrected: 179 → 169 (actual passing count).
+  Honest pass for v1.2.2.
+
+### Notes
+- Docs-only patch — no behavior changes, no MCP protocol changes,
+  no new dependencies. Safe upgrade for all consumers.
+- Companion to `grok-faf-voice` v0.1.2 launch; the cross-link
+  routes existing grok-faf-mcp traffic to the new Voice surface.
+
 ## [1.2.1] - 2026-03-28
 
 ### Changed

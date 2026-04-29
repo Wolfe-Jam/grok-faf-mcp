@@ -102,21 +102,6 @@ them.
 
 ---
 
-## NPM publish protocol
-
-**`npm publish` is gated.** Per the FAF publish discipline:
-
-1. README, CHANGELOG, package.json version all current
-2. Tests pass on the exact tag/SHA being published
-3. `npm publish --dry-run` reviewed before the real publish
-4. `GO!` (or `GREEN LIGHT`) from a maintainer
-5. Then publish
-
-Don't publish without these. The npm page is permanent metadata
-for every install — versions are not unpublishable after 72 hours.
-
----
-
 ## Architecture decisions
 
 The SDK has firm design rules that aren't up for debate in PRs:

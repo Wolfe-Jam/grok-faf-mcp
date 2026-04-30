@@ -1,4 +1,4 @@
-# grok-faf-mcp | FAST⚡️AF
+# FAST⚡️AF Context
 
 <div align="center">
   <img src="https://www.faf.one/orange-smiley.svg" alt="FAF" width="80" />

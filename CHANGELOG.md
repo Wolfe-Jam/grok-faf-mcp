@@ -5,7 +5,7 @@ All notable changes to faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.2.2] - 2026-04-29
+## [1.2.2] - 2026-04-30
 
 ### Added
 - **`CONTRIBUTING.md`** — TL;DR for xAI devs, PR conventions, branch
@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   to the new voice-side product.
 
 ### Changed
+- **README H1 simplified** — `# grok-faf-mcp | FAST⚡️AF` →
+  `# FAST⚡️AF Context`. npm/PyPI both render the package name
+  above the README, so the prefix doubled up. New H1 is pure
+  positioning and pairs with `grok-faf-voice`'s "Fast⚡️AF memory
+  setup" as sibling FAST⚡️AF taglines (`.faf` = Context,
+  `.fafm` = memory).
 - **Tier ladder canonical alignment** — README scoring table now
   matches `faf-cli/src/core/tiers.ts` exactly: 🏆 ★ ◆ ◇ ● ● ○ ♡.
   Top 4 tiers (TROPHY → BRONZE) bolded to mirror the CLI's
@@ -33,8 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Notes
 - Docs-only patch — no behavior changes, no MCP protocol changes,
   no new dependencies. Safe upgrade for all consumers.
-- Companion to `grok-faf-voice` v0.1.2 launch; the cross-link
-  routes existing grok-faf-mcp traffic to the new Voice surface.
+- Companion to `grok-faf-voice` v0.1.3 launch (PyPI live as of
+  2026-04-30); the cross-link routes existing grok-faf-mcp traffic
+  to the new Voice surface.
 
 ## [1.2.1] - 2026-03-28
 

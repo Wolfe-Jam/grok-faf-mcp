@@ -7,8 +7,8 @@ import { FafEngineAdapter } from '../src/handlers/engine-adapter.js';
 import { Redis } from '@upstash/redis';
 import express from 'express';
 import cors from 'cors';
-import { createRequire } from 'module';
-const { version: VERSION } = createRequire(import.meta.url)('../package.json');
+// VERSION mirrors package.json — keep in sync (pubpro guards this)
+const VERSION = '1.2.2';
 
 // Persistent analytics via Upstash Redis (fire-and-forget, never blocks MCP)
 const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN

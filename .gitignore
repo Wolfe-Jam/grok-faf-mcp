@@ -32,3 +32,4 @@ test-results/
 # Environment files
 .env
 .env.test
+.env.vercel-*

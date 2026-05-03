@@ -1,3 +1,6 @@
+<!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
+<!-- faf: doc=readme | canonical=project.faf | score=100 | family=FAF -->
+
 # FAST⚡️AF Context
 
 <div align="center">

@@ -1,3 +1,6 @@
+<!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
+<!-- faf: doc=changelog | latest=v1.2.2 | canonical=project.faf | family=FAF -->
+
 # Changelog
 
 All notable changes to faf-mcp will be documented in this file.

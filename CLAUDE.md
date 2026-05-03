@@ -1,4 +1,5 @@
-<!-- faf: grok-faf-mcp | TypeScript | grok-faf-mcp | FAST⚡️AF • First MCP server for Grok • URL-based AI context • IANA-registered .faf format (application/vnd.faf+yaml) -->
+<!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
+<!-- faf: claim=project.faf | score=100 | family=FAF | siblings=README.md,CHANGELOG.md,server.json -->
 
 # 🏎️ CLAUDE.md - grok-faf-mcp | FAST⚡️AF
 

@@ -21,10 +21,10 @@ const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_RE
 function trackEvent(key: string, detail?: string) {
   if (!redis) return;
   const pipeline = redis.pipeline();
-  pipeline.incr(`stats:${key}`);
-  pipeline.incr(`stats:${key}:${new Date().toISOString().slice(0, 10)}`); // daily bucket
+  pipeline.incr(`grok:stats:${key}`);
+  pipeline.incr(`grok:stats:${key}:${new Date().toISOString().slice(0, 10)}`); // daily bucket
   if (detail) {
-    pipeline.hincrby(`stats:${key}:detail`, detail, 1);
+    pipeline.hincrby(`grok:stats:${key}:detail`, detail, 1);
   }
   pipeline.exec().catch(() => {}); // fire-and-forget
 }
@@ -106,11 +106,11 @@ app.get('/stats', async (req, res) => {
     return res.json({ error: 'Analytics not configured', hint: 'Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN' });
   }
   const [pageViews, sseConnections, toolCalls, toolDetail, uaDetail] = await Promise.all([
-    redis.get<number>('stats:page_views') ?? 0,
-    redis.get<number>('stats:sse_connections') ?? 0,
-    redis.get<number>('stats:tool_calls') ?? 0,
-    redis.hgetall<Record<string, number>>('stats:tool_calls:detail') ?? {},
-    redis.hgetall<Record<string, number>>('stats:sse_connections:detail') ?? {},
+    redis.get<number>('grok:stats:page_views') ?? 0,
+    redis.get<number>('grok:stats:sse_connections') ?? 0,
+    redis.get<number>('grok:stats:tool_calls') ?? 0,
+    redis.hgetall<Record<string, number>>('grok:stats:tool_calls:detail') ?? {},
+    redis.hgetall<Record<string, number>>('grok:stats:sse_connections:detail') ?? {},
   ]);
   res.json({
     server: 'grok-faf-mcp',

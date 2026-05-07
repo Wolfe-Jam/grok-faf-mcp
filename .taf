@@ -1,35 +1,4 @@
-{
-  "taf_version": "1.0.0",
-  "generated": "2026-05-07T00:19:11.263Z",
-  "source": "/Users/wolfejam/FAF/grok-faf-mcp/project.faf",
-  "project": "grok-faf-mcp",
-  "faf_version": "3.0",
-  "score": 100,
-  "tier": "TROPHY",
-  "populated": 15,
-  "active": 15,
-  "total": 21,
-  "slots": {
-    "project.name": "populated",
-    "project.goal": "populated",
-    "project.main_language": "populated",
-    "human_context.who": "populated",
-    "human_context.what": "populated",
-    "human_context.why": "populated",
-    "human_context.where": "populated",
-    "human_context.when": "populated",
-    "human_context.how": "populated",
-    "stack.frontend": "slotignored",
-    "stack.css_framework": "slotignored",
-    "stack.ui_library": "slotignored",
-    "stack.state_management": "slotignored",
-    "stack.backend": "populated",
-    "stack.api_type": "populated",
-    "stack.runtime": "populated",
-    "stack.database": "slotignored",
-    "stack.connection": "slotignored",
-    "stack.hosting": "populated",
-    "stack.build": "populated",
-    "stack.cicd": "populated"
-  }
-}
+format_version: 1.0.0
+project: grok-faf-mcp
+created: 2026-05-06T21:30:00.000Z
+test_history: []

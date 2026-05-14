@@ -124,7 +124,7 @@ Status:  FAST⚡️AF
 | **●** GREEN | 70%+ | Solid foundation |
 | ● YELLOW | 55%+ | AI flipping coins |
 | ○ RED | <55% | AI working blind |
-| ♡ WHITE | 0% | Empty — good luck |
+| ♡ WHITE | 0% | Start — good luck |
 
 At 55%, Grok guesses half the time. At 100%, Grok knows your project.
 

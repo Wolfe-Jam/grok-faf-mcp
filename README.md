@@ -221,10 +221,10 @@ Benchmarked 10x per tool, warmed up, on local execution.
 ## Architecture
 
 ```
-grok-faf-mcp v1.2.1
+grok-faf-mcp v1.3.0
 ├── api/index.ts              → Vercel serverless (Express + SSE transport)
 ├── src/
-│   ├── server.ts             → MCP server (ClaudeFafMcpServer)
+│   ├── server.ts             → MCP server (GrokFafMcpServer)
 │   ├── handlers/
 │   │   ├── championship-tools.ts  → 55 tool definitions
 │   │   ├── tool-registry.ts       → Visibility filtering (core/advanced)

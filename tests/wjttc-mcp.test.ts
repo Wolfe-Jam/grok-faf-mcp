@@ -14,7 +14,7 @@
 import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
 import { FafToolHandler } from '../src/handlers/tools';
 import { FafEngineAdapter } from '../src/handlers/engine-adapter';
-import { ClaudeFafMcpServer } from '../src/server';
+import { GrokFafMcpServer } from '../src/server';
 import * as fs from 'fs';
 import * as fsp from 'fs/promises';
 import * as path from 'path';
@@ -77,12 +77,12 @@ afterAll(async () => {
 
 describe('Tier 1: Protocol Compliance', () => {
   it('should have valid server class', () => {
-    expect(ClaudeFafMcpServer).toBeDefined();
-    expect(typeof ClaudeFafMcpServer).toBe('function');
+    expect(GrokFafMcpServer).toBeDefined();
+    expect(typeof GrokFafMcpServer).toBe('function');
   });
 
   it('should instantiate server without crash', () => {
-    const server = new ClaudeFafMcpServer({
+    const server = new GrokFafMcpServer({
       transport: 'stdio',
       fafEnginePath: 'native',
       debug: false

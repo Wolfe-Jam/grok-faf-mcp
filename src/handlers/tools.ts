@@ -123,7 +123,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_debug',
-          description: 'Debug Claude FAF MCP environment - show working directory, permissions, and FAF CLI status',
+          description: 'Debug grok-faf-mcp environment - show working directory, permissions, and FAF CLI status',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -566,7 +566,7 @@ output: Championship Performance
 
 # Quick Context
 working_directory: ${targetDir}
-initialized_by: claude-faf-mcp${projectData._friday_feature ? `\nfriday_feature: ${projectData._friday_feature}` : ''}
+initialized_by: grok-faf-mcp${projectData._friday_feature ? `\nfriday_feature: ${projectData._friday_feature}` : ''}
 vitamin_context: true
 faffless: true
 
@@ -777,12 +777,12 @@ package_manager: ${projectData.package_manager}` : ''}
   private async handleFafAbout(_args: any): Promise<CallToolResult> {  // ✅ FIXED: Prefixed unused args
     // Stop FAFfing about and get the facts!
     const packageInfo = {
-      name: 'claude-faf-mcp',
+      name: 'grok-faf-mcp',
       version: VERSION,
-      description: 'We ARE the C in MCP. I⚡🍊 - The formula that changes everything.',
+      description: 'grok-faf-mcp — the first MCP for Grok. Persistent project context for xAI/Grok',
       author: 'FAF Team (team@faf.one)',
       website: 'https://faf.one',
-      npm: 'https://www.npmjs.com/package/claude-faf-mcp'
+      npm: 'https://www.npmjs.com/package/grok-faf-mcp'
     };
 
     const aboutText = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -891,7 +891,7 @@ REMEMBER: Always use ".faf" with the dot - it's a FORMAT!
       const fafResult = await findFafFile(cwd);
       const hasFaf = fafResult !== null;
 
-      const debugOutput = `🔍 Claude FAF MCP Server Debug Information:
+      const debugOutput = `🔍 grok-faf-mcp Debug Information:
 
 📂 Working Directory: ${debugInfo.workingDirectory}
 ✏️ Write Permissions: ${debugInfo.canWrite ? '✅ Yes' : '❌ No'}

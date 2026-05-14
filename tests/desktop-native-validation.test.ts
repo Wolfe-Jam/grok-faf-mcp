@@ -6,7 +6,7 @@
  */
 
 import { describe, test, expect, beforeAll, afterAll } from '@jest/globals';
-import { ClaudeFafMcpServer } from '../src/server';
+import { GrokFafMcpServer } from '../src/server';
 import { FafToolHandler } from '../src/handlers/tools';
 import { FafEngineAdapter } from '../src/handlers/engine-adapter';
 import * as fs from 'fs';
@@ -22,7 +22,7 @@ describe('🏁 Desktop-Native MCP Championship Tests', () => {
     process.chdir(testDir);
 
     // Initialize server WITHOUT CLI (for validation but not used in tests)
-    new ClaudeFafMcpServer({
+    new GrokFafMcpServer({
       transport: 'stdio',
       fafEnginePath: 'native', // Signal for native mode
       debug: true

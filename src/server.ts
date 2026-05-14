@@ -10,7 +10,7 @@ import cors from 'cors';
 import { isError } from './utils/type-guards.js';
 import { VERSION } from './version';
 
-export interface ClaudeFafMcpServerConfig {
+export interface GrokFafMcpServerConfig {
   transport: 'stdio' | 'http-sse';
   port?: number;
   fafEnginePath: string;
@@ -19,14 +19,14 @@ export interface ClaudeFafMcpServerConfig {
   host?: string;
 }
 
-export class ClaudeFafMcpServer {
+export class GrokFafMcpServer {
   private server: Server;
   private resourceHandler: FafResourceHandler;
   private toolHandler: FafToolHandler;
-  private config: ClaudeFafMcpServerConfig;
+  private config: GrokFafMcpServerConfig;
   private httpServer?: any;
 
-  constructor(config: ClaudeFafMcpServerConfig) {
+  constructor(config: GrokFafMcpServerConfig) {
     this.config = {
       port: 3001,
       host: '0.0.0.0',
@@ -36,7 +36,7 @@ export class ClaudeFafMcpServer {
 
     this.server = new Server(
       {
-        name: 'claude-faf-mcp',
+        name: 'grok-faf-mcp',
         version: VERSION,
       },
       {
@@ -120,28 +120,32 @@ export class ClaudeFafMcpServer {
     app.get('/health', (_req, res) => {
       res.json({
         status: 'healthy',
-        server: 'claude-faf-mcp',
+        server: 'grok-faf-mcp',
         version: VERSION,
         transport: 'http-sse',
         timestamp: new Date().toISOString(),
-        championship: '33+ tools, zero shell execution'
+        championship: 'Grok-Exclusive FAF MCP — Fast AF Edition 🏎️⚡'
       });
     });
 
     // Server info endpoint
     app.get('/info', (_req, res) => {
       res.json({
-        name: 'claude-faf-mcp',
+        name: 'grok-faf-mcp',
         version: VERSION,
-        description: 'Universal FAF MCP Server for Claude - AI Context Intelligence & Project Enhancement',
+        description: 'grok-faf-mcp — the first MCP for Grok. Persistent project context for xAI/Grok',
         transport: 'http-sse',
         capabilities: {
           resources: { subscribe: true, listChanged: true },
           tools: { listChanged: true }
         },
+        // TODO v1.3+: make dynamic via toolHandler.listTools() instead of hardcoded
         tools: [
-          'faf_status', 'faf_score', 'faf_init', 'faf_trust',
-          'faf_sync', 'faf_enhance', 'faf_bi_sync', 'faf_clear', 'faf_debug'
+          'faf_about', 'faf_what', 'faf_status', 'faf_score', 'faf_init',
+          'faf_trust', 'faf_sync', 'faf_enhance', 'faf_bi_sync', 'faf_clear',
+          'faf_debug', 'faf_read', 'faf_write', 'faf_list', 'faf_chat',
+          'faf_friday', 'faf_guide', 'rag_query', 'rag_cache_stats',
+          'rag_cache_clear', 'grok_go_fast_af'
         ]
       });
     });
@@ -154,7 +158,7 @@ export class ClaudeFafMcpServer {
       const transport = new StdioServerTransport();
       await this.server.connect(transport);
       if (this.config.debug) {
-        console.error('Claude FAF MCP Server started with stdio transport');
+        console.error('grok-faf-mcp started with stdio transport');
       }
     } else if (this.config.transport === 'http-sse') {
       const app = this.createHttpApp();
@@ -182,7 +186,7 @@ export class ClaudeFafMcpServer {
       const host = this.config.host ?? '0.0.0.0';
       this.httpServer = app.listen(port, host, () => {
         if (this.config.debug) {
-          console.error(`Claude FAF MCP Server started with HTTP/SSE transport on ${host}:${port}`);
+          console.error(`grok-faf-mcp started with HTTP/SSE transport on ${host}:${port}`);
           console.error(`SSE endpoint: http://${host}:${port}/sse`);
           console.error(`Health check: http://${host}:${port}/health`);
         }
@@ -204,7 +208,7 @@ export class ClaudeFafMcpServer {
       return new Promise((resolve) => {
         this.httpServer.close(() => {
           if (this.config.debug) {
-            console.error('Claude FAF MCP Server HTTP/SSE transport stopped');
+            console.error('grok-faf-mcp HTTP/SSE transport stopped');
           }
           resolve();
         });
@@ -214,12 +218,12 @@ export class ClaudeFafMcpServer {
 
   getServerInfo() {
     return {
-      name: 'claude-faf-mcp',
+      name: 'grok-faf-mcp',
       version: VERSION,
       transport: this.config.transport,
       port: this.config.port,
       host: this.config.host,
-      championship: 'v3.0.0 - 33+ native tools'
+      championship: 'Grok-Exclusive FAF MCP — Fast AF Edition 🏎️⚡'
     };
   }
 }

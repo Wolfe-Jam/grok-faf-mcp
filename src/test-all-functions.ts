@@ -137,7 +137,7 @@ function createTestArgs(toolName: string): any {
     case 'faf_trust':
       return { mode: 'confidence' };
     case 'faf_read':
-      return { path: '/Users/wolfejam/FAF/claude-faf-mcp/package.json' };
+      return { path: '/Users/wolfejam/FAF/grok-faf-mcp/package.json' };
     case 'faf_write':
       return { path: '/tmp/faf-test.txt', content: 'test' };
     case 'faf_list':

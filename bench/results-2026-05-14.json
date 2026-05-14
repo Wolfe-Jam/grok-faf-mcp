@@ -1,0 +1,69 @@
+{
+  "schema": "grok-faf-mcp/bench/score@1",
+  "date": "2026-05-14T22:48:02.346Z",
+  "measurer": "wolfejam",
+  "target": {
+    "module": "faf-scoring-kernel",
+    "version": "2.0.3",
+    "entry": "kernel.score_faf(yaml) — Mk4 WASM kernel call",
+    "path_measured": "YAML string in → JSON score out. No HTTP, no MCP wire, no file I/O in loop."
+  },
+  "hardware": {
+    "os": "Darwin 22.6.0",
+    "platform": "darwin",
+    "arch": "x64",
+    "cpu": "Intel(R) Core(TM) i5-7360U CPU @ 2.30GHz",
+    "cores": 4,
+    "total_mem_mb": 32768
+  },
+  "runtime": {
+    "node": "v22.22.2",
+    "v8": "12.4.254.21-node.39"
+  },
+  "input": {
+    "path": "/Users/wolfejam/FAF/grok-faf-mcp/project.faf",
+    "size_bytes": 1432,
+    "sha256_16": "5aa8e65ebf3b92b4",
+    "score_returned_pct": 100,
+    "populated_active": "15/15"
+  },
+  "method": {
+    "warmup_iterations": 100,
+    "measured_iterations_per_batch": 1000,
+    "batches": 3,
+    "units": "milliseconds (wall clock via performance.now)"
+  },
+  "results": {
+    "per_batch": [
+      {
+        "min_ms": 0.13663600000000997,
+        "p50_ms": 0.1449999999999818,
+        "p95_ms": 0.45298700000000736,
+        "p99_ms": 4.156403000000012,
+        "max_ms": 11.36123699999996,
+        "mean_ms": 0.27272689099999914,
+        "iterations": 1000
+      },
+      {
+        "min_ms": 0.13539300000002186,
+        "p50_ms": 0.1403500000000122,
+        "p95_ms": 0.35190000000000055,
+        "p99_ms": 2.237690999999927,
+        "max_ms": 4.56077300000004,
+        "mean_ms": 0.2073867929999991,
+        "iterations": 1000
+      },
+      {
+        "min_ms": 0.1343180000000075,
+        "p50_ms": 0.13949200000001838,
+        "p95_ms": 0.3688809999999876,
+        "p99_ms": 2.7744930000000068,
+        "max_ms": 11.27267900000004,
+        "mean_ms": 0.22841368100000012,
+        "iterations": 1000
+      }
+    ],
+    "cross_batch_median_p50_ms": 0.1403500000000122,
+    "ops_per_second_at_median": 7125
+  }
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { ClaudeFafMcpServer } from './server';
+import { GrokFafMcpServer } from './server';
 
 // Parse command line arguments
 const args = process.argv.slice(2);
@@ -11,7 +11,7 @@ const transport = transportIndex >= 0 ? args[transportIndex + 1] as 'stdio' | 'h
 const port = portIndex >= 0 ? parseInt(args[portIndex + 1], 10) : 3001;
 
 async function main() {
-  const server = new ClaudeFafMcpServer({
+  const server = new GrokFafMcpServer({
     transport,
     port,
     fafEnginePath: 'faf',

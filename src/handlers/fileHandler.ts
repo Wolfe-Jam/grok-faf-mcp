@@ -1,4 +1,4 @@
-// claude-faf-mcp/src/handlers/fileHandler.ts
+// grok-faf-mcp/src/handlers/fileHandler.ts
 // 🏎️ FAF File Operations - Production Ready Implementation
 
 import * as fs from 'fs/promises';

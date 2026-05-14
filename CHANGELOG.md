@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.2.2 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.3.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,76 @@ All notable changes to faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.3.0] - 2026-05-14
+
+The hallmark-online-MCP release. Identity restored, receipts measured,
+doctrine aligned, four origin credentials surfaced through the wire +
+page + .faf.
+
+### Added
+- **`bench/score.bench.js`** — reproducible Mk4 WASM scoring kernel
+  bench (`npm run bench:score`). Captures hardware + runtime + per-batch
+  stats (min/p50/p95/p99/max/mean) as JSON receipt at
+  `bench/results-2026-05-14.json`. Measured: **137 µs/score · 7,279
+  ops/sec (p50, 3 batches × 1,000 iterations)**.
+- **`/.well-known/mcp/server-card.json`** enriched: `protocolVersion`
+  (`2025-06-18`), `capabilities` block, `instructions` field carrying
+  the canonical credentials, `transport`, plus `serverInfo` expanded
+  with `description` / `homepage` / `repository`. Endpoint now
+  advertised in `/info.endpoints` for MCP-client discovery.
+- **`GROK.md`** — frontier-vendor MD generated from `project.faf` via
+  `faf sync`. Replaces the prior `CLAUDE.md` (wrong-vendor for the
+  Grok MCP). `AGENTS.md` remains as the separate vendor-neutral file.
+
+### Changed
+- **Stdio path identity restored.** MCP `initialize` handshake now
+  declares `name: 'grok-faf-mcp'` (was incorrectly `'claude-faf-mcp'`
+  due to incomplete fork from `claude-faf-mcp`). Class renamed
+  `ClaudeFafMcpServer` → `GrokFafMcpServer`. Identity rename touched
+  22+ sites across `src/server.ts`, `src/index.ts`, `src/cli.ts`,
+  `src/handlers/`, `src/test-all-functions.ts`.
+- **Comparison framing scrubbed from wire + page.** Removed
+  `x-grok-wins: true` HTTP header middleware. Cleared "#1 model on
+  Earth" framing from `/health.dedication`, `/info.description`,
+  `/info.dedication`, HTML dedication div, and `grok_go_fast_af`
+  tool description. `@elonmusk` tribute preserved (shortened).
+- **`grok_go_fast_af`** description now reads *"Auto-loads .faf
+  project context — first MCP for Grok"*.
+- **`/info.description`** now reads *"grok-faf-mcp — the first MCP
+  for Grok. Persistent project context for xAI/Grok"*.
+- **About modal "Speed" line** replaced *"3,800% faster than v1.1.1"*
+  with *"137 µs/score · 7,279 ops/sec (Mk4 WASM, p50)"* — real
+  measurement, methodology disclosed in `bench/results-2026-05-14.json`.
+- **Stats hero "Avg Response"** now `0.2ms` (down from `0.5ms`,
+  conservative undersell — measured p50 is `137µs`; the about-modal
+  carries the literal number).
+- **`project.faf`** refreshed with all four origin credentials in
+  goal/what/how: *first MCP for Grok · first FAF MCP online · MCPaaS
+  pattern origin · IANA `.faf + .fafm`*. Re-scored 🏆 Trophy 100%
+  (15/15 slots).
+- **`AGENTS.md`** regenerated from refreshed `.faf`.
+
+### Fixed
+- **Install instructions** in `src/handlers/engine-adapter.ts` now
+  point at `grok-faf-mcp` (was misdirecting users to install
+  `claude-faf-mcp`).
+- **SKILL.md resolution paths** in
+  `src/handlers/championship-tools.ts` (3 sites) now resolve
+  `grok-faf-mcp` paths.
+- **`.faf` files initialized by grok-faf-mcp** now tag
+  `initialized_by: grok-faf-mcp` (was incorrectly `claude-faf-mcp`).
+- **All `Claude Desktop`-specific user-facing strings** generalized
+  to `your MCP host` for broader MCP-client applicability.
+
+### Notes
+- 169 / 169 tests pass across 6 suites. TSC clean throughout.
+- Sibling-project filter at `src/handlers/championship-tools.ts:2909`
+  preserved intact — `p.name === 'claude-faf-mcp'` is a legitimate
+  cross-reference to the family member, not fork residue.
+- Bench at `bench/score.bench.js` is reproducible — run on any
+  machine for fresh numbers. Modern hardware will likely measure
+  faster than 137µs.
 
 ## [1.2.2] - 2026-04-30
 

@@ -2588,7 +2588,7 @@ Performance: <50ms per operation
 
     try {
       // Find the skill file in the npm package
-      // It should be at: node_modules/claude-faf-mcp/skill/SKILL.md
+      // It should be at: node_modules/grok-faf-mcp/skill/SKILL.md
       const homeDir = process.env.HOME || process.env.USERPROFILE || '/';
       const claudeSkillsDir = path.join(homeDir, '.claude', 'skills', 'faf-expert');
       const targetSkillPath = path.join(claudeSkillsDir, 'SKILL.md');
@@ -2604,7 +2604,7 @@ Performance: <50ms per operation
 
       // Location 2: In node_modules (global or local)
       if (!sourceSkillPath) {
-        const globalNodeModules = path.join(homeDir, '.npm', 'lib', 'node_modules', 'claude-faf-mcp', 'skill', 'SKILL.md');
+        const globalNodeModules = path.join(homeDir, '.npm', 'lib', 'node_modules', 'grok-faf-mcp', 'skill', 'SKILL.md');
         if (await this.fileExists(globalNodeModules)) {
           sourceSkillPath = globalNodeModules;
         }
@@ -2612,7 +2612,7 @@ Performance: <50ms per operation
 
       // Location 3: In current working directory node_modules
       if (!sourceSkillPath) {
-        const localNodeModules = path.join(process.cwd(), 'node_modules', 'claude-faf-mcp', 'skill', 'SKILL.md');
+        const localNodeModules = path.join(process.cwd(), 'node_modules', 'grok-faf-mcp', 'skill', 'SKILL.md');
         if (await this.fileExists(localNodeModules)) {
           sourceSkillPath = localNodeModules;
         }
@@ -2621,7 +2621,7 @@ Performance: <50ms per operation
       // Location 4: Search using require.resolve
       if (!sourceSkillPath) {
         try {
-          const mcpPackageRoot = path.dirname(require.resolve('claude-faf-mcp/package.json'));
+          const mcpPackageRoot = path.dirname(require.resolve('grok-faf-mcp/package.json'));
           const resolvedPath = path.join(mcpPackageRoot, 'skill', 'SKILL.md');
           if (await this.fileExists(resolvedPath)) {
             sourceSkillPath = resolvedPath;
@@ -2635,7 +2635,7 @@ Performance: <50ms per operation
         const duration = Date.now() - startTime;
         return await this.formatResult(
           '🏆 Install faf-expert Skill',
-          `❌ Could not locate skill file in npm package.\n\nSearched:\n- ${devRepoPath}\n- Global node_modules\n- Local node_modules\n\nPlease ensure claude-faf-mcp is installed.`,
+          `❌ Could not locate skill file in npm package.\n\nSearched:\n- ${devRepoPath}\n- Global node_modules\n- Local node_modules\n\nPlease ensure grok-faf-mcp is installed.`,
           duration
         );
       }

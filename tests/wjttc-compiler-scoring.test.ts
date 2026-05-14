@@ -1,7 +1,7 @@
 /**
  * WJTTC Compiler Scoring Tests
  * Championship-grade tests for FafCompiler scoring engine
- * Ported from claude-faf-mcp + type-definitions + parity tests
+ * Ported from grok-faf-mcp + type-definitions + parity tests
  *
  * Covers: Mk4 WASM kernel, Bouncer pattern, type system,
  * slot_ignore, alias resolution, edge cases, determinism

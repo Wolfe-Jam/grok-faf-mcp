@@ -66,7 +66,7 @@ class MCPIntegrationTester {
 
       const config = JSON.parse(fs.readFileSync(this.configPath, 'utf-8'));
       const hasFafMcp = config.mcpServers && 
-                        (config.mcpServers['claude-faf-mcp'] || 
+                        (config.mcpServers['grok-faf-mcp'] || 
                          config.mcpServers['faf'] ||
                          config.mcpServers['FAF']);
 
@@ -74,7 +74,7 @@ class MCPIntegrationTester {
         console.log('  ✅ FAF MCP server configured');
         
         // Check the command
-        const serverConfig = config.mcpServers['claude-faf-mcp'] || 
+        const serverConfig = config.mcpServers['grok-faf-mcp'] || 
                            config.mcpServers['faf'] || 
                            config.mcpServers['FAF'];
         
@@ -89,7 +89,7 @@ class MCPIntegrationTester {
         console.log('  ❌ FAF MCP not in config');
         console.log('  💡 Add this to mcpServers in config:');
         console.log(`
-    "claude-faf-mcp": {
+    "grok-faf-mcp": {
       "command": "node",
       "args": ["${path.join(__dirname, 'dist', 'cli.js')}"],
       "env": {}

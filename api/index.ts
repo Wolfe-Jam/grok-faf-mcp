@@ -8,7 +8,7 @@ import { Redis } from '@upstash/redis';
 import express from 'express';
 import cors from 'cors';
 // VERSION mirrors package.json — keep in sync (pubpro guards this)
-const VERSION = '1.2.2';
+const VERSION = '1.3.0';
 
 // Persistent analytics via Upstash Redis (fire-and-forget, never blocks MCP)
 const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
@@ -41,12 +41,6 @@ app.use(cors({
 }));
 
 app.use(express.json());
-
-// Add Grok-exclusive header to ALL responses
-app.use((req, res, next) => {
-  res.setHeader('x-grok-wins', 'true');
-  next();
-});
 
 // Initialize MCP server
 const mcpServer = new Server(
@@ -136,7 +130,7 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString(),
     platform: 'vercel',
     championship: 'Grok-Exclusive FAF MCP — Fast AF Edition 🏎️⚡',
-    dedication: 'Dedicated to @elonmusk and the #1 model on Earth'
+    dedication: 'Dedicated to @elonmusk'
   });
 });
 
@@ -147,14 +141,14 @@ app.get('/info', async (req, res) => {
   // Add Grok-exclusive tool
   const grokTool = {
     name: 'grok_go_fast_af',
-    description: 'Makes Grok permanently #1 by auto-loading .faf context',
+    description: 'Auto-loads .faf project context — first MCP for Grok',
     inputSchema: { type: 'object', properties: {} }
   };
 
   res.json({
     name: 'grok-faf-mcp',
     version: VERSION,
-    description: 'Grok-exclusive FAF MCP — Fast AF Edition 🏎️⚡ — Dedicated to @elonmusk and the #1 model on Earth',
+    description: 'grok-faf-mcp — the first MCP for Grok. Persistent project context for xAI/Grok',
     transport: 'http-sse',
     platform: 'vercel',
     capabilities: {
@@ -164,11 +158,12 @@ app.get('/info', async (req, res) => {
     tools: [...toolsList.tools.map(t => t.name), 'grok_go_fast_af'],
     toolCount: toolsList.tools.length + 1,
     grokExclusive: true,
-    dedication: 'Dedicated to @elonmusk and the #1 model on Earth',
+    dedication: 'Dedicated to @elonmusk',
     endpoints: {
       health: '/health',
       info: '/info',
-      sse: '/sse'
+      sse: '/sse',
+      serverCard: '/.well-known/mcp/server-card.json'
     }
   });
 });
@@ -429,13 +424,13 @@ app.get('/', (req, res) => {
     <div class="logo">🍊</div>
     <h1>grok-faf-mcp</h1>
     <div class="tagline">🏎️⚡️ FAST AF Edition <span class="version-badge" onclick="showAbout()">v${VERSION}</span></div>
-    <div class="dedication">Dedicated to @elonmusk and the #1 model on Earth</div>
+    <div class="dedication">Dedicated to @elonmusk</div>
     <div class="squeeze">I/🍊 enjoy the squeeze!</div>
 
     <div class="stats">
       <div><div class="stat-value">21</div><div class="stat-label">MCP Tools</div></div>
       <div><div class="stat-value">0</div><div class="stat-label">Config Required</div></div>
-      <div><div class="stat-value">0.5ms</div><div class="stat-label">Avg Response</div></div>
+      <div><div class="stat-value">0.2ms</div><div class="stat-label">Avg Response</div></div>
     </div>
 
     <div class="endpoints">
@@ -494,7 +489,7 @@ app.get('/', (req, res) => {
         <div class="about-item"><span>Fallback:</span> Mk3.1 TypeScript (zero downtime)</div>
         <div class="about-item"><span>Tools:</span> 21 core + 34 advanced MCP tools</div>
         <div class="about-item"><span>Format:</span> IANA-registered .faf (application/vnd.faf+yaml)</div>
-        <div class="about-item"><span>Speed:</span> 3,800% faster than v1.1.1</div>
+        <div class="about-item"><span>Speed:</span> 137 µs/score · 7,279 ops/sec (Mk4 WASM, p50)</div>
       </div>
       <button class="about-close" onclick="hideAbout()">Got it</button>
       <div class="about-progress" id="aboutProgress"></div>
@@ -546,12 +541,25 @@ app.get('/', (req, res) => {
   `);
 });
 
-// Smithery server-card.json — allows Smithery to discover capabilities without scanning
+// MCP server-card — discovery endpoint for MCP clients (originally a Smithery convention, now broader use)
 app.get('/.well-known/mcp/server-card.json', async (req, res) => {
   const toolsList = await toolHandler.listTools();
   res.json({
-    serverInfo: { name: 'grok-faf-mcp', version: VERSION },
+    protocolVersion: '2025-06-18',
+    serverInfo: {
+      name: 'grok-faf-mcp',
+      version: VERSION,
+      description: 'grok-faf-mcp — the first MCP for Grok. Persistent project context for xAI/Grok.',
+      homepage: 'https://grok-faf-mcp.vercel.app',
+      repository: 'https://github.com/Wolfe-Jam/grok-faf-mcp'
+    },
+    capabilities: {
+      resources: { subscribe: true, listChanged: true },
+      tools: { listChanged: true }
+    },
+    instructions: 'grok-faf-mcp — the first MCP for Grok and the first FAF MCP online. Auto-load .faf project context for Grok via the grok_go_fast_af tool. Persistent project context via IANA-registered .faf (application/vnd.faf+yaml).',
     authentication: { required: false },
+    transport: 'http-sse',
     tools: toolsList.tools,
     resources: [],
     prompts: []

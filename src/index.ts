@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-import { ClaudeFafMcpServer } from './server.js';
+import { GrokFafMcpServer } from './server.js';
 
 // Smithery sandbox support — allows Smithery to scan server capabilities
 export function createSandboxServer() {
-  const wrapper = new ClaudeFafMcpServer({
+  const wrapper = new GrokFafMcpServer({
     transport: 'stdio',
     fafEnginePath: 'faf'
   });
   return wrapper.getServer();
 }
 
-// MCP servers run via stdio transport when launched by Claude Desktop
+// MCP servers run via stdio transport when launched by an MCP host
 async function main() {
-  const server = new ClaudeFafMcpServer({
+  const server = new GrokFafMcpServer({
     transport: 'stdio',
     fafEnginePath: 'faf'
   });

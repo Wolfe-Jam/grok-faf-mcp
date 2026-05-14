@@ -1,6 +1,6 @@
 {
   "name": "grok-faf-mcp",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "mcpName": "io.github.Wolfe-Jam/grok-faf-mcp",
   "description": "Persistent Project Context for xAI Grok. IANA-registered .faf format, MCP server on a URL, Vercel-deployed.",
   "icon": "./assets/icons/faf-icon-256.png",
@@ -18,6 +18,7 @@
     "dev:http": "ts-node src/cli.ts --transport http-sse --port 3001",
     "test": "jest",
     "test:performance": "jest tests/performance.test.ts",
+    "bench:score": "node bench/score.bench.js",
     "test:mcp": "mcp-inspector stdio ts-node src/cli.ts",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",

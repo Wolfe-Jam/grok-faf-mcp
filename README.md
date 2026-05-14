@@ -8,7 +8,7 @@
 
   <h3>Grok asked for MCP on a URL. This is it.</h3>
 
-  <p><strong>Persistent Project Context for xAI Grok. URL-based. Zero config.</strong></p>
+  <p><strong>Persistent Project Context for xAI Grok.</strong></p>
   <p><code>URL-based • Zero config • Just works</code></p>
 
   [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Wolfe-Jam/grok-faf-mcp)

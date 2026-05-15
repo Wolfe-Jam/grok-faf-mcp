@@ -496,7 +496,7 @@ app.get('/', (req, res) => {
     </div>
   </div>
 
-  <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent('grok-faf-mcp — the first MCP server built for Grok. Grab a free namepoint →')}&url=${encodeURIComponent('https://mcpaas.live/claim')}" target="_blank" rel="noopener"
+  <a href="https://twitter.com/intent/tweet?text=${encodeURIComponent('@grok 🍊 grok-faf-mcp — the first MCP server built for Grok. Grab a free namepoint →')}&url=${encodeURIComponent('https://mcpaas.live/claim')}" target="_blank" rel="noopener"
      style="position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;align-items:center;gap:6px;background:#1a1a1a;color:#fff;border:1px solid #333;border-radius:20px;padding:8px 14px;font-size:0.8rem;font-weight:600;text-decoration:none;transition:all 0.2s;font-family:-apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.3);"
      onmouseover="this.style.background='#ff6600';this.style.borderColor='#ff6600';"
      onmouseout="this.style.background='#1a1a1a';this.style.borderColor='#333';">

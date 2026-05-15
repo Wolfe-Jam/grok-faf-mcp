@@ -1,0 +1,32 @@
+name = "faf-grok"
+compatibility_date = "2024-12-30"
+
+# grok-faf-mcp web surface — Cloudflare canonical (grok.faf.one)
+#
+# Pure-static deployment via Workers Assets. The docs/ directory
+# contains index.html — a snapshot of the v1.3.0 landing page
+# served at grok-faf-mcp.vercel.app.
+#
+# Companion surfaces (4-surface play, mirrors ZEPH pattern):
+#   1. grok-faf-mcp.vercel.app     — Vercel canonical (MCP wire: /sse, /health, /info)
+#   2. wolfe-jam.github.io/grok-faf-mcp/ — GitHub Pages mirror (serves same docs/)
+#   3. faf.one/grok                — discovery page (SvelteKit route)
+#   4. grok.faf.one                — THIS Worker (CF-edge canonical)
+#
+# Vercel stays as the operational URL — /sse for MCP, version-bumped
+# health/info endpoints. CF Worker is the clean-brand canonical for
+# the landing page. Static-only here; MCP wire requests still go to
+# grok-faf-mcp.vercel.app/sse.
+#
+# Per `ask-before-going-live-website-deploys.md` doctrine, this
+# config is staged + committed autonomously; the actual
+# `wrangler deploy` requires explicit GO from wolfejam.
+#
+# Mirrors xai-faf-zeph/wrangler.toml — same pattern, different product.
+
+routes = [
+  { pattern = "grok.faf.one", custom_domain = true }
+]
+
+[assets]
+directory = "./docs"

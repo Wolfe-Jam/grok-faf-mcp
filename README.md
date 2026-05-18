@@ -20,6 +20,7 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   [![Vercel](https://img.shields.io/badge/Vercel-Live-black?logo=vercel)](https://grok-faf-mcp.vercel.app)
   [![project.faf](https://img.shields.io/badge/project.faf-inside-00D4D4)](https://github.com/Wolfe-Jam/faf)
+  [![Chat to FAFA live](https://img.shields.io/badge/Chat_to_FAFA_live-00D4D4?style=flat&labelColor=000)](https://faf-voice.vercel.app/agent)
 </div>
 
 **FAF defines. MD instructs. AI codes.**
@@ -338,4 +339,4 @@ MIT — Free and open source
 npx faf-cli auto
 ```
 
-**Anthropic MCP [#2759](https://github.com/modelcontextprotocol/servers/pull/2759)** · **IANA Registered:** `application/vnd.faf+yaml` · [faf.one](https://faf.one) · [npm](https://www.npmjs.com/package/faf-cli) · [Talk to my Agent →](https://faf.one/agent)
+**Anthropic MCP [#2759](https://github.com/modelcontextprotocol/servers/pull/2759)** · **IANA Registered:** `application/vnd.faf+yaml` · [faf.one](https://faf.one) · [npm](https://www.npmjs.com/package/faf-cli)

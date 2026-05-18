@@ -465,6 +465,7 @@ app.get('/', (req, res) => {
       <iframe src="https://ghbtns.com/github-btn.html?user=Wolfe-Jam&repo=grok-faf-mcp&type=star&count=false"
               frameborder="0" scrolling="0" width="80" height="20"
               title="Star Wolfe-Jam/grok-faf-mcp on GitHub"></iframe>
+      <a href="https://faf-voice.vercel.app/agent" style="margin-left:12px;display:inline-flex;align-items:center;"><img src="https://img.shields.io/badge/Chat_to_FAFA_live-00D4D4?style=flat&labelColor=000" alt="Chat to FAFA live" height="20"></a>
     </div>
 
     <div style="margin:1.5rem 0;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">

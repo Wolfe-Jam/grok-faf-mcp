@@ -465,6 +465,7 @@ app.get('/', (req, res) => {
       <iframe src="https://ghbtns.com/github-btn.html?user=Wolfe-Jam&repo=grok-faf-mcp&type=star&count=false"
               frameborder="0" scrolling="0" width="80" height="20"
               title="Star Wolfe-Jam/grok-faf-mcp on GitHub"></iframe>
+      <a href="https://faf-voice.vercel.app/agent" style="margin-left:12px;display:inline-flex;align-items:center;"><img src="https://img.shields.io/badge/Chat_to_FAFA_live-00D4D4?style=flat&labelColor=000" alt="Chat to FAFA live" height="20"></a>
     </div>
 
     <div style="margin:1.5rem 0;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
@@ -472,7 +473,7 @@ app.get('/', (req, res) => {
     </div>
 
     <div class="bottom-bar">
-      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v${VERSION}</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; <a href="https://mcpaas.live">mcpaas.live</a> &bull; <a href="https://faf-voice.vercel.app/agent">Chat to FAFA live &rarr;</a></div>
+      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v${VERSION}</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; <a href="https://mcpaas.live">mcpaas.live</a></div>
       <div class="big-orange">We needed a Big-Orange, we got one! 🍊</div>
       <div style="margin-top:0.5rem;font-size:0.75rem;"><a href="https://mcpaas.live/privacy" style="color:#666;text-decoration:none;">Privacy</a> · <a href="https://mcpaas.live/terms" style="color:#666;text-decoration:none;">Terms</a> · <a href="mailto:team@faf.one" style="color:#666;text-decoration:none;">team@faf.one</a></div>
       <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.1);font-size:0.8rem;color:#fff;">Part of the <a href="https://faf.one" style="color:#ff6600;text-decoration:none;">FAF.one Family</a> · <a href="https://mcpaas.live" style="color:#888;text-decoration:none;">MCPaaS</a> · <a href="https://radiofaf.com" style="color:#888;text-decoration:none;">RadioFAF</a> · <a href="https://fafdev.tools" style="color:#888;text-decoration:none;">fafdev.tools</a></div>

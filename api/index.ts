@@ -491,8 +491,13 @@ app.get('/', (req, res) => {
         <div class="about-item"><span>Tools:</span> 21 core + 34 advanced MCP tools</div>
         <div class="about-item"><span>Format:</span> IANA-registered .faf (application/vnd.faf+yaml)</div>
         <div class="about-item"><span>Speed:</span> 137 µs/score · 7,279 ops/sec (Mk4 WASM, p50)</div>
+        <div class="about-item"><span>New:</span> FAFA — chat with the live FAF agent</div>
       </div>
-      <button class="about-close" onclick="hideAbout()">Got it</button>
+      <a href="https://faf-voice.vercel.app/agent" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;justify-content:center;margin:0.75rem auto 0;padding:9px 24px;background:#00D4D4;color:#000;font-weight:700;font-size:0.85rem;border-radius:8px;text-decoration:none;font-family:-apple-system,BlinkMacSystemFont,sans-serif;">Chat to FAFA live &rarr;</a>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:0.75rem;flex-wrap:wrap;">
+        <button class="about-close" onclick="hideAbout()">Got it</button>
+        <button class="about-close" onclick="dontShowAgain()" style="opacity:0.55;">Don't show again (v${VERSION})</button>
+      </div>
       <div class="about-progress" id="aboutProgress"></div>
     </div>
   </div>
@@ -507,6 +512,11 @@ app.get('/', (req, res) => {
 
   <script>
     var aboutTimer, progressInterval;
+    var GFM_ABOUT_KEY = 'gfm_about_dismissed_v${VERSION}';
+    function dontShowAgain() {
+      try { localStorage.setItem(GFM_ABOUT_KEY, '1'); } catch (e) {}
+      hideAbout();
+    }
     function showAbout(autoLaunch) {
       clearTimeout(aboutTimer);
       clearInterval(progressInterval);
@@ -534,7 +544,10 @@ app.get('/', (req, res) => {
       clearInterval(progressInterval);
       document.getElementById('aboutOverlay').classList.remove('visible');
     }
-    window.addEventListener('load', function() { setTimeout(function() { showAbout(true); }, 500); });
+    window.addEventListener('load', function() {
+      try { if (localStorage.getItem(GFM_ABOUT_KEY)) return; } catch (e) {}
+      setTimeout(function() { showAbout(true); }, 500);
+    });
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
 </body>

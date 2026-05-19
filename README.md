@@ -222,7 +222,7 @@ Benchmarked 10x per tool, warmed up, on local execution.
 ## Architecture
 
 ```
-grok-faf-mcp v1.3.0
+grok-faf-mcp v1.3.1
 ├── api/index.ts              → Vercel serverless (Express + SSE transport)
 ├── src/
 │   ├── server.ts             → MCP server (GrokFafMcpServer)

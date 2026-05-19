@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.3.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.3.1 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,20 @@ All notable changes to faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.3.1] - 2026-05-18
+
+Maintenance patch. No new MCP tools, no API change — backward-compatible.
+
+### Changed
+- README: FAFA cyan badge added to the badge-row + "Chat to FAFA live →"
+  link (faf-voice.vercel.app/agent). The page now surfaces FAFA across
+  every surface that reads grok-faf-mcp.
+- Tier descriptors: dropped "Production ready" from Bronze (a fitness
+  call that isn't ours to make); WHITE tier wording "Empty" → "Start".
+
+### Fixed
+- Dependencies: automated npm audit fix.
 
 ## [1.3.0] - 2026-05-14
 

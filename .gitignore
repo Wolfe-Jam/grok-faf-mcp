@@ -26,6 +26,10 @@ logs/
 # Pull smithery.yaml + createSandboxServer() export to kill it if needed.
 .smithery/
 
+# Visual-vROM / binary exports — generated artifacts, GO-gated, never npm-pub
+project.html
+*.fafb
+
 # Test results
 test-results/
 

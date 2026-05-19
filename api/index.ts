@@ -8,7 +8,7 @@ import { Redis } from '@upstash/redis';
 import express from 'express';
 import cors from 'cors';
 // VERSION mirrors package.json — keep in sync (pubpro guards this)
-const VERSION = '1.3.0';
+const VERSION = '1.3.1';
 
 // Persistent analytics via Upstash Redis (fire-and-forget, never blocks MCP)
 const redis = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN

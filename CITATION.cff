@@ -1,0 +1,32 @@
+cff-version: 1.2.0
+type: software
+title: "grok-faf-mcp — URL-based FAF MCP server for xAI Grok"
+message: "If you use grok-faf-mcp in your work, please cite the FAF Context paper."
+authors:
+  - family-names: Wolfe
+    given-names: James
+    orcid: "https://orcid.org/0009-0007-0801-3841"
+    affiliation: "FAF Foundation"
+license: MIT
+repository-code: "https://github.com/Wolfe-Jam/grok-faf-mcp"
+url: "https://faf.one/grok"
+keywords:
+  - mcp
+  - faf
+  - ai-context
+  - grok
+  - xai
+  - url-mcp
+  - iana
+preferred-citation:
+  type: article
+  title: "Format-Driven AI Context Architecture: The .faf Standard for Persistent Project Understanding"
+  authors:
+    - family-names: Wolfe
+      given-names: James
+      orcid: "https://orcid.org/0009-0007-0801-3841"
+      affiliation: "FAF Foundation"
+  year: 2025
+  month: 11
+  doi: 10.5281/zenodo.18251362
+  url: "https://doi.org/10.5281/zenodo.18251362"

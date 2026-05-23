@@ -11,16 +11,21 @@
   <p><strong>Persistent Project Context for xAI Grok.</strong></p>
   <p><code>URL-based • Zero config • Just works</code></p>
 
-  [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Wolfe-Jam/grok-faf-mcp)
+  [![IANA: vnd.faf+yaml](https://img.shields.io/badge/IANA-vnd.faf%2Byaml-00D4D4)](https://www.iana.org/assignments/media-types/application/vnd.faf+yaml)
+  [![DOI: Context paper](https://img.shields.io/badge/DOI-Context%20paper-FF6B35)](https://doi.org/10.5281/zenodo.18251362)
+</div>
 
-  [![FAF](https://mcpaas.live/badge/Wolfe-Jam/grok-faf-mcp.svg)](https://builder.faf.one)
-  [![CI](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml)
-  [![NPM Downloads](https://img.shields.io/npm/dt/grok-faf-mcp?label=downloads&color=00CCFF)](https://www.npmjs.com/package/grok-faf-mcp)
-  [![npm version](https://img.shields.io/npm/v/grok-faf-mcp?color=00CCFF)](https://www.npmjs.com/package/grok-faf-mcp)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  [![Vercel](https://img.shields.io/badge/Vercel-Live-black?logo=vercel)](https://grok-faf-mcp.vercel.app)
-  [![project.faf](https://img.shields.io/badge/project.faf-inside-00D4D4)](https://github.com/Wolfe-Jam/faf)
-  [![Chat to FAFA live](https://img.shields.io/badge/Chat_to_FAFA_live-00D4D4?style=flat&labelColor=000)](https://faf-voice.vercel.app/agent)
+**Home:** [faf.one/grok](https://faf.one/grok)
+**Live demo:** [grok-faf-mcp.vercel.app](https://grok-faf-mcp.vercel.app)
+
+<div align="center">
+
+[![FAF](https://mcpaas.live/badge/Wolfe-Jam/grok-faf-mcp.svg)](https://builder.faf.one)
+[![CI](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/grok-faf-mcp?color=00CCFF)](https://www.npmjs.com/package/grok-faf-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![project.faf](https://img.shields.io/badge/project.faf-inside-00D4D4)](https://github.com/Wolfe-Jam/faf)
+[![Chat to FAFA live](https://img.shields.io/badge/Chat_to_FAFA_live-00D4D4?style=flat&labelColor=000)](https://faf-voice.vercel.app/agent)
 </div>
 
 **FAF defines. MD instructs. AI codes.**

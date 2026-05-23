@@ -113,7 +113,7 @@
     "@upstash/redis": "^1.37.0",
     "cors": "^2.8.5",
     "express": "^4.21.0",
-    "faf-cli": ">=3.1.1",
+    "faf-cli": "^6.7.1",
     "faf-scoring-kernel": "^2.0.3",
     "yaml": "^2.4.1"
   },

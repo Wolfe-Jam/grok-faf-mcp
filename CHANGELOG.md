@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.3.1 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.4.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,32 @@ All notable changes to faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.4.0] - 2026-05-23
+
+Truthful, single-sourced scoring. grok-faf-mcp no longer computes its
+own score — every score surface reads faf-cli's real scorer, the same
+number your AI and `faf score` see.
+
+### Fixed
+
+- **faf_display** — rendered a fabricated file-presence pseudo-score
+  (40/30/15/14, max 99), a non-deterministic timestamp, off-canon
+  colors and a divergent template. Now single-sources faf-cli's
+  `generateProjectHtml` — byte-identical to `faf show` / `faf export
+  --html`. Default output `project.html` (gitignored — a view, not
+  source).
+- **faf_show / faf_score / faf_status** + the footer quick-score — same
+  fake file-presence score, plus the banned medal / colored-circle tier
+  ladder (🥇🥈🥉🟢🟡🔴🤍). All routed through one `getFafScore()` helper
+  backed by faf-cli's scorer + canonical tier ladder. Deterministic
+  output (no timestamps, no rotating quotes). Removed the fabricated
+  `full` scorecard and its unmeasured performance claims.
+
+### Changed
+
+- **faf-cli ^6.7.1** — consumes faf-cli's typed public API (the real
+  scorer + the project.html renderer) as the single source of truth.
 
 ## [1.3.1] - 2026-05-18
 

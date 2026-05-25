@@ -7,25 +7,33 @@
     {
       "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-48.png",
       "mimeType": "image/png",
-      "sizes": ["48x48"]
+      "sizes": [
+        "48x48"
+      ]
     },
     {
       "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-128.png",
       "mimeType": "image/png",
-      "sizes": ["128x128"]
+      "sizes": [
+        "128x128"
+      ]
     },
     {
       "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-256.png",
       "mimeType": "image/png",
-      "sizes": ["256x256"]
+      "sizes": [
+        "256x256"
+      ]
     },
     {
       "src": "https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/icons/faf-icon-512.png",
       "mimeType": "image/png",
-      "sizes": ["512x512"]
+      "sizes": [
+        "512x512"
+      ]
     }
   ],
-  "version": "1.3.1",
+  "version": "1.4.0",
   "repository": {
     "url": "https://github.com/Wolfe-Jam/grok-faf-mcp",
     "source": "github"
@@ -41,7 +49,7 @@
     {
       "registryType": "npm",
       "identifier": "grok-faf-mcp",
-      "version": "1.3.1",
+      "version": "1.4.0",
       "transport": {
         "type": "stdio"
       }

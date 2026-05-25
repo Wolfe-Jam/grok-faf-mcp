@@ -11,7 +11,7 @@
  * Tier 7: Integration Readiness
  */
 
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
 import { FafToolHandler } from '../src/handlers/tools';
 import { FafEngineAdapter } from '../src/handlers/engine-adapter';
 import { GrokFafMcpServer } from '../src/server';

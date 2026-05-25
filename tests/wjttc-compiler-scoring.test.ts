@@ -7,7 +7,7 @@
  * slot_ignore, alias resolution, edge cases, determinism
  */
 
-import { describe, it, expect, beforeAll, afterAll } from '@jest/globals';
+import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
 import { FafCompiler, compile } from '../src/faf-core/compiler/faf-compiler';
 import * as fs from 'fs/promises';
 import * as path from 'path';

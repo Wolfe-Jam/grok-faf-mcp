@@ -3,7 +3,7 @@
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { Tool, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import type { Tool, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 
 /**
  * Security validator for file paths

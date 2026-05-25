@@ -14,11 +14,13 @@ import * as path from 'path';
 
 describe('🏁 Desktop-Native MCP Championship Tests', () => {
   let testDir: string;
+  let originalCwd: string;
 
   beforeAll(async () => {
     // Create isolated test environment
     testDir = path.join('/tmp', `faf-desktop-test-${Date.now()}`);
     fs.mkdirSync(testDir, { recursive: true });
+    originalCwd = process.cwd();
     process.chdir(testDir);
 
     // Initialize server WITHOUT CLI (for validation but not used in tests)
@@ -30,8 +32,10 @@ describe('🏁 Desktop-Native MCP Championship Tests', () => {
   });
   
   afterAll(async () => {
-    // Cleanup
-    process.chdir('/');
+    // Restore the original cwd — chdir('/') here polluted cwd for later
+    // suites in single-process runs (in-band / bun), breaking cwd-relative
+    // path checks (e.g. security path-traversal) on Windows.
+    process.chdir(originalCwd);
     fs.rmSync(testDir, { recursive: true, force: true });
   });
 

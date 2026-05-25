@@ -6,7 +6,7 @@
  * API client structure, and the full LAZY-RAG flow (mocked API)
  */
 
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect, beforeEach } from 'bun:test';
 import { LazyRAGCache } from '../src/rag/cache';
 import { XAIClient } from '../src/rag/xai-client';
 import { RAGIntegrator } from '../src/rag/index';

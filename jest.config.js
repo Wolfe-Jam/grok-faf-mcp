@@ -30,5 +30,10 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   verbose: true,
-  forceExit: true,
+  // Tests run in-band (package.json `test` → `jest --runInBand`). Serial
+  // execution removes Jest's worker pool — the source of the intermittent
+  // "worker failed to exit gracefully" red on constrained Windows/macOS CI
+  // runners. In-band exits clean on its own (--detectOpenHandles reports ZERO
+  // open handles), so no forceExit is needed — and forceExit was suppressing
+  // that very diagnostic.
 };

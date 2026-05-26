@@ -285,32 +285,45 @@ describe('🏁 WJTTC — bun migration + MCP integrity (grok-faf-mcp)', () => {
     });
 
     // ─────────────────────────────────────────────────────────────────────
-    // Category 2: single-source score determinism + MCP repeatability
+    // Category 2: single-source score determinism + MCP repeatability + TRUE PARITY
     // ─────────────────────────────────────────────────────────────────────
     //
     // INTENT (per the task brief): assert MCP `faf_score` text-score equals
     // faf-cli's `scoreFafYaml(...).score` on the same YAML.
     //
-    // OBSERVED v1.4.0 (logged + asserted, not hidden): the active
-    // FafToolHandler (src/handlers/tools.ts, the one server.ts actually wires
-    // up at L6 + L59) still uses the OLD file-presence pseudo-score
-    // (40 .faf + 30 CLAUDE.md + 15 README.md + 14 project-file). There is NO
-    // ChampionshipToolHandler in this repo — only the legacy handler is
-    // present. So MCP `faf_score` and `scoreFafYaml` are mathematically
-    // DIFFERENT functions today; demanding strict equality would be a
-    // guaranteed (and misleading) red.
+    // ✅ RESOLVED v1.4.1 (this PR): handleFafScore now ports faf-cli's
+    // scoreFafYaml directly into FafToolHandler. No need for
+    // ChampionshipToolHandler; the truthful scorer is wired into the live
+    // handler. Parity now holds.
     //
-    // The divergence here is one step deeper than the sibling faf-mcp repo:
-    // there the ChampionshipToolHandler exists-but-unwired; here it doesn't
-    // exist at all. Same FINDING, different remediation cost.
+    // History (kept as breadcrumb — silent-drift = forbidden, so we never
+    // erase what the previous test cycle observed):
     //
-    // What we assert instead — and what's still high-signal:
+    //   OBSERVED v1.4.0 (logged + asserted, not hidden): the active
+    //   FafToolHandler (src/handlers/tools.ts, the one server.ts actually
+    //   wires up at L6 + L59) still used the OLD file-presence pseudo-score
+    //   (40 .faf + 30 CLAUDE.md + 15 README.md + 14 project-file). There was
+    //   NO ChampionshipToolHandler wired in this repo — only the legacy
+    //   handler was present. So MCP `faf_score` and `scoreFafYaml` were
+    //   mathematically DIFFERENT functions; demanding strict equality would
+    //   have been a guaranteed (and misleading) red.
+    //
+    //   The divergence was one step deeper than the sibling faf-mcp repo:
+    //   there ChampionshipToolHandler existed-but-unwired (Case A, simple
+    //   rewire); here ChampionshipToolHandler isn't wired into the live
+    //   server at all (Case B, port-then-wire). Same FINDING, different
+    //   remediation. v1.4.1 closes both Cases the same way: bring faf-cli's
+    //   real scorer into the live handler via the bridge.
+    //
+    // What we assert in v1.4.1:
     //   a) faf-cli's `scoreFafYaml` is reachable, deterministic, and produces
     //      a sane score on the fixture (>0 <100, repeatable).
     //   b) MCP `faf_score` returns a parseable percentage and is consistent
     //      across two calls on identical state (no flap, no nondeterminism).
-    //   c) Both are well-formed numbers in [0,100]. We do NOT assert equality.
-    //      The divergence is the test's finding — see report.
+    //   c) TRUE PARITY: MCP `faf_score` numeric == faf-cli's
+    //      `scoreFafYaml(...).score` on the same YAML. The previous Cycle's
+    //      finding is the literal antithesis of this assertion — passing it
+    //      now is the loop-closing receipt for v1.4.1.
     describe('2. score determinism (single-source via faf-cli)', () => {
       test('faf-cli scoreFafYaml is deterministic on the fixture (>0, <100)', () => {
         const raw = fs.readFileSync(path.join(tmpDir, 'project.faf'), 'utf-8');
@@ -351,6 +364,25 @@ describe('🏁 WJTTC — bun migration + MCP integrity (grok-faf-mcp)', () => {
         expect(n1).toBe(n2); // repeatability
         expect(n1).toBeGreaterThanOrEqual(0);
         expect(n1).toBeLessThanOrEqual(100);
+      });
+
+      test('TRUE PARITY: MCP faf_score == faf-cli scoreFafYaml on the same YAML', async () => {
+        const raw = fs.readFileSync(path.join(tmpDir, 'project.faf'), 'utf-8');
+        const parityScore = fafCli.scoreFafYaml(raw).score;
+
+        const res = await client.callTool({
+          name: 'faf_score',
+          arguments: { path: tmpDir },
+        });
+        expect(res.isError).toBeFalsy();
+        const text = ((res.content as Array<{ text?: string }>)[0]?.text ?? '') as string;
+
+        const SCORE_RE = /(?:FAF SCORE:\s*|\b)(\d{1,3})\s*(?:%|\/\s*100)/;
+        const m = text.match(SCORE_RE);
+        expect(m).not.toBeNull();
+        const mcpScore = parseInt(m![1], 10);
+
+        expect(mcpScore).toBe(parityScore);
       });
     });
 

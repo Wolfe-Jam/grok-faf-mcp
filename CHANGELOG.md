@@ -8,6 +8,22 @@ All notable changes to faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.1] - 2026-05-26
+
+### Fixed
+- **`faf_score`** — now calls faf-cli's `scoreFafYaml` (the IANA-spec
+  scorer) directly. Replaces the legacy scorer that grok-faf-mcp had
+  inherited. Output reformatted to the canonical tier card
+  (`FAF SCORE: <n>/100 (<n>%) <tier-glyph> <TIER>`), with progress
+  bar and next-tier hint. Same single-source path faf-mcp 2.1.1 and
+  claude-faf-mcp 5.6.1 already use.
+- **Invalid/unreadable `.faf` paths** — honest `0/100 (0%)` with a
+  diagnostic. No fake numbers, no crashes.
+
+### Tests
+- **WJTTC AERO Phase 2** — score-parity assertion tightened to TRUE
+  parity: MCP `faf_score` numeric == faf-cli `scoreFafYaml(...).score`.
+
 ## [1.4.0] - 2026-05-23
 
 🏆 **FAF-binary scoring lands in Grok.**

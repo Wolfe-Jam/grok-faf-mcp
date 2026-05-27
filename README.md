@@ -43,6 +43,8 @@ args = ["-y", "grok-faf-mcp"]
 startup_timeout_sec = 30
 ```
 
+*Have Bun? Swap `npx` → `bunx`, drop `-y` — ~5× warm-start.*
+
 Other MCP clients (Claude Code, Cursor, etc.):
 
 ```json

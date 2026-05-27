@@ -34,6 +34,15 @@
 
 ## Grok Build CLI — 30-second proof
 
+`~/.grok/config.toml`:
+
+```toml
+[mcp_servers.grok-faf-mcp]
+url = "https://grok-faf-mcp.vercel.app/sse"
+```
+
+Other MCP clients (Claude Code, Cursor, etc.):
+
 ```json
 { "mcpServers": { "grok-faf-mcp": { "command": "npx", "args": ["-y", "grok-faf-mcp"] } } }
 ```

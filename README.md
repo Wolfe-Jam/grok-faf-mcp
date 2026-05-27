@@ -38,7 +38,9 @@
 
 ```toml
 [mcp_servers.grok-faf-mcp]
-url = "https://grok-faf-mcp.vercel.app/sse"
+command = "npx"
+args = ["-y", "grok-faf-mcp"]
+startup_timeout_sec = 30
 ```
 
 Other MCP clients (Claude Code, Cursor, etc.):

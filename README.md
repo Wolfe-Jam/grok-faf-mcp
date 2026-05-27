@@ -38,12 +38,12 @@
 
 ```toml
 [mcp_servers.grok-faf-mcp]
-command = "npx"
-args = ["-y", "grok-faf-mcp"]
+command = "bunx"
+args = ["grok-faf-mcp"]
 startup_timeout_sec = 30
 ```
 
-*Have Bun? Swap `npx` → `bunx`, drop `-y` — ~5× warm-start.*
+*No Bun? Use `npx -y grok-faf-mcp` — works the same, ~5× slower warm-start.*
 
 Other MCP clients (Claude Code, Cursor, etc.):
 
@@ -70,7 +70,7 @@ Every README should answer these questions. Here's ours:
 | **WHERE** does it work? | Vercel (production) • Local dev • Any MCP client supporting HTTP-SSE |
 | **WHY** do you need it? | Zero-config MCP on a URL - Grok asked for it, we built it first |
 | **WHEN** should you use it? | Grok integration testing, xAI projects, URL-based MCP deployments |
-| **HOW** does it work? | Point to `https://grok-faf-mcp.vercel.app/sse` — context tools served via MCP SSE |
+| **HOW** does it work? | `bunx grok-faf-mcp` — context tools served over MCP stdio |
 
 **For AI:** Read the detailed sections below for full context.
 **For humans:** Use this pattern in YOUR README. Answer these 6 questions clearly.
@@ -163,20 +163,11 @@ At 55%, Grok guesses half the time. At 100%, Grok knows your project.
 
 ---
 
-## Three Ways to Deploy
+## Two Ways to Deploy
 
-### 1. Hosted (Instant)
-```
-https://grok-faf-mcp.vercel.app/sse
-```
-Point your MCP client to this endpoint. All 21 tools available instantly.
-
-### 2. Self-Deploy (Your Own Vercel)
-Click the **Deploy with Vercel** button above. Zero config — get your own instance in 30 seconds.
-
-### 3. Local (npx)
+### 1. Local (bunx)
 ```bash
-npx grok-faf-mcp
+bunx grok-faf-mcp
 ```
 
 **Or add to your MCP config:**
@@ -185,12 +176,15 @@ npx grok-faf-mcp
 {
   "mcpServers": {
     "grok-faf": {
-      "command": "npx",
-      "args": ["-y", "grok-faf-mcp"]
+      "command": "bunx",
+      "args": ["grok-faf-mcp"]
     }
   }
 }
 ```
+
+### 2. Self-Deploy (Your Own Vercel)
+Click the **Deploy with Vercel** button above. Zero config — get your own instance in 30 seconds.
 
 ---
 
@@ -290,17 +284,6 @@ npm test    # runs all 179
 | Engine adapter | 35 | CLI detection, fallback behavior |
 | Integration | 40 | End-to-end tool execution |
 | WJTTC certification | 25 | Championship-grade compliance |
-
----
-
-## Endpoints
-
-| Endpoint | URL |
-|----------|-----|
-| Root | `https://grok-faf-mcp.vercel.app/` |
-| SSE | `https://grok-faf-mcp.vercel.app/sse` |
-| Health | `https://grok-faf-mcp.vercel.app/health` |
-| Info | `https://grok-faf-mcp.vercel.app/info` |
 
 ---
 

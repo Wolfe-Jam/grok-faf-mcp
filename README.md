@@ -33,6 +33,20 @@
 
 ---
 
+## Grok Build CLI — 30-second proof
+
+```json
+{ "mcpServers": { "grok-faf-mcp": { "command": "npx", "args": ["-y", "grok-faf-mcp"] } } }
+```
+
+Restart. Tools: `load_soul`, `save_soul`, `etch`, `recall`, `list_facts`.
+
+Sample corpus: [`Wolfe-Jam/xai-faf-proof/pilot`](https://github.com/Wolfe-Jam/xai-faf-proof/tree/main/pilot) — 10 records, ready to `load_soul`.
+
+Receipt: pipe output through `faf show --print` → addressable URL at `faf.one/proof/<id>`.
+
+---
+
 ## The 6 Ws - Quick Reference
 
 Every README should answer these questions. Here's ours:

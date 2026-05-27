@@ -32,30 +32,30 @@
 
 ---
 
-## Grok Build CLI — 30-second proof
+## Install — one line
 
-`~/.grok/config.toml`:
+Add to `~/.grok/config.toml`:
 
 ```toml
 [mcp_servers.grok-faf-mcp]
-command = "bunx"
-args = ["grok-faf-mcp"]
-startup_timeout_sec = 30
+url = "https://mcpaas.live/grok/mcp/v1"
 ```
 
-*No Bun? Use `npx -y grok-faf-mcp` — works the same, ~5× slower warm-start.*
+Restart Grok TUI (or `/mcps r`) to refresh. Tools: `faf_score`, `faf_validate`, `faf_get_tier`, `faf_estimate_tokens`, `faf_analyze` (plus soul/memory ops).
 
-Other MCP clients (Claude Code, Cursor, etc.):
+**Hosted on Cloudflare Workers** — sub-ms cold start, no subprocess, edge-served. 4865-byte Zig WASM engine, parity-tested vs the Rust authority (`xai-faf-rust`). Externally validated by Grok S1 + S2 on 2026-05-27.
 
-```json
-{ "mcpServers": { "grok-faf-mcp": { "command": "npx", "args": ["-y", "grok-faf-mcp"] } } }
+**Verify the live contract:**
+
+```bash
+curl https://mcpaas.live/grok/mcp/v1/info
 ```
 
-Restart. Tools: `load_soul`, `save_soul`, `etch`, `recall`, `list_facts`.
+Returns endpoint, protocol versions, engine details, tool list, and the architecture line: `.faf=vROM | AI-in-session=RAM`.
 
-Sample corpus: [`Wolfe-Jam/xai-faf-proof/pilot`](https://github.com/Wolfe-Jam/xai-faf-proof/tree/main/pilot) — 10 records, ready to `load_soul`.
+Sample corpus: [`xai-faf-proof/pilot`](https://github.com/Wolfe-Jam/xai-faf-proof/tree/main/pilot) — 10 records ready to score.
 
-Receipt: pipe output through `faf show --print` → addressable URL at `faf.one/proof/<id>`.
+> **Note on local install:** `bunx grok-faf-mcp` / `npx grok-faf-mcp` are currently broken in published v1.4.0 — the `bin`-field points at `dist/src/index.js`, which prints a detection line and exits cleanly without serving stdio. The hosted endpoint above is the canonical production path; the local-stdio path will be fixed in a future patch publish.
 
 ---
 
@@ -67,10 +67,10 @@ Every README should answer these questions. Here's ours:
 |----------|--------|
 | **WHO** is this for? | Grok/xAI developers and teams building with URL-based MCP |
 | **WHAT** is it? | Persistent project context for xAI Grok — URL-first deployment, IANA-registered .faf format |
-| **WHERE** does it work? | Vercel (production) • Local dev • Any MCP client supporting HTTP-SSE |
-| **WHY** do you need it? | Zero-config MCP on a URL - Grok asked for it, we built it first |
-| **WHEN** should you use it? | Grok integration testing, xAI projects, URL-based MCP deployments |
-| **HOW** does it work? | `bunx grok-faf-mcp` — context tools served over MCP stdio |
+| **WHERE** does it work? | Cloudflare Workers (`mcpaas.live/grok/mcp/v1`) • Any MCP client supporting native `url=` config • Self-deploy to your own CF/Vercel worker |
+| **WHY** do you need it? | Zero-config MCP on a URL — Grok asked for it, we built it first |
+| **WHEN** should you use it? | Grok integration, xAI projects, any url-based MCP client |
+| **HOW** does it work? | `url = "https://mcpaas.live/grok/mcp/v1"` — context tools served from edge via MCPaaS (sub-ms cold start, no subprocess) |
 
 **For AI:** Read the detailed sections below for full context.
 **For humans:** Use this pattern in YOUR README. Answer these 6 questions clearly.

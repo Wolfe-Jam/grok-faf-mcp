@@ -16,7 +16,7 @@
 </div>
 
 **Home:** [faf.one/grok](https://faf.one/grok)
-**Live demo:** [grok-faf-mcp.vercel.app](https://grok-faf-mcp.vercel.app)
+**Live demo:** [grok.faf.one](https://grok.faf.one)
 
 <div align="center">
 
@@ -181,8 +181,8 @@ bunx grok-faf-mcp
 }
 ```
 
-### 2. Self-Deploy (Your Own Vercel)
-Click the **Deploy with Vercel** button above. Zero config — get your own instance in 30 seconds.
+### 2. Hosted (zero install)
+`url = "https://mcpaas.live/grok/mcp/v1"` — edge-served on Cloudflare Workers, no subprocess.
 
 ---
 

@@ -55,8 +55,6 @@ Returns endpoint, protocol versions, engine details, tool list, and the architec
 
 Sample corpus: [`xai-faf-proof/pilot`](https://github.com/Wolfe-Jam/xai-faf-proof/tree/main/pilot) — 10 records ready to score.
 
-> **Note on local install:** `bunx grok-faf-mcp` / `npx grok-faf-mcp` are currently broken in published v1.4.0 — the `bin`-field points at `dist/src/index.js`, which prints a detection line and exits cleanly without serving stdio. The hosted endpoint above is the canonical production path; the local-stdio path will be fixed in a future patch publish.
-
 ---
 
 ## The 6 Ws - Quick Reference

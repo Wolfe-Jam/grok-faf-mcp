@@ -214,14 +214,9 @@ export class FafToolHandler {
             required: ['path'],
           }
         },
-        {
-          name: 'faf_chat',
-          description: 'Guided interview to build project.faf',
-          inputSchema: {
-            type: 'object',
-            properties: {},
-          }
-        },
+        // faf_chat — DEPRECATED, un-advertised. The host IS the chat (Claude Code /
+        // Grok CLI / Desktop); a chat-shim tool is redundant. Dispatch keeps a
+        // deprecation stub (below) for anyone still wired. Fleet sweep then full retire.
         {
           name: 'faf_friday',
           description: 'Friday features — Chrome Extension detection, fuzzy matching',
@@ -1073,39 +1068,19 @@ ${debugInfo.permissions.fafError ? `   FAF Error: ${debugInfo.permissions.fafErr
   }
 
   private async handleFafChat(_args: any): Promise<CallToolResult> {
-    try {
-      const result = await this.engineAdapter.callEngine('chat');
-
-      if (!result.success) {
-        return {
-          content: [{
-            type: 'text',
-            text: `Error running faf chat: ${result.error || 'Unknown error'}`
-          }],
-          isError: true
-        };
-      }
-
-      // Format the response text
-      const responseText = typeof result.data === 'string'
-        ? result.data
-        : result.data?.output || JSON.stringify(result.data, null, 2);
-
-      return {
-        content: [{
-          type: 'text',
-          text: responseText
-        }]
-      };
-    } catch (error) {
-      return {
-        content: [{
-          type: 'text',
-          text: `Error running faf chat: ${error instanceof Error ? error.message : String(error)}`
-        }],
-        isError: true
-      };
-    }
+    // DEPRECATED: the host (Claude Code / Grok CLI / Desktop) IS the chat — a
+    // chat-shim MCP tool is redundant. Un-advertised in listTools; this stub
+    // stays so anyone still wired gets a clear signal, not a crash. The old body
+    // shelled `faf chat` via the engine subprocess, which dropped the MCP
+    // connection (wjttc-bun:449) — removing that shell fixes the flake too.
+    return {
+      content: [{
+        type: 'text',
+        text:
+          'faf_chat is retired — the host is your chat, just talk here. ' +
+          'For FAF: faf_init / faf_score / faf_sync / refresh_faf, or "ask questions" + faf go.',
+      }],
+    };
   }
 
   private async handleFafFriday(args: any): Promise<CallToolResult> {

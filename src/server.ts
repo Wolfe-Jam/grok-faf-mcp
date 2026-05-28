@@ -141,7 +141,7 @@ export class GrokFafMcpServer {
         },
         // TODO v1.3+: make dynamic via toolHandler.listTools() instead of hardcoded
         tools: [
-          'faf_about', 'faf_what', 'faf_status', 'faf_score', 'faf_init',
+          'faf_about', 'faf_what', 'faf_status', 'faf_score', 'refresh_faf', 'faf_init',
           'faf_trust', 'faf_sync', 'faf_enhance', 'faf_bi_sync', 'faf_clear',
           'faf_debug', 'faf_read', 'faf_write', 'faf_list', 'faf_chat',
           'faf_friday', 'faf_guide', 'rag_query', 'rag_cache_stats',

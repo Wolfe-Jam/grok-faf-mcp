@@ -64,6 +64,17 @@ export class FafToolHandler {
           }
         },
         {
+          name: 'refresh_faf',
+          description: 'Re-ground on the live .faf — re-read + re-score the current project DNA, report drift vs your last-known score, and return the fresh context. The explicit re-grounding primitive for long sessions: drift → refresh → re-grounded.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              baseline: { type: 'number', description: 'Your last-known score (0-100). If provided, the drift delta is reported.' },
+              path: { type: 'string', description: 'Project directory or .faf path (supports ~). Defaults to the session working directory.' }
+            },
+          }
+        },
+        {
           name: 'faf_init',
           description: 'Create project.faf for a project',
           inputSchema: {
@@ -275,6 +286,8 @@ export class FafToolHandler {
         return await this.handleFafStatus(args);
       case 'faf_score':
         return await this.handleFafScore(args);
+      case 'refresh_faf':
+        return await this.handleFafRefresh(args);
       case 'faf_init':
         return await this.handleFafInit(args);
       case 'faf_trust':
@@ -492,6 +505,119 @@ export class FafToolHandler {
         {
           type: 'text',
           text: output,
+        },
+      ],
+    };
+  }
+
+  /**
+   * `refresh_faf` — re-ground on the live .faf. The explicit re-grounding primitive.
+   *
+   *   drift → refresh → re-grounded
+   *
+   * Re-reads the LIVE .faf and re-scores it via the SINGLE-SOURCE faf-cli scorer
+   * (the same `fafCli` bridge faf_score uses — scoring is NEVER reimplemented here,
+   * per the v1.4.x doctrine). The only new logic is orchestration: drift vs an
+   * optional baseline (the agent's last-known score) + emitting the fresh DNA so
+   * the agent re-grounds mid-session.
+   *
+   * MCP ahead of faf-cli by design — consolidates into `faf refresh` later.
+   * (.fafb re-compile is the next layer, wired in the faf-cli consolidation.)
+   */
+  private async handleFafRefresh(args: any): Promise<CallToolResult> {
+    // cwd resolution — mirror handleFafScore (honour args.path, else session dir).
+    let cwd: string;
+    const explicitPath: string | undefined = args?.path;
+    if (explicitPath) {
+      const expandedPath = explicitPath.startsWith('~')
+        ? path.join(require('os').homedir(), explicitPath.slice(1))
+        : explicitPath;
+      const resolvedPath = path.resolve(expandedPath);
+      cwd = fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile()
+        ? path.dirname(resolvedPath)
+        : resolvedPath;
+      if (fs.existsSync(cwd)) {
+        this.engineAdapter.setWorkingDirectory(cwd);
+      }
+    } else {
+      cwd = this.engineAdapter.getWorkingDirectory();
+    }
+
+    const { findFafFile: cliFindFafFile, readFafRaw, scoreFafYaml, getNextTier } = await fafCli;
+
+    const fafPath = cliFindFafFile(cwd);
+    if (!fafPath) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text:
+              `REFRESH — nothing to re-ground\n\n` +
+              `No \`.faf\` found in \`${cwd}\`.\n` +
+              `Run \`faf_init\` to create one, then \`refresh_faf\` re-grounds on it.`,
+          },
+        ],
+      };
+    }
+
+    // Strip ANSI from tier glyphs (faf-cli emits colored indicators).
+    // eslint-disable-next-line no-control-regex
+    const strip = (s: string): string => s.replace(/\[[0-9;]*m/g, '').trim();
+
+    let raw: string;
+    try {
+      raw = readFafRaw(fafPath);
+    } catch (error: any) {
+      return {
+        content: [
+          { type: 'text', text: `REFRESH — could not read \`${fafPath}\`: ${error?.message ?? String(error)}` },
+        ],
+        isError: true,
+      };
+    }
+
+    let result: ReturnType<Awaited<typeof fafCli>['scoreFafYaml']>;
+    try {
+      result = scoreFafYaml(raw);
+    } catch (error: any) {
+      return {
+        content: [
+          { type: 'text', text: `REFRESH — \`${fafPath}\` isn't valid .faf YAML:\n  ${error?.message ?? String(error)}` },
+        ],
+        isError: true,
+      };
+    }
+
+    const score = result.score;
+    const tierDisplay = strip(result.tier.indicator);
+    const next = getNextTier(score);
+    const nextLine = next ? `  next: ${strip(next.indicator)} (${next.threshold}%)\n` : '';
+
+    // Drift — orchestration only, no scoring reimplemented. Optional baseline =
+    // the agent's last-known score; when present, report the delta.
+    const baseline = typeof args?.baseline === 'number' ? args.baseline : null;
+    let driftLine: string;
+    if (baseline != null) {
+      const delta = score - baseline;
+      driftLine =
+        delta === 0
+          ? `  drift: none — steady at ${score}%\n`
+          : `  drift: ${baseline}% ${delta > 0 ? '↑' : '↓'} ${score}% (${delta > 0 ? '+' : ''}${delta})\n`;
+    } else {
+      driftLine = `  re-grounded at ${score}%\n`;
+    }
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text:
+            `REFRESH — re-grounded on the live .faf\n\n` +
+            driftLine +
+            `  tier: ${tierDisplay} ${score}%\n` +
+            nextLine +
+            `\n— fresh DNA (re-grounded context) —\n` +
+            raw,
         },
       ],
     };

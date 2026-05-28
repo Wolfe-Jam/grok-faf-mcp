@@ -131,12 +131,12 @@ Every AI agent reads this once and knows exactly what you're building.
 ## ⚡ What You Get
 
 ```
-URL:     https://grok-faf-mcp.vercel.app/
+URL:     https://mcpaas.live/grok/mcp/v1
 Format:  IANA-registered .faf (application/vnd.faf+yaml)
 Tools:   21 core MCP tools (55 total with advanced)
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
-Tests:   169 passed · 0 failed · 169 total (7 suites)
+Tests:   213 total · 212 pass · 1 todo · 0 fail (8 files)
 Status:  FAST⚡️AF
 ```
 
@@ -246,7 +246,7 @@ Benchmarked 10x per tool, warmed up, on local execution.
 ## Architecture
 
 ```
-grok-faf-mcp v1.3.1
+grok-faf-mcp v1.4.1
 ├── api/index.ts              → Vercel serverless (Express + SSE transport)
 ├── src/
 │   ├── server.ts             → MCP server (GrokFafMcpServer)
@@ -267,21 +267,22 @@ grok-faf-mcp v1.3.1
 
 ## Testing
 
-179 tests across 7 suites:
+213 tests across 8 files — 212 pass · 1 todo · 0 fail:
 
 ```bash
-npm test    # runs all 179
+npm test    # runs all 213 (bun test)
 ```
 
-| Suite | Tests | Coverage |
-|-------|-------|----------|
-| Desktop-native validation | 10 | Core native functions, security, performance |
-| MCP protocol | 28 | Tool registration, transport, error handling |
-| Compiler scoring | 22 | Mk4 engine, type detection, slot counting |
-| RAG system | 19 | Query, caching, context retrieval |
-| Engine adapter | 35 | CLI detection, fallback behavior |
-| Integration | 40 | End-to-end tool execution |
-| WJTTC certification | 25 | Championship-grade compliance |
+| Suite | Coverage |
+|-------|----------|
+| `desktop-native-validation` | Core native functions, security, performance |
+| `mcp-conformance` | MCP protocol conformance — tools, transport, errors |
+| `wjttc-mcp` | WJTTC MCP certification |
+| `wjttc-bun` | WJTTC bun-migration + integrity |
+| `wjttc-compiler-scoring` | Compiler scoring — engine, type detection, slots |
+| `rag-system` | RAG query, caching, context retrieval |
+| `security` | Input validation + security guards |
+| `visibility` | Tool visibility (core/advanced filtering) |
 
 ---
 

@@ -250,35 +250,29 @@
   <div class="container">
     <div class="logo">🍊</div>
     <h1>grok-faf-mcp</h1>
-    <div class="tagline">🏎️⚡️ FAST AF Edition <span class="version-badge" onclick="showAbout()">v1.3.1</span></div>
+    <div class="tagline">🏎️⚡️ FAST AF Edition <span class="version-badge" onclick="showAbout()">v1.4.5</span></div>
     <div class="dedication">Dedicated to @elonmusk</div>
     <div class="squeeze">I/🍊 enjoy the squeeze!</div>
 
     <div class="stats">
-      <div><div class="stat-value">21</div><div class="stat-label">MCP Tools</div></div>
+      <div><div class="stat-value">14</div><div class="stat-label">MCP Tools</div></div>
       <div><div class="stat-value">0</div><div class="stat-label">Config Required</div></div>
       <div><div class="stat-value">0.2ms</div><div class="stat-label">Avg Response</div></div>
     </div>
 
     <div class="endpoints">
       <h2>Endpoints</h2>
-      <div class="endpoint"><span class="endpoint-name">MCP SSE</span><span class="endpoint-path">/sse</span></div>
-      <div class="endpoint"><span class="endpoint-name">Health Check</span><span class="endpoint-path">/health</span></div>
-      <div class="endpoint"><span class="endpoint-name">Server Info</span><span class="endpoint-path">/info</span></div>
+      <div class="endpoint"><span class="endpoint-name">MCP</span><a class="endpoint-path" href="https://mcpaas.live/grok/mcp/v1">mcpaas.live/grok/mcp/v1</a></div>
+      <div class="endpoint"><span class="endpoint-name">Verify the contract</span><a class="endpoint-path" href="https://mcpaas.live/grok/mcp/v1/info">/grok/mcp/v1/info</a></div>
     </div>
 
     <div class="deploy">
-      <h2>Three Ways to Deploy</h2>
+      <h2>Two Ways to Run</h2>
       <div class="deploy-grid">
         <div class="deploy-option">
           <div class="label">Hosted</div>
-          <div class="desc">Point to this URL</div>
-          <code>/sse</code>
-        </div>
-        <div class="deploy-option">
-          <div class="label">Self-Deploy</div>
-          <div class="desc">Your own Vercel</div>
-          <code>Deploy button</code>
+          <div class="desc">Point your config here</div>
+          <code>mcpaas.live/grok/mcp/v1</code>
         </div>
         <div class="deploy-option">
           <div class="label">Local</div>
@@ -299,7 +293,7 @@
     </div>
 
     <div class="bottom-bar">
-      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v1.3.1</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; <a href="https://mcpaas.live">mcpaas.live</a></div>
+      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v1.4.5</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; <a href="https://mcpaas.live">mcpaas.live</a></div>
       <div class="big-orange">We needed a Big-Orange, we got one! 🍊</div>
       <div style="margin-top:0.5rem;font-size:0.75rem;"><a href="https://mcpaas.live/privacy" style="color:#666;text-decoration:none;">Privacy</a> · <a href="https://mcpaas.live/terms" style="color:#666;text-decoration:none;">Terms</a> · <a href="mailto:team@faf.one" style="color:#666;text-decoration:none;">team@faf.one</a></div>
       <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.1);font-size:0.8rem;color:#fff;">Part of the <a href="https://faf.one" style="color:#ff6600;text-decoration:none;">FAF.one Family</a> · <a href="https://mcpaas.live" style="color:#888;text-decoration:none;">MCPaaS</a> · <a href="https://radiofaf.com" style="color:#888;text-decoration:none;">RadioFAF</a> · <a href="https://fafdev.tools" style="color:#888;text-decoration:none;">fafdev.tools</a></div>
@@ -307,14 +301,14 @@
   </div>
   <div class="about-overlay" id="aboutOverlay" onclick="if(event.target===this)hideAbout()">
     <div class="about-box">
-      <div class="about-version">v1.3.1</div>
-      <div class="about-title">New Engine Dropped</div>
-      <div class="about-subtitle">Mk4 Championship Scoring</div>
+      <div class="about-version">v1.4.5</div>
+      <div class="about-title">FAST⚡️AF Context</div>
+      <div class="about-subtitle">Persistent project DNA for Grok</div>
       <div class="about-items">
         <div class="about-item"><span>Engine:</span> Mk4 WASM via faf-scoring-kernel</div>
         <div class="about-item"><span>Scoring:</span> 21 slots, type-aware, slotignored</div>
         <div class="about-item"><span>Fallback:</span> Mk3.1 TypeScript (zero downtime)</div>
-        <div class="about-item"><span>Tools:</span> 21 core + 34 advanced MCP tools</div>
+        <div class="about-item"><span>Tools:</span> 14 hosted (WASM-pure) · full set local (bunx)</div>
         <div class="about-item"><span>Format:</span> IANA-registered .faf (application/vnd.faf+yaml)</div>
         <div class="about-item"><span>Speed:</span> 137 µs/score · 7,279 ops/sec (Mk4 WASM, p50)</div>
       </div>

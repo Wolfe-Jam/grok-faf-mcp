@@ -8,6 +8,30 @@ All notable changes to grok-faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.5] - 2026-05-29
+
+### Added
+- **`refresh_faf`** — the explicit re-grounding primitive **Grok asked for**:
+  re-read the live `.faf`, re-score via the single-source faf-cli scorer, report
+  drift vs an optional baseline, and return the fresh DNA. *drift → refresh →
+  re-grounded* (Grok's phrasing) — for long sessions where the project moves
+  mid-stream. (Grok-surface name; faf-cli mirrors the same capability as
+  `faf_refresh`.)
+- **`demo/refresh-demo.ts`** — reproducible live demo (`bun demo/refresh-demo.ts`):
+  thin context re-grounds on a live edit (score moves +70), proving refresh
+  re-reads live state, not a cache.
+
+### Changed
+- **grok.faf.one landing de-drifted for the CF era** — version current, CF
+  endpoints as real links (`mcpaas.live/grok/mcp/v1` + `/v1/info`), dead Vercel
+  self-deploy removed. README documents `refresh_faf`.
+
+### Tests
+- **WJTTC `refresh_faf`** — 20-test championship suite: live-edit drift (the
+  score moves on a live edit), exact drift math, cross-fixture single-source
+  parity, concurrency. 1 honest skip banks v2 content-drift (slot-diff).
+- MCP conformance blesses `refresh_faf` as the documented cross-surface name.
+
 ## [1.4.1] - 2026-05-26
 
 ### Fixed

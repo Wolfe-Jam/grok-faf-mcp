@@ -186,7 +186,7 @@ bunx grok-faf-mcp
 
 ---
 
-## MCP Tools (21 Core)
+## MCP Tools
 
 **Create & Detect**
 
@@ -197,6 +197,7 @@ bunx grok-faf-mcp
 | `faf_score` | AI-readiness score (0-100%) with breakdown |
 | `faf_status` | Check current AI-readability |
 | `faf_enhance` | Intelligent enhancement |
+| `refresh_faf` | Re-ground on the live `.faf` — re-read + re-score, report drift, return fresh DNA (drift → refresh → re-grounded). **Requested by Grok.** |
 
 **Sync & Persist**
 

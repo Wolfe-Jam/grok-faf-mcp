@@ -65,7 +65,7 @@ export class FafToolHandler {
         },
         {
           name: 'refresh_faf',
-          description: 'Re-ground on the live .faf — re-read + re-score the current project DNA, report drift vs your last-known score, and return the fresh context. The explicit re-grounding primitive for long sessions: drift → refresh → re-grounded.',
+          description: 'Re-ground on the live .faf — re-read + re-score the current project DNA, report drift vs your last-known score, and return the fresh context. The explicit re-grounding primitive for long sessions: drift → refresh → re-grounded. Built for Grok, by request.',
           inputSchema: {
             type: 'object',
             properties: {

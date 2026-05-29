@@ -173,13 +173,22 @@ describe('🏁 MCP Conformance — over real protocol via SDK + in-memory transp
       expect(names.has('faf_status')).toBe(true);
     });
 
-    test('all advertised tools are namespaced (faf_ or rag_) and have descriptions', async () => {
+    test('all advertised tools are namespaced (faf_/rag_, or a blessed cross-surface name) and have descriptions', async () => {
       // grok-faf-mcp ships the core `faf_*` toolset PLUS a grok-specific
       // `rag_*` namespace (LAZY-RAG cache over xAI Collections). Both are
       // legitimate, advertised namespaces — every tool must sit under one.
+      //
+      // Blessed cross-surface name: `refresh_faf` is the GROK-surface name for
+      // the re-grounding primitive (the name Grok asked for; the one-pager
+      // ships it). faf-cli exposes the SAME capability as `faf_refresh`. Same
+      // thing, two surfaces, two names — a deliberate, honored exception, not
+      // namespace drift. Keep this set tiny and named, never a wildcard.
+      const CROSS_SURFACE = new Set(['refresh_faf']);
       const { tools } = await client.listTools();
       for (const tool of tools) {
-        expect(tool.name.startsWith('faf') || tool.name.startsWith('rag')).toBe(true);
+        const namespaced =
+          tool.name.startsWith('faf') || tool.name.startsWith('rag') || CROSS_SURFACE.has(tool.name);
+        expect(namespaced).toBe(true);
         expect(typeof tool.description).toBe('string');
         expect((tool.description as string).length).toBeGreaterThan(0);
       }

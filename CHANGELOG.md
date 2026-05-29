@@ -1,9 +1,9 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.4.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.4.1 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
-All notable changes to faf-mcp will be documented in this file.
+All notable changes to grok-faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).

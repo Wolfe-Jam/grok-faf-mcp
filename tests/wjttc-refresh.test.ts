@@ -7,9 +7,9 @@
  * Tests what refresh_faf does TODAY: a score-delta re-ground via the
  * SINGLE-SOURCE faf-cli scorer (never reimplemented here). The suite proves the
  * primitive end-to-end — fail-safe, exact drift math, live-state re-reads, and
- * true single-source parity across fixtures. ONE honest skipped marker (AERO)
- * banks the v2 boundary: content-drift / slot-diff (a slot VALUE changes but the
- * score stays put). Not faked — on the record.
+ * single-source parity across fixtures. ONE honest skipped marker (AERO) banks
+ * the v2 boundary: content-drift / slot-diff (a slot VALUE changes but the score
+ * stays put). Not faked — on the record.
  *
  *   1 🛑 BRAKE  — fail-safe: missing / malformed / empty / junk never crashes or fakes
  *   2 ⚙️ ENGINE — core: re-ground + drift (+ / − / 0) + next-tier + verbatim DNA + path forms
@@ -25,12 +25,11 @@ import { GrokFafMcpServer } from '../src/server.js';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 
-// faf-cli's `bun` exports condition points at a non-shipped src/ — load the
-// published dist directly. Imported INSIDE beforeAll (after the server has
-// already loaded faf-cli) so the `which` detection registers ONCE: a top-level
-// import double-registered the FD and tripped `epoll_ctl EEXIST` on bun/Linux,
-// crashing the file (passed on macOS/Windows, failed only on ubuntu CI).
-const FAF_CLI_DIST = '../node_modules/faf-cli/dist/index.js';
+// Parity here is MCP-to-MCP: refresh_faf's score is checked against the server's
+// own faf_score tool (BOTH run the same single-source faf-cli scorer via the
+// server's bridge). No direct faf-cli import — a second faf-cli load
+// double-registered the `which`-detection FD and tripped `epoll_ctl EEXIST` on
+// bun/Linux, crashing the file (green on macOS/Windows; only ubuntu failed).
 
 // Valid .faf scoring >0 <100 (3 of 6 Ws populated, rest slotignored) — a
 // non-trivial score is required so parity/determinism don't pass trivially.
@@ -89,13 +88,17 @@ describe('🏁 WJTTC — refresh_faf (grok-faf-mcp)', () => {
   let emptyDir: string; // no .faf
   let badDir: string; // malformed .faf
   let originalCwd: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  let fafCli: any;
 
   const textOf = (res: { content: unknown }): string =>
     ((res.content as Array<{ text?: string }>)[0]?.text ?? '') as string;
   const scoreOf = (res: { content: unknown }): number =>
     parseInt(textOf(res).match(REFRESH_SCORE_RE)![1], 10);
+  // Single-source reference: the server's OWN faf_score tool (same scorer, same
+  // bridge). faf_score headline is `FAF SCORE: <n>/100 (<n>%)`.
+  const fafScoreOf = async (dir: string): Promise<number> => {
+    const res = await client.callTool({ name: 'faf_score', arguments: { path: dir } });
+    return parseInt(textOf(res).match(/(\d{1,3})\/100/)![1], 10);
+  };
 
   beforeAll(async () => {
     originalCwd = process.cwd();
@@ -110,8 +113,6 @@ describe('🏁 WJTTC — refresh_faf (grok-faf-mcp)', () => {
     await server.getServer().connect(serverT);
     client = new Client({ name: 'wjttc-refresh', version: '1.0.0' }, { capabilities: {} });
     await client.connect(clientT);
-
-    fafCli = await import(FAF_CLI_DIST);
   });
 
   afterAll(async () => {
@@ -261,20 +262,19 @@ describe('🏁 WJTTC — refresh_faf (grok-faf-mcp)', () => {
       expect(new Set(scores).size).toBe(1);
     });
 
-    test('TRUE PARITY: refresh_faf score == faf-cli scoreFafYaml (single-source)', async () => {
-      const raw = fs.readFileSync(path.join(tmpDir, 'project.faf'), 'utf-8');
-      const parity = fafCli.scoreFafYaml(raw).score;
+    test('TRUE PARITY: refresh_faf score == faf_score — same single-source scorer (MCP-to-MCP)', async () => {
       const refreshScore = scoreOf(await client.callTool({ name: 'refresh_faf', arguments: { path: tmpDir } }));
-      expect(refreshScore).toBe(parity);
+      const fafScore = await fafScoreOf(tmpDir);
+      expect(refreshScore).toBe(fafScore);
     });
 
     test('single-source parity holds across a DIFFERENT fixture (not a one-off)', async () => {
       const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'faf-refresh-low-'));
       fs.writeFileSync(path.join(dir, 'project.faf'), LOW_FAF);
       try {
-        const parity = fafCli.scoreFafYaml(LOW_FAF).score;
         const refreshScore = scoreOf(await client.callTool({ name: 'refresh_faf', arguments: { path: dir } }));
-        expect(refreshScore).toBe(parity);
+        const fafScore = await fafScoreOf(dir);
+        expect(refreshScore).toBe(fafScore);
       } finally {
         fs.rmSync(dir, { recursive: true, force: true });
       }
@@ -326,7 +326,7 @@ describe('🏁 WJTTC — refresh_faf (grok-faf-mcp)', () => {
         const s2 = scoreOf(r2);
 
         expect(s2).toBeGreaterThan(s1); // drift is real, read from live state
-        expect(s2).toBe(fafCli.scoreFafYaml(SAMPLE_FAF).score); // == single-source on NEW content
+        expect(s2).toBe(await fafScoreOf(dir)); // == single-source (faf_score on the NEW content)
         expect(text2).toContain('↑'); // drift vs the supplied baseline
         expect(text2).toContain(`${s1}% ↑ ${s2}%`); // exact re-grounding line
       } finally {

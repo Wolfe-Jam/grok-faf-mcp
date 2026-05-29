@@ -26,9 +26,11 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 
 // faf-cli's `bun` exports condition points at a non-shipped src/ — load the
-// published dist directly (same module the bridge resolves in production).
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const fafCliPromise: Promise<any> = import('../node_modules/faf-cli/dist/index.js');
+// published dist directly. Imported INSIDE beforeAll (after the server has
+// already loaded faf-cli) so the `which` detection registers ONCE: a top-level
+// import double-registered the FD and tripped `epoll_ctl EEXIST` on bun/Linux,
+// crashing the file (passed on macOS/Windows, failed only on ubuntu CI).
+const FAF_CLI_DIST = '../node_modules/faf-cli/dist/index.js';
 
 // Valid .faf scoring >0 <100 (3 of 6 Ws populated, rest slotignored) — a
 // non-trivial score is required so parity/determinism don't pass trivially.
@@ -109,7 +111,7 @@ describe('🏁 WJTTC — refresh_faf (grok-faf-mcp)', () => {
     client = new Client({ name: 'wjttc-refresh', version: '1.0.0' }, { capabilities: {} });
     await client.connect(clientT);
 
-    fafCli = await fafCliPromise;
+    fafCli = await import(FAF_CLI_DIST);
   });
 
   afterAll(async () => {

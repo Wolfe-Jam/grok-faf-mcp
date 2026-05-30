@@ -30,6 +30,12 @@ logs/
 project.html
 *.fafb
 
+# Session-dogfood memory — soul.fafm is the live .fafm this repo uses to test
+# refresh_fafm against real memory (not synthetic fixtures). Kept locally,
+# never shipped — proves the primitive works without entangling it with the
+# product surface. Promote to tests/fixtures/ later if useful.
+soul.fafm
+
 # Test results
 test-results/
 

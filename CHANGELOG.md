@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.4.1 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.4.9 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,44 @@ All notable changes to grok-faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.4.9] - 2026-05-29
+
+Final dress rehearsal before 1.5 prestige — currency sweep, polished badges,
+canonical surfaces aligned. No new prestige features; sets the table.
+
+### Changed
+- **README currency** — architecture tree stamp updated to v1.4.9; tool count
+  corrected to **14 hosted (WASM-pure: 13 + `refresh_faf`)** · **55 local (bunx)**
+  matching the actual hosted/local split; test count refreshed to **234 across 9
+  files** (was 213/8 — `refresh_faf` WJTTC suite added). MCP messaging tightened
+  to **"MCP on a URL"** — the framing already in use across the FAF surfaces.
+- **CF Workers — canonical hosted surface for MCPaaS** (`mcpaas.live/grok/mcp/v1`):
+  300+ edge locations, near-zero cold start, KV co-located. Vercel retained as
+  catch-site per doctrine — every bookmarked URL stays live.
+- **`project.faf` substrate currency** — `stack.hosting: Cloudflare Workers`
+  (was `Vercel`); `stack.api_type: MCP (stdio + Streamable HTTP)` (was
+  `stdio/SSE`); `human_context.where / when / how` aligned to the current
+  canonical surface + `v1.4.9` + accurate transport. CLAUDE.md re-synced and
+  picked up every line.
+- **`package.json` description** — dropped trailing `", Vercel-deployed"`; the
+  canonical hosted surface is CF Workers via `mcpaas-cf`, and the npm description
+  doesn't need to name the host. "MCP server on a URL" already implies hosted.
+- **CHANGELOG meta-stamp** — `latest=v1.4.1` had been carried since the 1.4.1
+  release; the 1.4.5 ship missed the bump. Now `latest=v1.4.9`. Same drift
+  class as the substrate items — exactly what dress rehearsal is for.
+
+### Added
+- **MCPaaS dynamic FAF badge** in the README masthead alongside the static Trophy
+  badge — live `mcpaas.live/badge/Wolfe-Jam/grok-faf-mcp.svg`. Verification reads
+  through to `builder.faf.one`.
+- **`Talk to my Agent →` footer link** — canonical `faf.one/agent` CTA. The
+  reference pattern for exposing FAFA across the MCP fleet (claude / gemini /
+  faf-mcp / ZEPH follow on pull). Simplest possible coupling — a link, no call
+  path.
+
+### Tests
+- All **234 tests across 9 files** green: 232 pass · 1 skip · 1 todo · 0 fail.
 
 ## [1.4.5] - 2026-05-29
 

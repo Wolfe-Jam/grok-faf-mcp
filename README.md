@@ -134,14 +134,14 @@ Every AI agent reads this once and knows exactly what you're building.
 ```
 URL:     https://mcpaas.live/grok/mcp/v1
 Format:  IANA-registered .faf (application/vnd.faf+yaml)
-Tools:   21 core MCP tools (55 total with advanced)
+Tools:   14 hosted (WASM-pure: 13 + refresh_faf) · 55 local (bunx)
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
-Tests:   213 total · 212 pass · 1 todo · 0 fail (8 files)
+Tests:   234 total · 232 pass · 1 skip · 1 todo · 0 fail (9 files)
 Status:  FAST⚡️AF
 ```
 
-**MCP over HTTP-SSE.** Point your Grok integration at the URL. That's it.
+**MCP on a URL.** Point your Grok integration at the URL. That's it.
 
 ---
 
@@ -260,7 +260,7 @@ Benchmarked 10x per tool, warmed up, on local stdio execution. Hosted edge adds 
 ## Architecture
 
 ```
-grok-faf-mcp v1.4.5
+grok-faf-mcp v1.4.9
 ├── src/
 │   ├── server.ts             → MCP server (GrokFafMcpServer)
 │   ├── handlers/
@@ -283,10 +283,10 @@ grok-faf-mcp v1.4.5
 
 ## Testing
 
-213 tests across 8 files — 212 pass · 1 todo · 0 fail:
+234 tests across 9 files — 232 pass · 1 skip · 1 todo · 0 fail:
 
 ```bash
-npm test    # runs all 213 (bun test)
+npm test    # runs all 234 (bun test)
 ```
 
 | Suite | Coverage |

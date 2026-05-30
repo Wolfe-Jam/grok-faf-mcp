@@ -3,6 +3,8 @@ import { FafEngineAdapter } from './engine-adapter';
 import { fileHandlers } from './fileHandler';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as crypto from 'crypto';
+import YAML from 'yaml';
 import { FuzzyDetector, applyIntelFriday } from '../utils/fuzzy-detector';
 import { findFafFile, getNewFafFilePath } from '../utils/faf-file-finder.js';
 import { VERSION } from '../version';
@@ -73,6 +75,31 @@ export class FafToolHandler {
               path: { type: 'string', description: 'Project directory or .faf path (supports ~). Defaults to the session working directory.' }
             },
           }
+        },
+        {
+          name: 'refresh_fafm',
+          description: 'Reload the latest structured memory (`.fafm`) for one or more souls into the current session. Returns a stamped delta by default (added/updated facts since last refresh or a given timestamp). Use `verbatim: true` to receive the full current `.fafm` content instead. Read-only. Always returns a content hash + timestamp stamp. Complements `recall`, `load_soul`, and `etch` — does not replace them.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              soul: {
+                type: 'string',
+                description: "Specific soul to refresh. Omit or use 'default' for the primary memory layer. Use 'all' to refresh every available soul.",
+                default: 'default',
+              },
+              verbatim: {
+                type: 'boolean',
+                description: 'If true, returns the full current .fafm content for the requested soul(s) instead of a delta. Use sparingly — deltas are preferred for normal operation.',
+                default: false,
+              },
+              since: {
+                type: 'string',
+                format: 'date-time',
+                description: 'Optional ISO timestamp. Only return facts modified after this time. Ignored when verbatim=true.',
+              },
+            },
+            additionalProperties: false,
+          },
         },
         {
           name: 'faf_init',
@@ -283,6 +310,8 @@ export class FafToolHandler {
         return await this.handleFafScore(args);
       case 'refresh_faf':
         return await this.handleFafRefresh(args);
+      case 'refresh_fafm':
+        return await this.handleFafmRefresh(args);
       case 'faf_init':
         return await this.handleFafInit(args);
       case 'faf_trust':
@@ -616,6 +645,256 @@ export class FafToolHandler {
         },
       ],
     };
+  }
+
+  /**
+   * `refresh_fafm` — re-ground on the live .fafm memory layer. Sibling primitive
+   * to `refresh_faf` for accumulated memory (vROM/RAM model).
+   *
+   * Read-only. Always stamped (hash + version + timestamp). Delta by default,
+   * verbatim on flag. NO score field anywhere — validates the format-level
+   * doctrine that .fafm memories are not scored.
+   *
+   * Spec source: Grok-1 consult 2026-05-30 (Round 1 + Round 2 — full JSON Schema
+   * + 6-tool coexistence; verbatim in ~/.claude/.../memory/grok-refresh-fafm-spec.md
+   * and ~/export/grok-1-response-refresh-fafm-spec-2026-05-30.md). Voice locked
+   * Round 3: "Refresh FAF Memory (.fafm)".
+   *
+   * File resolution (cwd-relative, project-context style — extendable later):
+   *   - `default` → primary: `soul.fafm`; fallback: first `*.fafm` in cwd
+   *   - `<name>`  → `<name>.fafm` in cwd
+   *   - `all`     → every `*.fafm` in cwd
+   *
+   * Built for Grok, by request — sibling to `refresh_faf` for the memory layer.
+   */
+  private async handleFafmRefresh(args: any): Promise<CallToolResult> {
+    // refresh_fafm reads cwd-relative .fafm files. Use process.cwd() (the LIVE
+    // session cwd) rather than the engineAdapter's construction-time cache —
+    // memory tools follow the live shell, not a frozen project anchor.
+    const cwd = process.cwd();
+    const soul: string =
+      typeof args?.soul === 'string' && args.soul.length > 0 ? args.soul : 'default';
+    const verbatim: boolean = args?.verbatim === true;
+    const since: string | undefined =
+      typeof args?.since === 'string' && args.since.length > 0 ? args.since : undefined;
+
+    // Resolve target file(s) for the requested soul.
+    const resolveFafmFiles = (soulName: string): string[] => {
+      try {
+        if (soulName === 'all') {
+          return fs
+            .readdirSync(cwd)
+            .filter((f) => f.endsWith('.fafm'))
+            .map((f) => path.join(cwd, f));
+        }
+        if (soulName === 'default') {
+          const primary = path.join(cwd, 'soul.fafm');
+          if (fs.existsSync(primary)) return [primary];
+          const allFafm = fs.readdirSync(cwd).filter((f) => f.endsWith('.fafm'));
+          return allFafm.length ? [path.join(cwd, allFafm[0])] : [];
+        }
+        const named = path.join(cwd, `${soulName}.fafm`);
+        return fs.existsSync(named) ? [named] : [];
+      } catch {
+        return [];
+      }
+    };
+
+    const files = resolveFafmFiles(soul);
+
+    if (files.length === 0) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text:
+              `REFRESH FAFM — no soul found\n\n` +
+              `Looked for \`${soul === 'default' ? 'soul.fafm' : soul + '.fafm'}\` in \`${cwd}\`.\n` +
+              `\`refresh_fafm\` reads the durable .fafm memory layer — etch facts first.`,
+          },
+        ],
+        isError: true,
+      };
+    }
+
+    // Parse each file. Refuse the whole call on any unreadable / invalid YAML —
+    // partial-with-broken-souls would be a silent-drift hazard.
+    type ParsedFafm = {
+      file: string;
+      soul: string;
+      version: string;
+      facts: any[];
+      raw: string;
+    };
+    const parsed: ParsedFafm[] = [];
+    for (const file of files) {
+      let raw: string;
+      try {
+        raw = fs.readFileSync(file, 'utf-8');
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `REFRESH FAFM — could not read \`${file}\`: ${error?.message ?? String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+      let doc: any;
+      try {
+        doc = YAML.parse(raw);
+      } catch (error: any) {
+        return {
+          content: [
+            {
+              type: 'text',
+              text: `REFRESH FAFM — \`${file}\` isn't valid YAML:\n  ${error?.message ?? String(error)}`,
+            },
+          ],
+          isError: true,
+        };
+      }
+      const facts: any[] = Array.isArray(doc?.memory?.facts) ? doc.memory.facts : [];
+      parsed.push({
+        file,
+        soul: typeof doc?.namepoint === 'string' ? doc.namepoint : path.basename(file, '.fafm'),
+        version: typeof doc?.version === 'string' ? doc.version : '1.0',
+        facts,
+        raw,
+      });
+    }
+
+    const populatedCount = parsed.filter((p) => p.facts.length > 0).length;
+    const totalFactCount = parsed.reduce((sum, p) => sum + p.facts.length, 0);
+
+    // Time range across all facts (ISO string min/max).
+    const timestamps: string[] = parsed.flatMap((p) =>
+      p.facts.map((f) => f?.timestamp).filter((t: any): t is string => typeof t === 'string'),
+    );
+    const timeRange =
+      timestamps.length > 0
+        ? {
+            from: timestamps.reduce((a, b) => (a < b ? a : b)),
+            to: timestamps.reduce((a, b) => (a > b ? a : b)),
+          }
+        : undefined;
+
+    const scope: { souls: string[]; fact_count: number; time_range?: { from: string; to: string } } = {
+      souls: parsed.map((p) => p.soul),
+      fact_count: totalFactCount,
+    };
+    if (timeRange) scope.time_range = timeRange;
+
+    const sha256 = (s: string): string =>
+      'sha256:' + crypto.createHash('sha256').update(s).digest('hex');
+    const nowIso = new Date().toISOString();
+
+    // --- VERBATIM MODE ---
+    if (verbatim) {
+      const fullYaml =
+        parsed.length === 1 ? parsed[0].raw : parsed.map((p) => p.raw).join('\n---\n');
+      const hash = sha256(fullYaml);
+      const sizeBytes = Buffer.byteLength(fullYaml, 'utf-8');
+      const tokenEstimate = Math.ceil(fullYaml.length / 4);
+      const status: 'restored' | 'partial' =
+        parsed.length > 1 && populatedCount < parsed.length ? 'partial' : 'restored';
+      const summary =
+        `verbatim ${parsed.length === 1 ? 'soul' : parsed.length + ' souls'} — ` +
+        `${totalFactCount} facts, ${sizeBytes} bytes`;
+
+      const payload = {
+        status,
+        stamp: { version: parsed[0].version, hash, timestamp: nowIso },
+        scope,
+        content: fullYaml,
+        summary,
+        metadata: { size_bytes: sizeBytes, token_estimate: tokenEstimate },
+      };
+
+      return {
+        content: [{ type: 'text', text: this.formatFafmRefresh(payload) }],
+      };
+    }
+
+    // --- DELTA MODE (default) ---
+    // Facts are immutable once written (per Grok's spec for the etch tool), so
+    // delta carries only `added`. `updated` is reserved in the schema for a
+    // future mutation tool — emitted as an empty array now for shape stability.
+    const added: any[] = [];
+    const updated: any[] = [];
+    for (const p of parsed) {
+      for (const f of p.facts) {
+        const ts = typeof f?.timestamp === 'string' ? f.timestamp : undefined;
+        if (since === undefined || (ts !== undefined && ts > since)) {
+          added.push({ soul: p.soul, ...f });
+        }
+      }
+    }
+
+    const deltaSize = added.length + updated.length;
+    let status: 'restored' | 'partial' | 'no_change';
+    if (deltaSize === 0 && since !== undefined) {
+      status = 'no_change';
+    } else if (parsed.length > 1 && populatedCount < parsed.length) {
+      status = 'partial';
+    } else {
+      status = 'restored';
+    }
+
+    // Hash the slice we actually return (Grok's spec: "Content hash of returned
+    // memory slice" — not the whole-file hash).
+    const deltaYaml = YAML.stringify({ added, updated });
+    const hash = sha256(deltaYaml);
+    const sizeBytes = Buffer.byteLength(deltaYaml, 'utf-8');
+    const tokenEstimate = Math.ceil(deltaYaml.length / 4);
+
+    const sinceLabel = since ?? 'epoch';
+    const soulLabel = parsed.length === 1 ? parsed[0].soul : `${parsed.length} souls`;
+    const summary =
+      status === 'no_change'
+        ? `no_change — 0 new facts since ${sinceLabel}`
+        : `${added.length} fact${added.length === 1 ? '' : 's'} since ${sinceLabel} from ${soulLabel}`;
+
+    const payload = {
+      status,
+      stamp: { version: parsed[0].version, hash, timestamp: nowIso },
+      scope,
+      delta: { added, updated },
+      summary,
+      metadata: { size_bytes: sizeBytes, token_estimate: tokenEstimate },
+    };
+
+    return {
+      content: [{ type: 'text', text: this.formatFafmRefresh(payload) }],
+    };
+  }
+
+  /**
+   * Format the `refresh_fafm` payload for the MCP text-content channel.
+   * Human-readable header first; full machine payload in a JSON fence below
+   * so the agent can parse fields while the human sees a quick read.
+   */
+  private formatFafmRefresh(payload: {
+    status: string;
+    stamp: { version: string; hash: string; timestamp: string };
+    scope: { souls: string[]; fact_count: number; time_range?: { from: string; to: string } };
+    summary: string;
+    metadata: { size_bytes: number; token_estimate: number };
+    [k: string]: any;
+  }): string {
+    const header =
+      `REFRESH FAFM — ${payload.status}\n\n` +
+      `  ${payload.summary}\n` +
+      `  stamp: ${payload.stamp.hash} @ ${payload.stamp.timestamp}\n` +
+      `  scope: ${payload.scope.souls.join(', ')} (${payload.scope.fact_count} facts)\n` +
+      (payload.scope.time_range
+        ? `  range: ${payload.scope.time_range.from} → ${payload.scope.time_range.to}\n`
+        : '') +
+      `  metadata: ${payload.metadata.size_bytes} bytes, ~${payload.metadata.token_estimate} tokens\n`;
+
+    return header + '\n```json\n' + JSON.stringify(payload, null, 2) + '\n```\n';
   }
 
   private async handleFafInit(args: any): Promise<CallToolResult> {

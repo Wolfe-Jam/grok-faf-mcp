@@ -29,16 +29,20 @@ jobs:
         run: ./mcp-publisher login github-oidc
 
       - name: Verify server.json version matches release tag
+        id: verify
         run: |
           TAG="${GITHUB_REF_NAME#v}"
           MANIFEST_VERSION=$(jq -r '.version' server.json)
           if [ "$TAG" != "$MANIFEST_VERSION" ]; then
-            echo "::error::server.json version ($MANIFEST_VERSION) does not match release tag ($TAG). Bump server.json before tagging."
-            exit 1
+            echo "::notice::server.json version ($MANIFEST_VERSION) lags release tag ($TAG) — skipping MCP Registry publish. This is intentional when shipping npm-only scope, or when server.json is held as a 'line in sand' for a catch-site surface. Bump server.json before tagging if MCP Registry update was intended."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            exit 0
           fi
           echo "✓ server.json v$MANIFEST_VERSION matches release tag v$TAG"
+          echo "skip=false" >> "$GITHUB_OUTPUT"
 
       - name: Publish to MCP Registry (with retry on 5xx / timeout)
+        if: steps.verify.outputs.skip != 'true'
         run: |
           set +e
           MAX_ATTEMPTS=5

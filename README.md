@@ -137,7 +137,7 @@ Format:  IANA-registered .faf (application/vnd.faf+yaml)
 Tools:   14 hosted (WASM-pure: 13 + refresh_faf) · 55 local (bunx)
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
-Tests:   234 total · 232 pass · 1 skip · 1 todo · 0 fail (9 files)
+Tests:   236 total · 212 pass · 24 skip · 0 fail (9 files)
 Status:  FAST⚡️AF
 ```
 
@@ -283,10 +283,10 @@ grok-faf-mcp v1.4.9
 
 ## Testing
 
-234 tests across 9 files — 232 pass · 1 skip · 1 todo · 0 fail:
+236 tests across 9 files — 212 pass · 24 skip · 0 fail:
 
 ```bash
-npm test    # runs all 234 (bun test)
+npm test    # runs all 236 (bun test)
 ```
 
 | Suite | Coverage |

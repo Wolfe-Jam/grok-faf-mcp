@@ -163,12 +163,27 @@ At 55%, Grok guesses half the time. At 100%, Grok knows your project.
 
 ## Two Ways to Deploy
 
-### 1. Local (bunx)
+### 1. Hosted (zero install — recommended)
+Point your MCP client at the production URL — edge-served on Cloudflare Workers, no subprocess, sub-ms cold start. WASM-pure tools only on this path (scoring, validation, `refresh_faf`).
+
+```json
+{
+  "mcpServers": {
+    "grok-faf": {
+      "url": "https://mcpaas.live/grok/mcp/v1"
+    }
+  }
+}
+```
+
+### 2. Local (bunx — for FS-touching workflows)
+Use the local stdio path when you need filesystem access (`faf_init`, `faf_sync`, file-mutating tools):
+
 ```bash
 bunx grok-faf-mcp
 ```
 
-**Or add to your MCP config:**
+**Or via MCP config:**
 
 ```json
 {
@@ -180,9 +195,6 @@ bunx grok-faf-mcp
   }
 }
 ```
-
-### 2. Hosted (zero install)
-`url = "https://mcpaas.live/grok/mcp/v1"` — edge-served on Cloudflare Workers, no subprocess.
 
 ---
 
@@ -237,18 +249,17 @@ Slowest:      1.3ms (score — Mk4 WASM)
 Improvement:  19ms → 0.5ms (3,800% faster)
 Engine:       Mk4 WASM via faf-scoring-kernel
 Memory:       Zero leaks
-Transport:    HTTP-SSE (Vercel Edge)
+Transport:    stdio (local, bunx) · Streamable HTTP (hosted, Cloudflare Workers)
 ```
 
-Benchmarked 10x per tool, warmed up, on local execution.
+Benchmarked 10x per tool, warmed up, on local stdio execution. Hosted edge adds sub-ms cold start on top.
 
 ---
 
 ## Architecture
 
 ```
-grok-faf-mcp v1.4.1
-├── api/index.ts              → Vercel serverless (Express + SSE transport)
+grok-faf-mcp v1.4.5
 ├── src/
 │   ├── server.ts             → MCP server (GrokFafMcpServer)
 │   ├── handlers/
@@ -259,8 +270,11 @@ grok-faf-mcp v1.4.1
 │       └── compiler/
 │           └── faf-compiler.ts    → Mk4 WASM scoring + Mk3.1 fallback
 ├── smithery.yaml             → Smithery listing config
-└── vercel.json               → Vercel routing
+├── api/index.ts              → Vercel catch-site (legacy showcase surface; kept alive)
+└── vercel.json               → Vercel routing for the catch-site
 ```
+
+**Production deployment:** Cloudflare Workers via `mcpaas-cf` (serving `mcpaas.live/grok/mcp/v1`). The `api/index.ts` + `vercel.json` paths above stay alive as a catch-site for legacy/bookmarked links — they are no longer the production path.
 
 **Scoring pipeline:** TypeScript compiler parses `.faf` → detects project type → The Bouncer injects `slotignored` for inapplicable slots → `faf-scoring-kernel` (WASM) scores → falls back to Mk3.1 if kernel unavailable.
 

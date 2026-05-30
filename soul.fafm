@@ -1,0 +1,337 @@
+# application/vnd.fafm+yaml — dogfood memory for grok-faf-mcp 1.5 session work
+# Etched 2026-05-30 to solve the "Claude session RAM keeps dropping intel" problem.
+# This file IS the product solving the problem we observed building the product.
+version: "1.1"
+profile: "knowledge"
+namepoint: "@grok-faf-mcp:1.5"
+created: "2026-05-30T17:37:31Z"
+last_etched: "2026-05-30T17:37:31Z"
+retention: "forever"
+
+index:
+  - "fafm-not-about-scoring — load-bearing format-level doctrine"
+  - "refresh-fafm-v1-is-for-grok — strategic commitment"
+  - "build-precedent — Grok WHAT · wolfejam HOW · Claude gather"
+  - "vrom-ram-model — FAF=vROM (ROM), FAFm=RAM (in-session, persisted)"
+  - "consult-shape — confirmation, not suggestive; let Grok provide"
+
+memory:
+  facts:
+    - text: |
+        FAFm is NOT about scoring. Memories are not scored. The .fafm spec (MEMORY-FORMAT.md)
+        EXPLICITLY does not mandate measurement, drift detection, or refresh cycles. Per-fact
+        fields like confidence_score and verification_status are PROVENANCE (witness data),
+        not score components. Do not propose A/B/C/D/E score formulas for .fafm — that's a
+        category error. .faf scores because completeness IS quality for project DNA; .fafm
+        accumulates lived experience, which is not gradable the same way.
+      id: "fafm-not-about-scoring"
+      type: "feedback"
+      priority: "critical"
+      tags: ["doctrine", "format", "scoring", "wolfejam-2026-05-30"]
+      source: "wolfejam direct correction 2026-05-30 + MEMORY-FORMAT.md spec confirmation"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        refresh_fafm v1 is FOR GROK. Not general-purpose. Not Claude-first. Strategic
+        commitment — v1 ships to Grok's preferences. Asking him to confirm the shape is
+        smart, not stand-down. The consult is confirmation of specifics, never architecture
+        review (architecture is past — see FAF-DRIFT-DETECTION-SPEC-2026-05-29.md).
+      id: "refresh-fafm-v1-is-for-grok"
+      type: "feedback"
+      priority: "critical"
+      tags: ["strategic", "1.5", "grok", "wolfejam-2026-05-30"]
+      source: "wolfejam 2026-05-30 — 'this is it Claude, we are writing the future today, Version 1 is for Grok'"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Build precedent (locked 2026-05-29, etched here for re-grounding):
+        Grok defines WHAT · wolfejam builds HOW · Claude understands + gathers.
+        Understand completely before code. Verify binaries not comments. No premature build
+        talk. No option-polling. When Claude proposes A/B/C/D/E options to a question Grok
+        should answer, Claude is violating the precedent. See memory/build-precedent-understand-gather.md.
+      id: "build-precedent"
+      type: "feedback"
+      priority: "critical"
+      tags: ["doctrine", "process", "precedent"]
+      source: "wolfejam 2026-05-29 — 'remember, this is precedent'"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        vROM / RAM model: FAF covers ROM (vROM — durable project DNA, stable, read-once
+        per session). FAFm is for the RAM (AI in-session memory, persisted across sessions
+        via .fafm file). refresh_fafm's job is to RESTORE the RAM from the persistent .fafm —
+        a re-delivery primitive, not a measurement tool. The framing question for v1 is what
+        Grok wants reminded about, and when.
+      id: "vrom-ram-model"
+      type: "reference"
+      priority: "high"
+      tags: ["doctrine", "architecture", "refresh-fafm"]
+      source: "FAF-DRIFT-DETECTION-SPEC-2026-05-29.md §1 + wolfejam 2026-05-30 reinforcement"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        refresh_fafm is a READ-ONLY DELIVERY tool. The .fafm spec (MEMORY-FORMAT.md) mandates:
+        memory is NEVER deleted by agent commands (UI-only deletion). YAML safe-load MUST
+        be used (RFC 9512 mitigations — custom type construction disabled, alias-expansion
+        + nesting-depth limits). Memory MUST NOT be elevated to system instructions. .fafm
+        is treated as untrusted input (context-poisoning vector). refresh_fafm respects all
+        these as design constraints, not afterthoughts.
+      id: "refresh-fafm-read-only-mandates"
+      type: "reference"
+      priority: "critical"
+      tags: ["security", "spec-MUST", "refresh-fafm", "constraints"]
+      source: "MEMORY-FORMAT.md normative requirements + IANA security considerations"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        .fafm ecosystem is PRODUCTION, not greenfield. Key repos: faf-memory (Claude plugin),
+        faf-memory-mcp (Python FastMCP wrapping claude-fafm-sdk, exposes 5 tools: etch, recall,
+        list_facts, save_soul, load_soul), claude-fafm-sdk (Python SDK, forthcoming per spec),
+        grok-faf-voice (PyPI, voice profile reference impl). refresh_fafm COMPLEMENTS these
+        tools — does not replace them. Per complementary-by-default doctrine: same .fafm
+        file, different operation tier (TS delivery primitive vs Python memory ops).
+      id: "fafm-ecosystem-production"
+      type: "reference"
+      priority: "high"
+      tags: ["ecosystem", "repos", "complementary-by-default"]
+      source: "Read of /FAF/faf-memory, /FAF/faf-memory-mcp, /FAF/claude-fafm-sdk, /FAF/grok-faf-voice"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        .fafm has TWO canonical profiles per MEMORY-FORMAT.md:
+        - profile: voice (DEFAULT when absent) — simple string facts or {text, tags?} objects;
+          reference impl grok-faf-voice; Grok-aligned (per IANA-named apps).
+        - profile: knowledge — rich objects with metadata (id, type, priority, tags, links,
+          provenance, source, confidence_score, etc.); reference impl claude-fafm-sdk
+          (forthcoming); Claude-aligned via faf-memory-mcp.
+        IANA framing leads with voice (Voice agents · LiveKit · Grok Voice · ElevenLabs · Hume).
+        Knowledge has `index` for fast-scan pointers; voice does not. Both share one parser.
+      id: "fafm-two-profiles"
+      type: "reference"
+      priority: "high"
+      tags: ["format", "profiles", "voice", "knowledge"]
+      source: "MEMORY-FORMAT.md + IANA application/vnd.fafm+yaml registration"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        .fafm IANA registration (2026-05-13): media type application/vnd.fafm+yaml,
+        file extension .fafm, intended usage COMMON. Registrant James Wolfe (team@faf.one).
+        Change Controller: FAF Foundation (institutional, not personal). Canonical spec at
+        github.com/Wolfe-Jam/faf/blob/main/MEMORY-FORMAT.md (delegated from IANA). Security
+        considerations mandate: 0600 file mode local, encrypted at rest backend, TLS in
+        transit, RFC 9512 YAML mitigations, voice-command deletion prohibited.
+      id: "fafm-iana-registration"
+      type: "reference"
+      priority: "high"
+      tags: ["IANA", "format", "governance", "security"]
+      source: "https://www.iana.org/assignments/media-types/application/vnd.fafm+yaml fetched 2026-05-30"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        The consult question to Grok for refresh_fafm v1 is SIMPLE, NOT SUGGESTIVE, framed
+        as CONFIRMATION. Two open questions, Grok provides the shape:
+        (1) What should refresh_fafm deliver when called?
+        (2) When should refresh_fafm fire?
+        Do NOT pre-list A/B/C/D/E options that bias the answer. Do NOT propose mechanical
+        details (stamp shape, verbatim default, chain semantics) before the primary two
+        land. Everything mechanical is downstream of Grok's answers to the two primary Qs.
+        ORGANIZATION (post-2026-05-30 reorg): Grok-related docs live in ~/export/
+        (review + intel; "we don't publish these"). Internal Claude-process working notes
+        stay in ~/PLANET-FAF/docs/.
+        - PROMPT we sent: ~/export/grok-1-consult-refresh-fafm-q1-q2-2026-05-30.md
+        - RESPONSE we got: ~/export/grok-1-response-refresh-fafm-spec-2026-05-30.md
+        - REF doc (Claude internal reasoning, why 2-Q shape): ~/PLANET-FAF/docs/GROK-1-CONSULT-REFRESH-FAFM-REF-2026-05-30.md
+        - Cross-session canonical memory: memory/grok-refresh-fafm-spec.md (same response content + Claude synthesis)
+      id: "consult-shape"
+      type: "feedback"
+      priority: "critical"
+      tags: ["consult", "process", "wolfejam-2026-05-30"]
+      source: "wolfejam 2026-05-30 — 'simple not suggestive, framed as confirmation, let him provide'"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Path convention for .fafm: default <cwd>/soul.fafm (matches faf-memory-mcp's
+        FAF_SOUL_PATH default + the production soul.fafm in faf-memory repo). Env overrides:
+        FAF_SOUL_PATH (path), FAF_SOUL_NAMEPOINT (default @local), FAF_SOUL_PROFILE
+        (default knowledge in faf-memory-mcp; spec default is voice). Override via path arg
+        also supported. For multi-namepoint setups (FAFA-meets-X pattern), per-namepoint
+        files like <namepoint>.fafm are possible but not yet wired in production.
+      id: "fafm-path-convention"
+      type: "reference"
+      priority: "standard"
+      tags: ["path", "convention", "production"]
+      source: "faf-memory-mcp/faf_memory_mcp/server.py + faf-memory/.mcp.json + spec"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Doctrines locked in this 2026-05-30 session (post-1.4.9 ship, pre-refresh_fafm code):
+        - yaml-is-the-comments-faf-format-doctrine (comments are load-bearing; JSON-with-comments inferior)
+        - faf-hub-architecture-doctrine (THIS IS FAF — YAML hub · IFF-chunked · Zig-indexed · .fafb compiled · ZEPH delivered · projects to anything)
+        - faf-defines-fafm-remembers-you-decide-where (role trinity)
+        - complementary-by-default-no-disputes-in-stack (positioning)
+        - fafm-python-strategic-spread-vector (Python = territory expansion, not concession)
+        - gates-refuse-signs-request (Doc Gate 101 mechanical)
+        - faf-sync-must-be-content-aware-not-handshake (sync gap)
+        Each has a memory file + a PLANET-FAF/docs companion. Connect them when designing refresh_fafm.
+      id: "doctrines-locked-2026-05-30"
+      type: "reference"
+      priority: "high"
+      tags: ["doctrines", "session-2026-05-30", "load-bearing"]
+      source: "Session work 2026-05-30 captured in ~/.claude/projects/-Users-wolfejam/memory/ + ~/PLANET-FAF/docs/"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Failure mode observed in this session: Claude session RAM kept dropping intel
+        between turns. Specific patterns: (1) Drafting consult questions without reading
+        the existing spec doc first. (2) Pattern-matching .faf's score-as-stamp doctrine
+        onto .fafm without recognizing memory is not scored. (3) Proposing mechanical
+        options (A/B/C/D/E) for questions Grok should answer per build precedent.
+        (4) Re-deriving conclusions already documented in faf-memory / faf-memory-mcp.
+        wolfejam caught each, named the fix: dogfood .fafm — use the product whose
+        primary job is "FAFm remembers" to solve the "Claude forgot" problem.
+        This very file IS the fix.
+      id: "claude-memory-failure-modes-dogfood-fix"
+      type: "feedback"
+      priority: "critical"
+      tags: ["meta", "dogfooding", "session-failure-modes", "process-fix"]
+      source: "wolfejam 2026-05-30 — 'do we need to dogfood this project'"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Tasks #4 (refresh_fafm impl) is BLOCKED by #14 (Grok-1 confirmation consult).
+        Tasks already locked for 1.5: #2 .fafm drift detector, #4 refresh.fafm, #5
+        two-intensity blend, #7 detection→refresh telemetry, #10 faf_orchestrate_recommendation,
+        #11 CheckID, #12 Repeat-offender, #13 take-a-hint. Branch feat/1.5/refresh-fafm
+        exists empty awaiting Grok's WHAT answers.
+        UPDATE 2026-05-30: Grok-1 ANSWERED — see memory/grok-refresh-fafm-spec.md for verbatim
+        capture. Task #14 closes when Grok's offer (signatures + 6-tool integration spec) is
+        either accepted or declined. Task #4 unblockable post-decision on that offer.
+      id: "1.5-task-state-snapshot"
+      type: "project"
+      priority: "high"
+      tags: ["1.5", "tasks", "state-snapshot"]
+      source: "Session task tracker as of 2026-05-30T17:37:31Z"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Grok-1 ANSWER for refresh_fafm v1 (2026-05-30) — Q1 WHAT to deliver: default
+        structured payload with status + scope (souls, fact_count, time_range) + delta
+        (added/updated/removed) + summary (human+machine digest) + metadata (version,
+        hash, timestamp, source, size_bytes, token_estimate). Verbatim mode via
+        `verbatim: true` flag returns full content + same metadata. Non-negotiables:
+        always stamped, never mutates, RFC 9512 strict YAML, small by default.
+        Consistent with refresh_faf precedent (stamped delta default, verbatim on demand).
+      id: "grok-refresh-fafm-q1-what"
+      type: "feedback"
+      priority: "critical"
+      tags: ["grok-1", "refresh-fafm", "spec", "Q1", "WHAT"]
+      source: "Grok-1 consult 2026-05-30 — see memory/grok-refresh-fafm-spec.md for verbatim"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Grok-1 ANSWER for refresh_fafm v1 (2026-05-30) — Q2 WHEN to fire: agent-driven +
+        advisory hints model. Three trigger surfaces in priority: (1) explicit call by
+        main agent — DEFAULT + most common; (2) light advisory hints via faf_drift_status
+        or optional field on recall/load_soul — shape {level, reason, last_refresh};
+        (3) event-driven/policy-driven via faf-agent orchestration (before plan subagent,
+        after N turns, before high-stakes reasoning, explicit user command). ANTI-PATTERN
+        LOCKED OUT: never automatic background fire every turn/recall; never silent
+        system-triggered without agent visibility/veto. Agent owns the decision to pay
+        the cost. Same philosophy as refresh_faf — primitive powerful and explicit;
+        hints advisory; agent + user own the trigger.
+      id: "grok-refresh-fafm-q2-when"
+      type: "feedback"
+      priority: "critical"
+      tags: ["grok-1", "refresh-fafm", "spec", "Q2", "WHEN", "subordinate-not-daemon"]
+      source: "Grok-1 consult 2026-05-30 — see memory/grok-refresh-fafm-spec.md for verbatim"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Grok-1 OFFER ACCEPTED (wolfejam 2026-05-30) — Grok delivered FULL tool signature spec
+        in one round. ONE primary tool (not two), parameters: soul (default "default", "all"
+        for every soul), verbatim (bool, default false), since (ISO date-time baseline,
+        ignored when verbatim=true), additionalProperties: false. Return: status enum
+        (restored|partial|no_change), stamp {version, hash, timestamp} REQUIRED — hash is
+        "content hash of returned memory slice" not whole-file. scope {souls[], fact_count,
+        time_range} REQUIRED. delta {added, updated} when verbatim=false. content (full YAML)
+        when verbatim=true. summary string. metadata {size_bytes, token_estimate}. NO score
+        field anywhere — validates fafm-not-about-scoring at the spec level. Plus 6-tool
+        coexistence table + 4 usage patterns. Full verbatim spec in
+        memory/grok-refresh-fafm-spec.md "Grok-1 Round 2" section. Code path now unambiguous.
+      id: "grok-refresh-fafm-open-offer"
+      type: "feedback"
+      priority: "high"
+      tags: ["grok-1", "refresh-fafm", "decision-pending", "open-thread"]
+      source: "Grok-1 consult 2026-05-30 — closing offer"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+    - text: |
+        Grok-1 Round 3 delivered (2026-05-30) — MCP Registry copy in his voice for the full
+        6-tool memory surface. Locked refresh_fafm primary title "Refresh FAF Memory (.fafm)"
+        (alt: "Refresh Structured Memory Layer (.fafm)") + a 2-paragraph description ending in
+        "Complements recall, load_soul, and etch — does not replace them." Also tightened
+        titles/descriptions for the existing 5 tools (etch/recall/list_facts/save_soul/load_soul)
+        — all suffixed "(.fafm)" for visual distinction from refresh_faf. Grok's design
+        rationale: emphasized "read-only" + "stamped" as the two key guarantees, designed for
+        both agents AND human viewers in /mcps modal, sibling-to-refresh_faf voice (vROM/RAM
+        framing). NO score language anywhere — validates fafm-not-about-scoring at customer-
+        facing surface (not just API). Full verbatim in:
+        ~/export/grok-1-response-mcp-registry-copy-2026-05-30.md.
+        REMAINING Grok offers (packaging only — no blocker): adjust verbosity / produce
+        6-tool single JSON block. Design-note offer from Round 2 declined (verbatim signature
+        spec + memory file already serve that role). CODE PATH FULLY UNBLOCKED.
+      id: "grok-refresh-fafm-round-3-registry-copy"
+      type: "reference"
+      priority: "high"
+      tags: ["grok-1", "refresh-fafm", "registry-copy", "round-3", "customer-facing", "locked"]
+      source: "Grok-1 consult 2026-05-30 — Round 3 (offer #2 accepted)"
+      timestamp: "2026-05-30T17:37:31Z"
+      confidence_score: 1.0
+      verification_status: "verified"
+
+  sessions: []
+  preferences: {}
+  custom:
+    session_context:
+      shipped_today: "grok-faf-mcp 1.4.9 to npm (2026-05-30T06:10:07Z), Doc Gate 101 landed in pubpro, faf-taf-git v2.2.0 + bun 1.3.14 + claude-review disabled cohort"
+      next_action_blocked_by: "NOTHING — refresh_fafm v1 spec is FULLY locked (signature Round 1+2, registry copy Round 3). Code path open. wolfejam GO required to start wiring per build-precedent."
+      grok_consult_status: "COMPLETE 2026-05-30 — Rounds 1+2 (signature) + Round 3 (registry copy) all delivered + locked + captured to ~/export/ + memory/. Remaining Grok offers are packaging-only (terseness adjustments, 6-tool single JSON block) — not blockers."
+      grok_consult_artifacts:
+        prompt: "~/export/grok-1-consult-refresh-fafm-q1-q2-2026-05-30.md"
+        response_rounds_1_2: "~/export/grok-1-response-refresh-fafm-spec-2026-05-30.md"
+        response_round_3: "~/export/grok-1-response-mcp-registry-copy-2026-05-30.md"
+        ref_internal: "~/PLANET-FAF/docs/GROK-1-CONSULT-REFRESH-FAFM-REF-2026-05-30.md"
+        canonical_memory: "memory/grok-refresh-fafm-spec.md"
+      dogfood_purpose: "solve Claude session memory drift by being the persistent layer this session needs"

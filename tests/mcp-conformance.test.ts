@@ -178,12 +178,17 @@ describe('🏁 MCP Conformance — over real protocol via SDK + in-memory transp
       // `rag_*` namespace (LAZY-RAG cache over xAI Collections). Both are
       // legitimate, advertised namespaces — every tool must sit under one.
       //
-      // Blessed cross-surface name: `refresh_faf` is the GROK-surface name for
-      // the re-grounding primitive (the name Grok asked for; the one-pager
-      // ships it). faf-cli exposes the SAME capability as `faf_refresh`. Same
-      // thing, two surfaces, two names — a deliberate, honored exception, not
-      // namespace drift. Keep this set tiny and named, never a wildcard.
-      const CROSS_SURFACE = new Set(['refresh_faf']);
+      // Blessed cross-surface names: GROK-surface names for re-grounding
+      // primitives (the names Grok asked for; the one-pager ships them).
+      // - `refresh_faf`  — re-ground on project DNA (.faf); faf-cli equivalent
+      //                    is `faf_refresh`. Two surfaces, two names.
+      // - `refresh_fafm` — re-ground on the memory layer (.fafm); locked spec
+      //                    from Grok-1 consult 2026-05-30 (memory/grok-refresh-
+      //                    fafm-spec.md). Sibling to refresh_faf for the RAM/
+      //                    memory layer in the vROM/RAM model.
+      // Both are deliberate, honored exceptions, not namespace drift. Keep
+      // this set tiny and named, never a wildcard.
+      const CROSS_SURFACE = new Set(['refresh_faf', 'refresh_fafm']);
       const { tools } = await client.listTools();
       for (const tool of tools) {
         const namespaced =

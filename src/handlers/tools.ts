@@ -10,6 +10,7 @@ import { findFafFile, getNewFafFilePath } from '../utils/faf-file-finder.js';
 import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
+import { runRefreshBlend, type RefreshMode } from '../orchestrator/refresh-blend';
 // v1.4.1: single-source scoring — port-then-wire the truthful scorer into the
 // live FafToolHandler (grok has no ChampionshipToolHandler wired). faf_score
 // now reads faf-cli's real scoreFafYaml (the IANA-spec one) instead of the
@@ -97,6 +98,26 @@ export class FafToolHandler {
                 format: 'date-time',
                 description: 'Optional ISO timestamp. Only return facts modified after this time. Ignored when verbatim=true.',
               },
+            },
+            additionalProperties: false,
+          },
+        },
+        {
+          name: 'refresh_blend',
+          description: 'Baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R analog). Fires BOTH `refresh_faf` + `refresh_fafm` in one call. `mode: "blend"` (default) = light `.faf` + delta `.fafm` — the everyday re-ground. `mode: "nuke"` = light `.faf` + verbatim `.fafm` — the hard reload for polluted session memory. Intensity matches drift rate per layer.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              mode: {
+                type: 'string',
+                enum: ['blend', 'nuke'],
+                description: "'blend' (Cmd+R analog, default) = .faf + .fafm delta. 'nuke' (Cmd+Shift+R analog) = .faf + .fafm verbatim.",
+                default: 'blend',
+              },
+              baseline: { type: 'number', description: 'For refresh_faf: your last-known score (0-100). Drift delta reported if provided.' },
+              path: { type: 'string', description: 'For refresh_faf: project directory or .faf path (supports ~).' },
+              soul: { type: 'string', description: "For refresh_fafm: specific soul. Omit or 'default' for primary; 'all' for every soul." },
+              since: { type: 'string', format: 'date-time', description: 'For refresh_fafm (delta mode only): ISO timestamp. Only facts modified after this. Ignored when mode=nuke (verbatim).' },
             },
             additionalProperties: false,
           },
@@ -312,6 +333,8 @@ export class FafToolHandler {
         return await this.handleFafRefresh(args);
       case 'refresh_fafm':
         return await this.handleFafmRefresh(args);
+      case 'refresh_blend':
+        return await this.handleRefreshBlend(args);
       case 'faf_init':
         return await this.handleFafInit(args);
       case 'faf_trust':
@@ -895,6 +918,63 @@ export class FafToolHandler {
       `  metadata: ${payload.metadata.size_bytes} bytes, ~${payload.metadata.token_estimate} tokens\n`;
 
     return header + '\n```json\n' + JSON.stringify(payload, null, 2) + '\n```\n';
+  }
+
+  /**
+   * `refresh_blend` — the baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R
+   * analog). Fires BOTH `refresh_faf` + `refresh_fafm` in one call, with
+   * intensity per layer matched to drift rate:
+   *
+   *   - `mode: 'blend'` (default, Cmd+R) → .faf (light) + .fafm (delta)
+   *   - `mode: 'nuke'`  (Cmd+Shift+R)    → .faf (light) + .fafm (verbatim)
+   *
+   * Per `[[refresh-fafm-cmd-shift-r]]`: blend is BAKED IN, NOT a dial. Both
+   * layers ALWAYS fire — drift can land on either, you always want signal
+   * from both. The mode only affects fafm intensity.
+   *
+   * Composition logic lives in `src/orchestrator/refresh-blend.ts` as a pure
+   * function (`runRefreshBlend`) — this handler is the FS-wired thin shim
+   * that binds the orchestrator to the live `handleFafRefresh` +
+   * `handleFafmRefresh` methods.
+   *
+   * Output shape PARITY across modes (spec acceptance): outer envelope is
+   * identical (`{ mode, faf, fafm, detected_at }`). fafm internal payload
+   * differs (delta vs content) but that's already mutually-exclusive per
+   * refresh_fafm's locked spec.
+   */
+  private async handleRefreshBlend(args: any): Promise<CallToolResult> {
+    const mode: RefreshMode = args?.mode === 'nuke' ? 'nuke' : 'blend';
+
+    const result = await runRefreshBlend(
+      {
+        mode,
+        baseline: typeof args?.baseline === 'number' ? args.baseline : undefined,
+        path: typeof args?.path === 'string' ? args.path : undefined,
+        soul: typeof args?.soul === 'string' ? args.soul : undefined,
+        since: typeof args?.since === 'string' ? args.since : undefined,
+      },
+      {
+        refreshFaf: (a) => this.handleFafRefresh(a),
+        refreshFafm: (a) => this.handleFafmRefresh(a),
+      },
+    );
+
+    // Surface as a single text payload — human-readable header + the structured
+    // JSON envelope below so callers can parse machine fields while the human
+    // reads a quick summary at the top.
+    const header =
+      `REFRESH BLEND — mode: ${result.mode}\n` +
+      `  .faf:  refresh_faf (light) ${result.mode === 'blend' ? '· refresh_fafm (delta)' : '· refresh_fafm (verbatim)'}\n` +
+      `  emitted: ${result.detected_at}\n`;
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: header + '\n```json\n' + JSON.stringify(result, null, 2) + '\n```\n',
+        },
+      ],
+    };
   }
 
   private async handleFafInit(args: any): Promise<CallToolResult> {

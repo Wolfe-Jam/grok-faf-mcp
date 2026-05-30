@@ -180,15 +180,21 @@ describe('🏁 MCP Conformance — over real protocol via SDK + in-memory transp
       //
       // Blessed cross-surface names: GROK-surface names for re-grounding
       // primitives (the names Grok asked for; the one-pager ships them).
-      // - `refresh_faf`  — re-ground on project DNA (.faf); faf-cli equivalent
-      //                    is `faf_refresh`. Two surfaces, two names.
-      // - `refresh_fafm` — re-ground on the memory layer (.fafm); locked spec
-      //                    from Grok-1 consult 2026-05-30 (memory/grok-refresh-
-      //                    fafm-spec.md). Sibling to refresh_faf for the RAM/
-      //                    memory layer in the vROM/RAM model.
-      // Both are deliberate, honored exceptions, not namespace drift. Keep
-      // this set tiny and named, never a wildcard.
-      const CROSS_SURFACE = new Set(['refresh_faf', 'refresh_fafm']);
+      // - `refresh_faf`   — re-ground on project DNA (.faf); faf-cli equivalent
+      //                     is `faf_refresh`. Two surfaces, two names.
+      // - `refresh_fafm`  — re-ground on the memory layer (.fafm); locked spec
+      //                     from Grok-1 consult 2026-05-30 (memory/grok-refresh-
+      //                     fafm-spec.md). Sibling to refresh_faf for the RAM/
+      //                     memory layer in the vROM/RAM model.
+      // - `refresh_blend` — the baked-in two-intensity refresh (Cmd+R /
+      //                     Cmd+Shift+R analog) — composes refresh_faf +
+      //                     refresh_fafm in one call. Same naming family
+      //                     (`refresh_<layer>`), where 'blend' is the
+      //                     composition meta-layer. [[refresh-fafm-cmd-shift-r]]
+      //                     locks the doctrine: blend is BAKED IN, not a dial.
+      // All deliberate, honored exceptions, not namespace drift. Keep this
+      // set tiny and named, never a wildcard.
+      const CROSS_SURFACE = new Set(['refresh_faf', 'refresh_fafm', 'refresh_blend']);
       const { tools } = await client.listTools();
       for (const tool of tools) {
         const namespaced =

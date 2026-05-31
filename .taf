@@ -534,4 +534,12 @@ test_history:
       failed: 0
       skipped: 103
     trigger: github-actions
-last_updated: 2026-05-31T20:26:22.841Z
+  - timestamp: 2026-05-31T21:04:25.989Z
+    result: FAILED
+    tests:
+      total: 464
+      passed: 383
+      failed: 2
+      skipped: 79
+    trigger: github-actions
+last_updated: 2026-05-31T21:04:25.990Z

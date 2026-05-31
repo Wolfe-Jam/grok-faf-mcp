@@ -29,22 +29,13 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import type { DriftSignal } from '../types/drift-signals';
 
 /** What initiated this refresh fire — auto by a detector, or manual by caller. */
 export type RefreshTrigger = 'auto' | 'manual';
 
 /** Refresh intensity used — matches refresh_blend's modes. */
 export type RefreshIntensity = 'blend' | 'nuke';
-
-/**
- * Minimal shape of a drift signal — duplicated as `Like` to avoid a cross-
- * module type import cycle. Same pattern as `FafmDriftSignalLike` in
- * `repeat-offender.ts`.
- */
-export interface DriftSignalLike {
-  kind: string;
-  [key: string]: unknown;
-}
 
 /** A single refresh telemetry event. Append-only, never mutated. */
 export interface RefreshReceipt {
@@ -53,7 +44,7 @@ export interface RefreshReceipt {
   /** Which refresh intensity ran. */
   intensity: RefreshIntensity;
   /** The drift signal that motivated an auto-fire (undefined for manual). */
-  drift_signal?: DriftSignalLike;
+  drift_signal?: DriftSignal;
   /** ISO 8601 timestamp of when the refresh fired. */
   fired_at: string;
   /** Whatever the refresh primitive returned. Caller decides what to capture. */

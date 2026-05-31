@@ -25,9 +25,8 @@ import {
   RepeatOffenderTracker,
   computeRepeatOffenders,
   type DriftEvent,
-  type FafmDriftSignalLike,
-  type ContradictionReportLike,
 } from '../src/orchestrator/repeat-offender';
+import type { DriftSignal, ContradictionReport } from '../src/types/drift-signals';
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -150,8 +149,9 @@ describe('🏁 WJTTC — RepeatOffenderTracker (grok-faf-mcp 1.5)', () => {
     });
 
     test('bridge: recordFromDriftSignal — each anchor becomes anchor:<text> slot', () => {
-      const signal: FafmDriftSignalLike = {
+      const signal: DriftSignal = {
         kind: 'repetition-rate',
+        score: 0.18,
         repeated_anchors: ['the build precedent', 'gather first then propose'],
         detected_at: T7,
       };
@@ -164,11 +164,21 @@ describe('🏁 WJTTC — RepeatOffenderTracker (grok-faf-mcp 1.5)', () => {
     });
 
     test('bridge: recordFromContradictionReport — each check ID becomes check:<id> slot', () => {
-      const report: ContradictionReportLike = {
+      const mkContradiction = (check: string) => ({
+        check,
+        severity: 'error' as const,
+        location: `synthetic:${check}`,
+        expected: 'X',
+        found: 'Y',
+        message: `synthetic ${check}`,
+      });
+      const report: ContradictionReport = {
         contradictions: [
-          { check: 'c1-faf-when-vs-pkg' },
-          { check: 'c4-readme-arch-vs-pkg' },
+          mkContradiction('c1-faf-when-vs-pkg'),
+          mkContradiction('c4-readme-arch-vs-pkg'),
         ],
+        checked: ['c1-faf-when-vs-pkg', 'c4-readme-arch-vs-pkg'],
+        skipped: [],
       };
       tracker.recordFromContradictionReport(report, T20);
       const r = tracker.getRepeatOffenders({ now: NOW });

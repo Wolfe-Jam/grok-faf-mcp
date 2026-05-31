@@ -102,8 +102,9 @@ describe('🏁 WJTTC UMBRELLA — substrate composition (pre-#10 gate)', () => {
     test('DriftSignal from detector is accepted by tracker bridge (no shape drift)', () => {
       const signal = detectFafmDrift(DRIFTY_FAFM);
       expect(signal).not.toBeNull();
-      // The shape contract: tracker.recordFromDriftSignal expects FafmDriftSignalLike.
-      // If the real DriftSignal drifts from the Like duplicate, this call breaks.
+      // The shape contract: tracker.recordFromDriftSignal accepts the canonical
+      // DriftSignal directly (the Like duplicates were eliminated in PR 1 — types
+      // now live in `src/types/drift-signals.ts` as one source of truth).
       tracker.recordFromDriftSignal(signal as DriftSignal);
       const offenders = tracker.getRepeatOffenders({ now: T_NOW });
       expect(offenders.length).toBeGreaterThan(0);

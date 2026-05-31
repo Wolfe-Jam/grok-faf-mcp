@@ -270,7 +270,7 @@ Benchmarked 10x per tool, warmed up, on local stdio execution. Hosted edge adds 
 ## Architecture
 
 ```
-grok-faf-mcp v1.5.0
+grok-faf-mcp v1.5.1
 ├── src/
 │   ├── server.ts             → MCP server (GrokFafMcpServer)
 │   ├── handlers/

@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.5.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.5.1 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,86 @@ All notable changes to grok-faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.5.1] - 2026-05-31
+
+URL hygiene patch — Vercel deprecated, Cloudflare 100% canonical across every
+surface. Also bundles all post-1.5.0 maintenance landed since the substrate
+ship (CI publish-doubling removed, Linux flake retry wrapper, docs/index.html
+live-fetch overlay, server.json CF URLs).
+
+### Fixed — URL canonicalisation (CF 100%)
+
+- **`package.json` `homepage`** — `grok-faf-mcp.vercel.app` → `grok.faf.one`.
+  This is the field npm renders in the package-page sidebar; the v1.5.0
+  release shipped with the stale Vercel value baked in (immutable per npm).
+  v1.5.1 carries the corrected value forward.
+- **`server.json` `websiteUrl` + `remotes`** — `grok-faf-mcp.vercel.app` / SSE
+  → `grok.faf.one` (websiteUrl) + `streamable-http` to `mcpaas.live/grok/mcp/v1`
+  (remotes). Aligns the MCP Registry listing with every other surface. Repo
+  fix landed via commit `4d1211b`; this ship carries it to the Registry
+  (Registry versions are immutable — v1.5.0 entry stays stale, v1.5.1 entry
+  becomes the new `isLatest`).
+- **`glama.json` `homepage`** — same Vercel → `grok.faf.one` swap (Glama.ai
+  consumes this field for its directory listing).
+- **`api/index.ts` `serverInfo.homepage`** — same Vercel → `grok.faf.one`
+  swap (returned in the legacy MCP server's initialize response).
+- **`scripts/postinstall.js`** — `URL: ...vercel.app/sse` → `URL: mcpaas.live/grok/mcp/v1`
+  (npm post-install message; users running `npm install` see this now).
+- **`AGENTS.md`** / **`GROK.md`** `where:` / `Where:` field — `Vercel (vercel.app)`
+  → `Cloudflare Workers (mcpaas.live/grok/mcp/v1)`. Matches `project.faf`
+  (which was already CF-correct).
+- **`ONE-PAGER.md`** — all Vercel URLs replaced (`/sse` → `/grok/mcp/v1`, `/info`
+  → `/grok/mcp/v1/info`, `/health` → `/grok/mcp/v1/info`); prose updated to
+  describe Cloudflare Workers as the production platform throughout.
+- **`wrangler.toml`** — comment block refreshed: documented CF 100% + Vercel
+  deprecated context, removed stale "Vercel canonical, CF mirror" framing.
+
+### Fixed — bundled 1.6 maintenance (already on main since v1.5.0)
+
+- **CI publish-doubling removed** (commit `ecaa88f`, task #21) — deleted
+  `.github/workflows/mcp-registry-publish.yml`. The release-event-triggered
+  MCP Registry publish workflow doubled with pubpro Step 8's manual
+  `mcp-publisher publish`, causing 400 "duplicate version" failures on every
+  release. Per pubpro Step 9.5 doctrine: *"CI validates, pubpro publishes —
+  never both."* Same shape as the claude-faf-mcp v5.5.1 fix.
+- **Linux `bun --isolate` epoll flake mitigation** (commit `6707348`, task #22)
+  — new `scripts/run-tests.sh` wraps `bun test` with a discriminating retry:
+  runs once, retries ONLY when the failure output contains the `epoll_ctl`
+  signature. Real test failures still fail-fast on first attempt — never
+  masked. Three flake hits during the v1.5.0 publish session motivated this.
+- **`docs/index.html` (grok.faf.one) auto-version sync** (commit `6e19f47`) —
+  added a small JS IIFE that fetches the live npm version from
+  `registry.npmjs.org/grok-faf-mcp/latest` on page load and overlays the
+  current value into every `.version-badge` and `.about-version` element.
+  Static fallback bumped to current; live overlay catches future ships
+  forever. Auto-correcting → static hardcoding haunt loop is broken.
+  Build-time templating (the (B) layer) folded into v1.6 task #20.
+
+### Doctrine
+
+- **CF 100% across every URL surface.** Vercel surface (`grok-faf-mcp.vercel.app`)
+  is dead (HTTP 000) and Vercel project access itself broken. Going forward,
+  every URL pointer in this repo points at Cloudflare canonical surfaces
+  (`grok.faf.one` for landing, `mcpaas.live/grok/mcp/v1` for the MCP endpoint).
+- **Static surfaces will become derived projections of `project.faf` in v1.6**
+  (task #20) — eliminates the entire "hand-edited file drifts from canonical
+  state" failure class that surfaced TWICE during the v1.5.0 ship (server.json
+  + docs/index.html). Same vROM doctrine that already governs CLAUDE.md via
+  `faf sync`.
+- **`api/index.ts` + `vercel.json` + `middleware.js`** — kept in-repo pending
+  v1.6 task #23 (Vercel-infrastructure decision). Not actively served (Vercel
+  surface dead) but file structure preserved for the decision call.
+
+### Not changed in this patch
+
+- npm-shipped runtime behaviour (the v1.5 substrate ships unchanged from v1.5.0)
+- All v1.5 tools surface (`refresh_faf`, `refresh_fafm`, `refresh_blend`,
+  `faf_orchestrate_recommendation`, `faf_get_orchestration_policy`,
+  the WASM-pure hosted subset) — identical to v1.5.0
+- Doc Gate 1.5 (15/15 green), test suite (509/511 pass, 0 fail, 1539 expect())
+
+---
 
 ## [1.5.0] - 2026-05-31
 

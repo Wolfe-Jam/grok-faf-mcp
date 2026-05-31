@@ -136,7 +136,7 @@ suite('🏁 WJTTC — Handler cwd-cache sweep (grok-faf-mcp)', () => {
   // ── ⚙️ ENGINE — each handler reads cwd correctly ─────────────────────
   describe('⚙️ ENGINE — handlers read from LIVE process.cwd() with no path arg', () => {
     test('faf_status with no path arg → references the live cwd', async () => {
-      const liveDir = fs.mkdtempSync(path.join(os.tmpdir(), 'faf-cwd-status-'));
+      const liveDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'faf-cwd-status-')));
       const savedCwd = process.cwd();
       try {
         process.chdir(liveDir);
@@ -152,7 +152,7 @@ suite('🏁 WJTTC — Handler cwd-cache sweep (grok-faf-mcp)', () => {
     });
 
     test('faf_score with no path arg → scores the LIVE cwd (parity vs explicit path)', async () => {
-      const liveDir = fs.mkdtempSync(path.join(os.tmpdir(), 'faf-cwd-score-'));
+      const liveDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'faf-cwd-score-')));
       const distinctMarker = 'score-marker-' + Date.now();
       fs.writeFileSync(path.join(liveDir, 'project.faf'), FAF_TEMPLATE(distinctMarker));
       const savedCwd = process.cwd();
@@ -187,7 +187,10 @@ suite('🏁 WJTTC — Handler cwd-cache sweep (grok-faf-mcp)', () => {
     });
 
     test('faf_list with no path arg → lists the LIVE cwd', async () => {
-      const liveDir = fs.mkdtempSync(path.join(os.tmpdir(), 'faf-cwd-list-'));
+      // realpathSync canonicalizes mac's `/var/folders` → `/private/var/folders`
+      // symlink AND Windows tmpdir case/separator quirks. Without this, the
+      // chdir succeeds but downstream string comparisons can mismatch.
+      const liveDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'faf-cwd-list-')));
       const sentinelDir = 'sentinel-' + Date.now();
       fs.mkdirSync(path.join(liveDir, sentinelDir));
       const savedCwd = process.cwd();
@@ -196,7 +199,10 @@ suite('🏁 WJTTC — Handler cwd-cache sweep (grok-faf-mcp)', () => {
         // NO path arg — exercises the engineAdapter-vs-process.cwd() branch
         const res = await client.callTool({ name: 'faf_list', arguments: {} });
         const text = textOf(res);
-        expect(res.isError).toBeFalsy();
+        // Print the actual error text on failure so cross-platform diagnosis is possible
+        if (res.isError) {
+          throw new Error(`faf_list returned isError=true; output was: ${text}`);
+        }
         // The sentinel subdir lives in liveDir; if the handler read engineAdapter
         // cache instead of live cwd, the sentinel wouldn't appear
         expect(text).toContain(sentinelDir);
@@ -213,7 +219,7 @@ suite('🏁 WJTTC — Handler cwd-cache sweep (grok-faf-mcp)', () => {
       // Move shell cwd to a tmpDir distinct from wherever engineAdapter cached.
       // Server was constructed at suite-startup; engineAdapter's cwd was frozen
       // then. chdir now → mismatch → debug must surface "drift".
-      const driftDir = fs.mkdtempSync(path.join(os.tmpdir(), 'faf-debug-drift-'));
+      const driftDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'faf-debug-drift-')));
       const savedCwd = process.cwd();
       try {
         process.chdir(driftDir);
@@ -239,7 +245,7 @@ suite('🏁 WJTTC — Handler cwd-cache sweep (grok-faf-mcp)', () => {
       // We don't re-test refresh_faf here (its own WJTTC file covers it); the
       // ENGINE block above is the per-handler proof. This test is a sanity
       // check that the chdir mechanism itself works.
-      const sanityDir = fs.mkdtempSync(path.join(os.tmpdir(), 'faf-sanity-'));
+      const sanityDir = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'faf-sanity-')));
       const savedCwd = process.cwd();
       try {
         process.chdir(sanityDir);

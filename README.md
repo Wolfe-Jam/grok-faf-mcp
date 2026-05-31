@@ -133,7 +133,7 @@ Every AI agent reads this once and knows exactly what you're building.
 ```
 URL:     https://mcpaas.live/grok/mcp/v1
 Format:  IANA-registered .faf (application/vnd.faf+yaml)
-Tools:   14 hosted (WASM-pure: 13 + refresh_faf) · 55 local (bunx)
+Tools:   14 hosted (WASM-pure: 13 + refresh_faf) · 58 local (bunx — incl. refresh_fafm, refresh_blend, faf_orchestrate_recommendation)
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
 Tests:   236 total · 212 pass · 24 skip · 0 fail (9 files)
@@ -211,6 +211,14 @@ bunx grok-faf-mcp
 | `faf_enhance` | Intelligent enhancement |
 | `refresh_faf` | Re-ground on the live `.faf` — re-read + re-score, report drift, return fresh DNA (drift → refresh → re-grounded). **Requested by Grok.** |
 
+**Drift & Orchestration (1.5 — the prestige release)**
+
+| Tool | Purpose |
+|------|---------|
+| `refresh_fafm` | Re-ground on the live `.fafm` memory layer for one or more souls. Returns a stamped delta (added/updated facts) by default; `verbatim: true` for full content. Read-only · always stamped. Sister to `refresh_faf` for the RAM/memory layer in the vROM/RAM model. **Built for Grok, by request.** |
+| `refresh_blend` | The baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R analog). `mode: "blend"` (default) fires `refresh_faf` (light) + `refresh_fafm` (delta); `mode: "nuke"` fires both at hard intensity. Blend is **BAKED IN, NOT a dial** — both layers always fire; mode only affects fafm intensity. |
+| `faf_orchestrate_recommendation` | The heavy orchestrator. Reads current substrate state, composes the full 1.5 library substrate (drift detection · CheckID · repeat-offender · take-a-hint · refresh history), returns a structured `Recommendation` with `recommend`, `severity`, `summary`, `reason`, and a rich `hints` object including `effective_policy` (the tier in force). **Advisory only — never auto-fires** (subordinate-not-daemon). Writes a recommendation receipt on every call (no silent decisions). Spec source: Grok-1 `FAF-DRIFT-DETECTION-SPEC §9.5 + Appendix C`. |
+
 **Sync & Persist**
 
 | Tool | Purpose |
@@ -254,21 +262,37 @@ Transport:    stdio (local, bunx) · Streamable HTTP (hosted, Cloudflare Workers
 
 Benchmarked 10x per tool, warmed up, on local stdio execution. Hosted edge adds sub-ms cold start on top.
 
+**Orchestrator (`faf_orchestrate_recommendation`) characteristics:** composition call — reads up to 6 files (`.faf`, `.fafm`, `package.json`, `CHANGELOG.md`, `README.md`, plus all 3 receipt logs), runs 2 analyzers (`detectFafmDrift` + `checkId`), evaluates the decision table, writes 1 receipt. Expected latency: tens of ms on warm cache; higher under cold-disk or very large `.fafm` corpora. **Designed for occasional agent-initiated calls, not per-turn polling.** `detectFafmDrift` is O(n²) in fact count (cross-fact n-gram recurrence) — comfortable up to ~hundreds of facts.
+
 ---
 
 ## Architecture
 
 ```
-grok-faf-mcp v1.4.9
+grok-faf-mcp v1.5.0
 ├── src/
 │   ├── server.ts             → MCP server (GrokFafMcpServer)
 │   ├── handlers/
-│   │   ├── championship-tools.ts  → 55 tool definitions
+│   │   ├── championship-tools.ts  → 55+ tool definitions
 │   │   ├── tool-registry.ts       → Visibility filtering (core/advanced)
 │   │   └── engine-adapter.ts      → FAF engine bridge
-│   └── faf-core/
-│       └── compiler/
-│           └── faf-compiler.ts    → Mk4 WASM scoring + Mk3.1 fallback
+│   ├── faf-core/compiler/faf-compiler.ts → Mk4 WASM scoring + Mk3.1 fallback
+│   ├── types/                     → Canonical type substrate (1.5)
+│   │   ├── drift-signals.ts       → DriftSignal · Contradiction · RepeatOffender
+│   │   ├── refresh.ts             → RefreshMode
+│   │   ├── escalation.ts          → EscalationLevel
+│   │   ├── recommendation.ts      → RecommendationAction
+│   │   └── receipts.ts            → ReceiptMetadata
+│   ├── detection/fafm-drift.ts    → detectFafmDrift() — repetition-rate gauge
+│   ├── integrity/check-id.ts      → checkId() — cross-stamp contradiction check
+│   ├── orchestrator/
+│   │   ├── repeat-offender.ts     → RepeatOffenderTracker
+│   │   ├── take-a-hint.ts         → evaluateTakeAHint() — escalation ladder
+│   │   ├── refresh-blend.ts       → runRefreshBlend()
+│   │   └── recommendation.ts      → analyzeAndRecommend() + orchestrate()
+│   └── telemetry/
+│       ├── refresh-receipts.ts        → RefreshReceiptsLog
+│       └── recommendation-receipts.ts → RecommendationReceiptsLog
 ├── smithery.yaml             → Smithery listing config
 ├── api/index.ts              → Vercel catch-site (legacy showcase surface; kept alive)
 └── vercel.json               → Vercel routing for the catch-site
@@ -298,6 +322,34 @@ npm test    # runs all 236 (bun test)
 | `rag-system` | RAG query, caching, context retrieval |
 | `security` | Input validation + security guards |
 | `visibility` | Tool visibility (core/advanced filtering) |
+
+---
+
+## Status & known limitations
+
+The 1.5 release ships a complete drift → recommend → refresh → re-grounded loop as advisory orchestration. Operating it honestly means surfacing what's NOT in v1 alongside what is.
+
+**Receipt storage — cwd-relative JSON, pull-discoverable.** Three receipt files live at the repo root:
+
+```
+.faf-drift-index.json              ← RepeatOffenderTracker — per-slot recurrence counts
+.faf-refresh-receipts.json         ← RefreshReceiptsLog    — every refresh fire
+.faf-recommendation-receipts.json  ← RecommendationReceiptsLog — every orchestrator call
+```
+
+All three are append-only JSON with stable schemas. **Pull-discoverable by external tools** (TAF, custom indexers, observability dashboards) — read them on your own schedule, no callback/push API required. Promotion path to a dedicated orphan branch (mirroring the TAF pattern) is documented but deferred per ship discipline; the cwd-relative JSON is the v1 bootstrap.
+
+**No multi-process file lock** on the receipt logs. Within a process, the JS event loop serializes writes. Multi-agent concurrent writes can race; future task.
+
+**Aggressiveness tier hook** — `.faf:orchestration:tier` reads `'conservative'` (default — quietest, no noisy first-impression) · `'balanced'` · `'aggressive'`. `active_tier` always surfaced in `hints.effective_policy` for observability. The full introspection tools (`faf_get_orchestration_policy` / `_set_`) deferred to v2; agents can read `.faf` directly for v1.
+
+**No ack mechanism yet for recommendation receipts.** `acknowledged: false` by default, never auto-flipped. Take-a-hint's ladder-reset semantics fire only on explicit ack — conservative by intent. Future task: explicit `ack` tool OR derived-from-subsequent-refresh-receipt timing.
+
+**`faf_schedule_heavy_re_ground`** (Grok's 3rd Appendix-C tool) — deferred to v2 · separate concern from core orchestration.
+
+**Outcome tracking** ("did this recommendation actually help?") — needs a learning layer beyond 1.5 scope.
+
+**Subordinate-not-daemon throughout.** The orchestrator NEVER auto-fires the recommended tool. Agents surface the recommendation; the user (or higher agent) decides whether to act. Even `severity: 'block'` is advisory.
 
 ---
 

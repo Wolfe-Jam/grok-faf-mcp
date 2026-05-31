@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.4.9 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.5.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,106 @@ All notable changes to grok-faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.5.0] - 2026-05-31
+
+The prestige release — substrate complete. The agent now has the full drift →
+recommend → refresh → re-grounded loop, advisory by design. 12 PRs (#93–#104),
+~5000 LOC, 456 tests, 10 compile-time shape contracts. Zero regressions.
+
+### Added — MCP tools
+
+- **`refresh_fafm`** — Reload the latest `.fafm` memory layer for one or more
+  souls. Returns a stamped delta by default; `verbatim: true` for full content.
+  Read-only · always stamped (hash + timestamp + version). Locked spec from
+  Grok-1 consult 2026-05-30. **Built for Grok, by request — memory-layer sibling
+  to `refresh_faf`.**
+- **`refresh_blend`** — The baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R
+  analog). `mode: "blend"` (default) fires `refresh_faf` (light) + `refresh_fafm`
+  (delta); `mode: "nuke"` fires both at hard intensity. Per the locked doctrine:
+  blend is BAKED IN, NOT a dial — both layers always fire; mode only affects
+  fafm intensity.
+- **`faf_orchestrate_recommendation`** — The heavy orchestrator Grok-1 spec'd
+  in `FAF-DRIFT-DETECTION-SPEC §9.5 + Appendix C`. Reads current substrate
+  state, composes the full 1.5 library substrate (drift detection · CheckID ·
+  repeat-offender · take-a-hint · refresh history), returns a structured
+  Recommendation. **Advisory only — never auto-fires** (subordinate-not-daemon).
+  Writes a recommendation receipt on every call (no silent decisions).
+
+### Added — library substrate (consumed by orchestrator + tools)
+
+- **`detectFafmDrift()`** — Repetition-rate gauge on `.fafm` content. Returns a
+  `DriftSignal` when the AI is re-saying things it already said; silent (`null`)
+  on a clean state. NO score field — validates the `fafm-not-about-scoring`
+  doctrine at runtime.
+- **`checkId()`** — Mechanical cross-check across `.faf` / `.fafm` /
+  package.json / CHANGELOG / README. Doc Gate 101 analog at the substrate
+  level. Surfaces contradictions between stamped state and live content —
+  closes the gap that `bi-sync` can't catch.
+- **`RepeatOffenderTracker`** — Persistent drift-prone slot index with rolling-
+  window decay. Signal-agnostic; namespace-separated bridges from both detectors.
+- **`evaluateTakeAHint()`** — Temporal escalation ladder
+  (`none`/`light`/`hard`/`block`). Both axes (recurrence + ignored_count) must
+  cross threshold. Acknowledged recommendations reset the ladder.
+- **`RefreshReceiptsLog`** + **`RecommendationReceiptsLog`** — Append-only
+  telemetry of every refresh fire and every recommendation made. Pure-core
+  + FS-shim split. Stable cwd-relative JSON schemas — **pull-discoverable by
+  external tools** (TAF, custom indexers) without code coupling.
+
+### Added — type substrate (foundational hygiene)
+
+- Canonical types module at `src/types/` — `DriftSignal` · `Contradiction[]`
+  · `RepeatOffender` · `RefreshMode` · `EscalationLevel`
+  · `RecommendationAction` · `ReceiptMetadata`. Eliminates the `Like`
+  interface duplicates that previously lived in consumer modules (silent-drift
+  hazard). **10 compile-time shape assertions**
+  (`tests/wjttc-shape-contracts.test.ts`) lock the canonical types as the
+  single source of truth — `tsc` fails the build if anyone reintroduces a
+  duplicate.
+
+### Added — WJTTC shields
+
+- Per-component WJTTC suites × 8 for every new substrate component
+  (BRAKE/ENGINE/AERO/TYRE/PIT tiers).
+- **Cross-component umbrella test** (`tests/wjttc-umbrella.test.ts`) — proves
+  the substrate composes end-to-end, not just that each brick passes unit
+  tests. Pre-`#10` gate, landed before the orchestrator built on top.
+- **Shape-contracts compile-time test** — locks the canonical type layer.
+- **Doc Gate 1.5** (`tests/wjttc-doc-gate-15.test.ts`) — **dogfoods CheckID
+  against THIS repo's actual stamps**. Any future commit that drifts the
+  version across `.faf` / package.json / CHANGELOG / README fails this test
+  loudly in CI. Doc Gate 101 promoted from publish-time shell check to
+  continuous CI shield.
+
+### Fixed
+
+- **`refresh_faf` cwd-discovery bug** (#104) — handler was falling back to
+  `engineAdapter.getWorkingDirectory()` which anchors to a construction-time
+  cached cwd. For drift tools that re-ground on the LIVE `.faf`, the live
+  shell is the right truth. Fixed: `cwd = process.cwd()`. **Surfaced by the
+  substrate dogfood — substrate caught its own ecosystem's bug on the first
+  real-world invocation.**
+
+### Changed — substrate-internal renames
+
+- Receipt field renamed `intensity` → `mode` for vocabulary consistency with
+  the `refresh_blend` tool's `mode` arg.
+- `Recommendation` (in `take-a-hint.ts`) → `RecommendationRecord` to free the
+  `Recommendation` name for the orchestrator output type.
+
+### Known limitations (see README "Status & known limitations")
+
+- Receipt storage is cwd-relative JSON; promotion to a dedicated orphan branch
+  (mirroring TAF) deferred per ship discipline.
+- No multi-process file lock on the receipt logs.
+- Aggressiveness tier hook reads from `.faf:orchestration:tier`; default
+  `conservative` (quietest). `faf_get_orchestration_policy` / `_set_` tools
+  deferred to v2.
+- No explicit ack mechanism for recommendation receipts yet — take-a-hint
+  ladder-reset fires only on explicit ack, conservative by intent.
+- `faf_schedule_heavy_re_ground` (Grok's 3rd Appendix-C tool) deferred to v2.
+- Outcome tracking ("did this recommendation actually help?") needs a learning
+  layer beyond 1.5 scope.
 
 ## [1.4.9] - 2026-05-29
 

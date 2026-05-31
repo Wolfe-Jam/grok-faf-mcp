@@ -391,7 +391,14 @@ export class FafToolHandler {
   
   private async handleFafStatus(_args: any): Promise<CallToolResult> {  // ✅ FIXED: Prefixed unused args
     // Native implementation - no CLI needed!
-    const cwd = this.engineAdapter.getWorkingDirectory();
+    //
+    // cwd = the LIVE shell cwd, not `this.engineAdapter.getWorkingDirectory()`.
+    // Same pattern as `handleFafRefresh` (#104) + the orchestrator + refresh_fafm:
+    // the engine adapter anchors to whatever findBestWorkingDirectory() resolved
+    // at server-construction time (often `~/Projects` regardless of where the
+    // user actually is). For a tool whose contract is "report the status of the
+    // user's project," reading the user's shell cwd is the right truth.
+    const cwd = process.cwd();
 
     try {
       const fafResult = await findFafFile(cwd);
@@ -441,7 +448,11 @@ export class FafToolHandler {
     // Mirrors faf-mcp 2.1.1's handleFafScore body verbatim.
 
     // Honour args.path when provided (AERO fixtures pass it explicitly).
-    // Fallback to the engine adapter's working directory (existing behaviour).
+    // No-path fallback = LIVE shell cwd, not the engine adapter's frozen anchor.
+    // Same fix pattern as `handleFafRefresh` (#104) + the orchestrator + refresh_fafm:
+    // the engine adapter caches whatever findBestWorkingDirectory() resolved at
+    // server-construction time (often `~/Projects` regardless of where the user
+    // actually is), causing `faf_score` with no path to score the wrong project.
     let cwd: string;
     const explicitPath: string | undefined = args?.path;
     if (explicitPath) {
@@ -457,7 +468,7 @@ export class FafToolHandler {
         this.engineAdapter.setWorkingDirectory(cwd);
       }
     } else {
-      cwd = this.engineAdapter.getWorkingDirectory();
+      cwd = process.cwd();
     }
 
     const { findFafFile: cliFindFafFile, readFafRaw, scoreFafYaml, getNextTier } = await fafCli;
@@ -1083,8 +1094,12 @@ export class FafToolHandler {
           fs.mkdirSync(targetDir, { recursive: true });
         }
       } else {
-        // Use current working directory (legacy behavior)
-        targetDir = this.engineAdapter.getWorkingDirectory();
+        // No projectName arg → init in the user's CURRENT shell cwd, not the
+        // engine adapter's frozen anchor. Same fix as `handleFafRefresh` (#104):
+        // without this, `faf_init` would silently create the project in whatever
+        // dir findBestWorkingDirectory() resolved at server-construction time.
+        // Init writing to the wrong dir is high-blast-radius silent drift.
+        targetDir = process.cwd();
         projectName = path.basename(targetDir);
       }
 
@@ -1424,9 +1439,19 @@ REMEMBER: Always use ".faf" with the dot - it's a FORMAT!
       const { promisify } = await import('util');
       const execAsync = promisify(exec);
 
-      const cwd = this.engineAdapter.getWorkingDirectory();
+      // Debug surfaces BOTH cwd values — process.cwd() (where the user's shell
+      // actually is) AND the engine adapter's cached cwd (where the engine is
+      // operating). Drift between the two = the bug pattern that bit
+      // `handleFafRefresh` (#104) and that the rest of the cwd-cache sweep
+      // (handleFafStatus/Score/Init/List) fixes. Debug's job is HONEST
+      // diagnosis — silent normalization would defeat the tool's whole purpose.
+      const shellCwd = process.cwd();
+      const engineCwd = this.engineAdapter.getWorkingDirectory();
+      const cwd = shellCwd; // file checks below use shell cwd (the truth source for the user)
       const debugInfo = {
-        workingDirectory: cwd,
+        workingDirectory: shellCwd,
+        engineAdapterWorkingDirectory: engineCwd,
+        cwdMatch: shellCwd === engineCwd,
         canWrite: false,
         fafCliPath: null as string | null,
         fafVersion: null as string | null,
@@ -1464,10 +1489,20 @@ REMEMBER: Always use ".faf" with the dot - it's a FORMAT!
       const fafResult = await findFafFile(cwd);
       const hasFaf = fafResult !== null;
 
+      const cwdDriftWarn = debugInfo.cwdMatch
+        ? ''
+        : `⚠️  cwd DRIFT detected — engine adapter is anchored to a different dir
+   Engine adapter cwd: ${debugInfo.engineAdapterWorkingDirectory}
+   Shell cwd:          ${debugInfo.workingDirectory}
+   (The fixed handlers now use shell cwd. Legacy code paths reading from the
+   engine adapter may still target the engine's cached anchor.)
+`;
+
       const debugOutput = `🔍 grok-faf-mcp Debug Information:
 
-📂 Working Directory: ${debugInfo.workingDirectory}
-✏️ Write Permissions: ${debugInfo.canWrite ? '✅ Yes' : '❌ No'}
+📂 Shell cwd:        ${debugInfo.workingDirectory}
+🧭 Engine adapter cwd: ${debugInfo.engineAdapterWorkingDirectory}${debugInfo.cwdMatch ? '  (✅ match)' : '  (⚠️  drift)'}
+${cwdDriftWarn}✏️ Write Permissions: ${debugInfo.canWrite ? '✅ Yes' : '❌ No'}
 ${debugInfo.permissions.writeError ? `   Error: ${debugInfo.permissions.writeError}\n` : ''}🤖 FAF Engine Path: ${debugInfo.enginePath}
 🏎️ FAF CLI Path: ${debugInfo.fafCliPath || '❌ Not found'}
 📋 FAF Version: ${debugInfo.fafVersion || 'Unknown'}
@@ -1646,7 +1681,11 @@ All work: \`faf init\`, \`faf init new\`, \`faf init --new\`, \`faf init -new\`
       const path = await import('path');
 
       // Parse arguments
-      const targetPath = args?.path || this.engineAdapter.getWorkingDirectory();
+      // Path fallback = LIVE shell cwd, not the engine adapter's frozen anchor.
+      // Same fix pattern as `handleFafRefresh` (#104) + Status/Score/Init in
+      // this PR. List with no path arg should show what the user's shell sees,
+      // not what the engine cached at startup.
+      const targetPath = args?.path || process.cwd();
       const filter = args?.filter || 'dirs';
       const depth = args?.depth || 1;
       const showHidden = args?.showHidden || false;

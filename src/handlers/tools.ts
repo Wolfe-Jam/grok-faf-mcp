@@ -11,6 +11,7 @@ import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
 import { runRefreshBlend, type RefreshMode } from '../orchestrator/refresh-blend';
+import { orchestrate } from '../orchestrator/recommendation';
 // v1.4.1: single-source scoring — port-then-wire the truthful scorer into the
 // live FafToolHandler (grok has no ChampionshipToolHandler wired). faf_score
 // now reads faf-cli's real scoreFafYaml (the IANA-spec one) instead of the
@@ -99,6 +100,15 @@ export class FafToolHandler {
                 description: 'Optional ISO timestamp. Only return facts modified after this time. Ignored when verbatim=true.',
               },
             },
+            additionalProperties: false,
+          },
+        },
+        {
+          name: 'faf_orchestrate_recommendation',
+          description: 'Heavy orchestrator — given current substrate state, returns a structured recommendation about drift: which refresh to call (or `no_action`), why, how severe, and the underlying signals. ADVISORY ONLY — never auto-fires. Composes the full 1.5 substrate (drift detection · contradiction check · repeat-offender · take-a-hint · refresh history). Writes a recommendation receipt on every call (auditable trail, no silent decisions). Read-only WRT substrate state.',
+          inputSchema: {
+            type: 'object',
+            properties: {},
             additionalProperties: false,
           },
         },
@@ -335,6 +345,8 @@ export class FafToolHandler {
         return await this.handleFafmRefresh(args);
       case 'refresh_blend':
         return await this.handleRefreshBlend(args);
+      case 'faf_orchestrate_recommendation':
+        return await this.handleOrchestrateRecommendation(args);
       case 'faf_init':
         return await this.handleFafInit(args);
       case 'faf_trust':
@@ -972,6 +984,49 @@ export class FafToolHandler {
         {
           type: 'text',
           text: header + '\n```json\n' + JSON.stringify(result, null, 2) + '\n```\n',
+        },
+      ],
+    };
+  }
+
+  /**
+   * `faf_orchestrate_recommendation` — the #10 heavy orchestrator. Composes
+   * the full 1.5 substrate (drift detection · contradiction check · repeat-
+   * offender · take-a-hint · refresh history) into a structured Recommendation.
+   *
+   * ADVISORY ONLY — never auto-fires the recommended tool. The agent surfaces
+   * the recommendation; the user (or another agent) decides whether to act.
+   *
+   * Writes a recommendation receipt on every call (auditable trail per the
+   * subordinate-not-daemon doctrine — no silent decisions, every analysis
+   * emits a record).
+   *
+   * Full pure-core + FS-shim architecture lives in
+   * `src/orchestrator/recommendation.ts`; this handler is the thin MCP
+   * wrapper. Tests cover both layers (pure ENGINE tier with fixture state,
+   * MCP-surface AERO tier with real SDK Client roundtrip).
+   */
+  private async handleOrchestrateRecommendation(_args: unknown): Promise<CallToolResult> {
+    // Use process.cwd() (the LIVE session cwd) rather than the engineAdapter's
+    // construction-time cache — same rationale as refresh_fafm's handler. The
+    // orchestrator reads cwd-relative state (.faf, .fafm, receipts logs); the
+    // live shell is the right truth, not a frozen project anchor.
+    const cwd = process.cwd();
+    const recommendation = orchestrate({ cwd });
+
+    const header =
+      `ORCHESTRATE — ${recommendation.recommend}${recommendation.mode ? ` (${recommendation.mode})` : ''} · ${recommendation.severity}\n\n` +
+      `  ${recommendation.summary}\n` +
+      `  reason: ${recommendation.reason}\n` +
+      `  signals_run: ${recommendation.hints.signals_run.join(', ') || '(none)'}\n` +
+      `  tier: ${recommendation.hints.effective_policy.tier} (${recommendation.hints.effective_policy.source})\n` +
+      (recommendation.hints.partial ? `  partial: ${recommendation.hints.partial.length} signal failure(s) — see hints.partial\n` : '');
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: header + '\n```json\n' + JSON.stringify(recommendation, null, 2) + '\n```\n',
         },
       ],
     };

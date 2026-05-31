@@ -1773,7 +1773,12 @@ All work: \`faf init\`, \`faf init new\`, \`faf init --new\`, \`faf init -new\`
         output += '(empty)\n';
       } else {
         for (const item of results) {
-          const indent = item.path.split('/').length - resolvedPath.split('/').length - 1;
+          // Indent = path-relative depth. Use path.sep + Math.max guard:
+          // hardcoded `/` breaks on Windows (paths use `\`), making the
+          // subtraction negative → `.repeat(-1)` throws "must be greater than
+          // or equal to 0". Surfaced by the cwd-sweep WJTTC test on win-CI.
+          const rel = path.relative(resolvedPath, item.path);
+          const indent = Math.max(0, rel.split(path.sep).length - 1);
           const prefix = '  '.repeat(indent);
           const icon = item.isDir ? '📁' : '📄';
           const status = item.hasFaf ? '✅ project.faf' : '';

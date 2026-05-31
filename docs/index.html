@@ -250,7 +250,7 @@
   <div class="container">
     <div class="logo">🍊</div>
     <h1>grok-faf-mcp</h1>
-    <div class="tagline">🏎️⚡️ FAST AF Edition <span class="version-badge" onclick="showAbout()">v1.4.5</span></div>
+    <div class="tagline">🏎️⚡️ FAST AF Edition <span class="version-badge" onclick="showAbout()">v1.5.0</span></div>
     <div class="dedication">Dedicated to @elonmusk</div>
     <div class="squeeze">I/🍊 enjoy the squeeze!</div>
 
@@ -299,7 +299,7 @@
     </div>
 
     <div class="bottom-bar">
-      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v1.4.5</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; <a href="https://mcpaas.live">mcpaas.live</a></div>
+      <div class="links"><span class="version-badge" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;">v1.5.0</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; <a href="https://mcpaas.live">mcpaas.live</a></div>
       <div class="big-orange">We needed a Big-Orange, we got one! 🍊</div>
       <div style="margin-top:0.5rem;font-size:0.75rem;"><a href="https://mcpaas.live/privacy" style="color:#666;text-decoration:none;">Privacy</a> · <a href="https://mcpaas.live/terms" style="color:#666;text-decoration:none;">Terms</a> · <a href="mailto:team@faf.one" style="color:#666;text-decoration:none;">team@faf.one</a></div>
       <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.1);font-size:0.8rem;color:#fff;">Part of the <a href="https://faf.one" style="color:#ff6600;text-decoration:none;">FAF.one Family</a> · <a href="https://mcpaas.live" style="color:#888;text-decoration:none;">MCPaaS</a> · <a href="https://radiofaf.com" style="color:#888;text-decoration:none;">RadioFAF</a> · <a href="https://fafdev.tools" style="color:#888;text-decoration:none;">fafdev.tools</a></div>
@@ -307,7 +307,7 @@
   </div>
   <div class="about-overlay" id="aboutOverlay" onclick="if(event.target===this)hideAbout()">
     <div class="about-box">
-      <div class="about-version">v1.4.5</div>
+      <div class="about-version">v1.5.0</div>
       <div class="about-title">FAST⚡️AF Context</div>
       <div class="about-subtitle">Persistent project DNA for Grok</div>
       <div class="about-items">
@@ -361,6 +361,29 @@
       document.getElementById('aboutOverlay').classList.remove('visible');
     }
     window.addEventListener('load', function() { setTimeout(function() { showAbout(true); }, 500); });
+
+    // ── Live version sync (auto-correcting, no manual bumps) ────────────────
+    // Static fallback in the HTML is the current-at-build-time value; this
+    // overlays the LIVE npm-published version on every page load. The page
+    // can never drift behind a publish again — npm registry is the source
+    // of truth for "what's actually installable as grok-faf-mcp@latest".
+    // Doctrine receipt: same vROM "one truth, many cheap projections" model
+    // that governs CLAUDE.md / project.faf — runtime variant for static
+    // surfaces. Folded into v1.6 task #20 for build-time templating.
+    (function syncVersionFromNpm() {
+      try {
+        fetch('https://registry.npmjs.org/grok-faf-mcp/latest')
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (data) {
+            if (!data || !data.version) return;
+            var live = 'v' + data.version;
+            // Update both version-badge spans + the about-version block
+            var nodes = document.querySelectorAll('.version-badge, .about-version');
+            for (var i = 0; i < nodes.length; i++) { nodes[i].textContent = live; }
+          })
+          .catch(function () { /* offline / npm rate-limit: keep static fallback */ });
+      } catch (e) { /* old browser without fetch: keep static fallback */ }
+    })();
   </script>
   <script defer src="/_vercel/insights/script.js"></script>
 </body>

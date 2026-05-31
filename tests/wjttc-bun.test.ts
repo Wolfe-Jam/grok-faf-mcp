@@ -35,8 +35,21 @@ describe('🏁 WJTTC — bun migration + MCP integrity (grok-faf-mcp)', () => {
     const pkg = readJson('package.json');
 
     test('test runner is bun, not jest', () => {
-      expect(pkg.scripts.test).toContain('bun test');
-      expect(pkg.scripts.test).not.toContain('jest');
+      // Accept either direct `bun test ...` OR a wrapper script that calls
+      // bun test internally (see scripts/run-tests.sh — Linux epoll-flake
+      // mitigation per task #22). Both shapes preserve "bun, never jest".
+      const testScript = pkg.scripts.test as string;
+      const direct = testScript.includes('bun test');
+      let wrapped = false;
+      const wrapperMatch = testScript.match(/scripts\/(\S+\.sh)/);
+      if (wrapperMatch) {
+        const wrapperPath = path.join(ROOT, 'scripts', wrapperMatch[1]);
+        if (fs.existsSync(wrapperPath)) {
+          wrapped = fs.readFileSync(wrapperPath, 'utf8').includes('bun test');
+        }
+      }
+      expect(direct || wrapped).toBe(true);
+      expect(testScript).not.toContain('jest');
     });
 
     test('zero jest tooling in devDependencies', () => {

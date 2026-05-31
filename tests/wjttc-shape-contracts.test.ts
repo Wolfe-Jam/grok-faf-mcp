@@ -31,6 +31,8 @@ import type { ReferenceClaims as Canonical_ReferenceClaims } from '../src/types/
 import type { RepeatOffender as Canonical_RepeatOffender } from '../src/types/drift-signals';
 import type { RefreshMode as Canonical_RefreshMode } from '../src/types/refresh';
 import type { EscalationLevel as Canonical_EscalationLevel } from '../src/types/escalation';
+import type { RecommendationAction as Canonical_RecommendationAction } from '../src/types/recommendation';
+import type { ReceiptMetadata as Canonical_ReceiptMetadata } from '../src/types/receipts';
 
 // Re-exports from each substrate-component module — these MUST resolve to
 // the exact canonical type. If a re-export drifts (or accidentally redeclares
@@ -97,6 +99,29 @@ type _AssertEscalationLevel_Rev = Canonical_EscalationLevel extends TakeAHint_Es
 const _checkEscalationLevel_Fwd: _AssertEscalationLevel_Fwd = true;
 const _checkEscalationLevel_Rev: _AssertEscalationLevel_Rev = true;
 
+// RecommendationAction — added in PR 2 (recommendation-receipts log uses it
+// for the `recommend` field; PR 3's orchestrator output will too). The
+// canonical is the source; no producer-side re-export yet, but the shape-
+// contract sanity check ensures the type stays a simple 4-value union and
+// doesn't accidentally widen.
+type _AssertRecommendationAction_NonEmpty =
+  Canonical_RecommendationAction extends 'refresh_faf' | 'refresh_fafm' | 'refresh_blend' | 'no_action'
+    ? true
+    : never;
+type _AssertRecommendationAction_NoSurplus =
+  'refresh_faf' | 'refresh_fafm' | 'refresh_blend' | 'no_action' extends Canonical_RecommendationAction
+    ? true
+    : never;
+const _checkRecommendationAction_NonEmpty: _AssertRecommendationAction_NonEmpty = true;
+const _checkRecommendationAction_NoSurplus: _AssertRecommendationAction_NoSurplus = true;
+
+// ReceiptMetadata — used by both RefreshReceipt + RecommendationReceipt.
+// Sanity check: the canonical shape allows the `duration_ms` field as
+// optional number + open-ended additional keys. If anyone tightens the
+// index signature, downstream callers that add custom fields break loudly.
+type _AssertReceiptMetadata_Duration = Canonical_ReceiptMetadata['duration_ms'] extends number | undefined ? true : never;
+const _checkReceiptMetadata_Duration: _AssertReceiptMetadata_Duration = true;
+
 describe('🏁 WJTTC — Shape Contracts (compile-time canonical-type lock)', () => {
   test('all canonical types re-exported from producer modules unchanged (compile-time proven)', () => {
     // The real assertions are at COMPILE time above. This runtime check exists
@@ -111,5 +136,7 @@ describe('🏁 WJTTC — Shape Contracts (compile-time canonical-type lock)', ()
     expect(_checkRefreshMode_Blend_Fwd && _checkRefreshMode_Blend_Rev).toBe(true);
     expect(_checkRefreshMode_Receipts_Fwd && _checkRefreshMode_Receipts_Rev).toBe(true);
     expect(_checkEscalationLevel_Fwd && _checkEscalationLevel_Rev).toBe(true);
+    expect(_checkRecommendationAction_NonEmpty && _checkRecommendationAction_NoSurplus).toBe(true);
+    expect(_checkReceiptMetadata_Duration).toBe(true);
   });
 });

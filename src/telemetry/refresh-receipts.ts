@@ -30,6 +30,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import type { DriftSignal } from '../types/drift-signals';
+import type { ReceiptMetadata } from '../types/receipts';
 
 /** What initiated this refresh fire — auto by a detector, or manual by caller. */
 export type RefreshTrigger = 'auto' | 'manual';
@@ -53,11 +54,8 @@ export interface RefreshReceipt {
   fired_at: string;
   /** Whatever the refresh primitive returned. Caller decides what to capture. */
   refresh_result?: unknown;
-  /** Optional metadata — duration, etc. */
-  metadata?: {
-    duration_ms?: number;
-    [key: string]: unknown;
-  };
+  /** Optional metadata — duration, etc. Shape from canonical `ReceiptMetadata`. */
+  metadata?: ReceiptMetadata;
 }
 
 export interface ReadReceiptsOptions {

@@ -96,7 +96,10 @@ describe('🏁 Desktop-Native MCP Championship Tests', () => {
       if (result.content[0].type === 'text') {
         const text = result.content[0].text;
         // Accept either successful output or graceful error (jest doesn't support dynamic imports)
-        const hasExpectedOutput = text.includes('Working Directory') &&
+        // v1.5.0: debug now surfaces BOTH `Shell cwd:` AND `Engine adapter cwd:`
+        // (drift detection) — see handler comment for the cwd-cache sweep.
+        const hasExpectedOutput = text.includes('Shell cwd') &&
+                                  text.includes('Engine adapter cwd') &&
                                   text.includes('Write Permissions') &&
                                   text.includes('FAF Engine Path');
         const hasGracefulError = text.includes('Debug Failed') || text.includes('dynamic import');

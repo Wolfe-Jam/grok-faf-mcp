@@ -325,31 +325,37 @@ npm test    # runs all 236 (bun test)
 
 ---
 
-## Status & known limitations
+## Status & known limitations (v1.5)
 
-The 1.5 release ships a complete drift → recommend → refresh → re-grounded loop as advisory orchestration. Operating it honestly means surfacing what's NOT in v1 alongside what is.
+This release ships the core 1.5 substrate and orchestration primitives, with the new tools available on the local stdio path. Operating it honestly means surfacing what's NOT in v1 alongside what is.
 
-**Receipt storage — cwd-relative JSON, pull-discoverable.** Three receipt files live at the repo root:
+**What is fully supported:**
+- WASM-pure tools on the hosted endpoint (`https://mcpaas.live/grok/mcp/v1` and client-specific routes) — scoring · validation · `refresh_faf`.
+- `refresh_faf` and `refresh_fafm` as explicit, callable re-grounding primitives.
+- `refresh_blend` as the baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R analog).
+- `faf_orchestrate_recommendation` — the heavy orchestrator that composes drift signals, recurrence, receipts, and take-a-hint into an advisory recommendation.
+- Full policy visibility (`effective_policy`) returned on every orchestration call.
 
-```
-.faf-drift-index.json              ← RepeatOffenderTracker — per-slot recurrence counts
-.faf-refresh-receipts.json         ← RefreshReceiptsLog    — every refresh fire
-.faf-recommendation-receipts.json  ← RecommendationReceiptsLog — every orchestrator call
-```
+**Current limitations:**
 
-All three are append-only JSON with stable schemas. **Pull-discoverable by external tools** (TAF, custom indexers, observability dashboards) — read them on your own schedule, no callback/push API required. Promotion path to a dedicated orphan branch (mirroring the TAF pattern) is documented but deferred per ship discipline; the cwd-relative JSON is the v1 bootstrap.
+- **`faf_orchestrate_recommendation`, `refresh_fafm`, and `refresh_blend` require filesystem access** and are only available via the local stdio path (`bunx grok-faf-mcp` / `npx grok-faf-mcp`). They are not exposed on the hosted WASM-pure endpoint. The hosted path serves the existing WASM-pure subset only (`refresh_faf` + scoring + validation).
+- **Receipt storage — cwd-relative JSON, pull-discoverable.** Three append-only JSON files live at the repo root with stable schemas:
+  ```
+  .faf-drift-index.json              ← RepeatOffenderTracker — per-slot recurrence counts
+  .faf-refresh-receipts.json         ← RefreshReceiptsLog    — every refresh fire
+  .faf-recommendation-receipts.json  ← RecommendationReceiptsLog — every orchestrator call
+  ```
+  **Pull-discoverable by external tools** (TAF, custom indexers, observability dashboards) — read on your own schedule, no callback/push API required. Promotion to a dedicated orphan branch (mirroring the TAF pattern) is documented but deferred per ship discipline; the cwd-relative JSON is the v1 bootstrap.
+- **No multi-process file lock** on the receipt logs. Within a process, the JS event loop serializes writes. Multi-agent concurrent writes can race; future task.
+- **Aggressiveness tier hook** — `.faf:orchestration:tier` reads `'conservative'` (default — quietest, no noisy first-impression) · `'balanced'` · `'aggressive'`. `active_tier` always surfaced in `hints.effective_policy` for observability. The full introspection tools (`faf_get_orchestration_policy` / `faf_set_orchestration_policy`) and scheduling (`faf_schedule_heavy_re_ground`) are not included in v1.5.
+- **No ack mechanism yet for recommendation receipts.** `acknowledged: false` by default, never auto-flipped. Take-a-hint's ladder-reset semantics fire only on explicit ack — conservative by intent. Future task: explicit `ack` tool OR derived-from-subsequent-refresh-receipt timing.
+- **Outcome tracking** (*"did this recommendation actually help?"*) — needs a learning layer beyond 1.5 scope.
 
-**No multi-process file lock** on the receipt logs. Within a process, the JS event loop serializes writes. Multi-agent concurrent writes can race; future task.
-
-**Aggressiveness tier hook** — `.faf:orchestration:tier` reads `'conservative'` (default — quietest, no noisy first-impression) · `'balanced'` · `'aggressive'`. `active_tier` always surfaced in `hints.effective_policy` for observability. The full introspection tools (`faf_get_orchestration_policy` / `_set_`) deferred to v2; agents can read `.faf` directly for v1.
-
-**No ack mechanism yet for recommendation receipts.** `acknowledged: false` by default, never auto-flipped. Take-a-hint's ladder-reset semantics fire only on explicit ack — conservative by intent. Future task: explicit `ack` tool OR derived-from-subsequent-refresh-receipt timing.
-
-**`faf_schedule_heavy_re_ground`** (Grok's 3rd Appendix-C tool) — deferred to v2 · separate concern from core orchestration.
-
-**Outcome tracking** ("did this recommendation actually help?") — needs a learning layer beyond 1.5 scope.
+**The honest split is intentional:** hosted = fast, auditable, WASM-pure; local = full capability including filesystem. We will expand the hosted surface only where it can be done safely and without compromising the model.
 
 **Subordinate-not-daemon throughout.** The orchestrator NEVER auto-fires the recommended tool. Agents surface the recommendation; the user (or higher agent) decides whether to act. Even `severity: 'block'` is advisory.
+
+See the [public verifier](https://grok.faf.one/) and `curl https://mcpaas.live/grok/mcp/v1/info` for the current contract.
 
 ---
 

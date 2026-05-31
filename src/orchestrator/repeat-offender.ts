@@ -26,6 +26,13 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import type { DriftSignal, ContradictionReport, RepeatOffender } from '../types/drift-signals';
+
+// Re-export RepeatOffender so existing importers (`from '../orchestrator/repeat-offender'`)
+// keep working unchanged. Single source of truth lives in `src/types/drift-signals.ts`.
+// DriftSignal + ContradictionReport are NOT re-exported here — consumers should import
+// them from their producer modules (fafm-drift / check-id) for semantic clarity.
+export type { RepeatOffender } from '../types/drift-signals';
 
 /** A single drift event — append-only, never mutated. */
 export interface DriftEvent {
@@ -35,13 +42,6 @@ export interface DriftEvent {
   timestamp: string;
 }
 
-/** A repeat offender — the output shape spec'd in §#12 verbatim. */
-export interface RepeatOffender {
-  slot: string;
-  count: number;
-  last_drift: string; // ISO
-}
-
 export interface GetRepeatOffendersOptions {
   /** Rolling window in days. Default 30 per spec example. */
   windowDays?: number;
@@ -49,18 +49,6 @@ export interface GetRepeatOffendersOptions {
   minCount?: number;
   /** Reference "now" for the window cutoff. Defaults to wall clock — caller passes a fixed value for determinism in tests. */
   now?: string;
-}
-
-/** Minimal shape of a #2 drift signal — duplicated to avoid a cross-module type import cycle. */
-export interface FafmDriftSignalLike {
-  kind: 'repetition-rate';
-  repeated_anchors: string[];
-  detected_at: string;
-}
-
-/** Minimal shape of a #11 contradiction report — same rationale. */
-export interface ContradictionReportLike {
-  contradictions: Array<{ check: string }>;
 }
 
 // ── Defaults (tunables) ────────────────────────────────────────────────────
@@ -182,7 +170,7 @@ export class RepeatOffenderTracker {
    * the `'anchor:'` namespace. The signal's `detected_at` is the event time
    * for all anchors recorded in one call.
    */
-  recordFromDriftSignal(signal: FafmDriftSignalLike): void {
+  recordFromDriftSignal(signal: DriftSignal): void {
     if (!signal || !Array.isArray(signal.repeated_anchors)) return;
     const ts = typeof signal.detected_at === 'string' ? signal.detected_at : new Date().toISOString();
     const events = this.readEvents();
@@ -205,7 +193,7 @@ export class RepeatOffenderTracker {
    * invariant — caller stamps).
    */
   recordFromContradictionReport(
-    report: ContradictionReportLike,
+    report: ContradictionReport,
     timestamp?: string,
   ): void {
     if (!report || !Array.isArray(report.contradictions)) return;

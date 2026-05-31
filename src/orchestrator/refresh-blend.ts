@@ -28,8 +28,11 @@
  * violation.
  */
 
-/** The two refresh intensities — baked in, not a dial; named for the keyboard metaphor. */
-export type RefreshMode = 'blend' | 'nuke';
+import type { RefreshMode } from '../types/refresh';
+
+// Re-export the canonical type so existing importers (`from '../orchestrator/refresh-blend'`)
+// keep working unchanged. Single source of truth lives in `src/types/refresh.ts`.
+export type { RefreshMode } from '../types/refresh';
 
 /** Caller-facing args. Passed through to the appropriate underlying refresh. */
 export interface RefreshBlendInput {

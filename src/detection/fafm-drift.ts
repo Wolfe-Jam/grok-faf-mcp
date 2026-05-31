@@ -18,24 +18,11 @@
  */
 
 import YAML from 'yaml';
+import type { DriftSignal } from '../types/drift-signals';
 
-/**
- * Structured drift signal. Matches the locked spec from the 1.5 breakdown.
- *
- *   - `kind`             — discriminator for future multi-detector unions
- *   - `score`            — repetition rate, 0.0–1.0 ratio
- *                          (NOT a 0–100 quality tier — `.fafm` is not scored,
- *                          this is a *gauge* of redundancy)
- *   - `repeated_anchors` — the recurring normalized n-gram phrases themselves,
- *                          ranked by recurrence count, capped at TOP_ANCHORS
- *   - `detected_at`      — ISO timestamp when the signal was emitted
- */
-export interface DriftSignal {
-  kind: 'repetition-rate';
-  score: number;
-  repeated_anchors: string[];
-  detected_at: string;
-}
+// Re-export the canonical type so existing importers (`from '../detection/fafm-drift'`)
+// keep working unchanged. Single source of truth lives in `src/types/drift-signals.ts`.
+export type { DriftSignal } from '../types/drift-signals';
 
 export interface DetectFafmDriftOptions {
   /**

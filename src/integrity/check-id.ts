@@ -25,41 +25,11 @@
  */
 
 import YAML from 'yaml';
+import type { Contradiction, ContradictionReport, ReferenceClaims } from '../types/drift-signals';
 
-/** A single mechanical contradiction. Every field is required — Falsifiability. */
-export interface Contradiction {
-  /** Stable check ID — see CHECKS table below. Used by callers to filter / dedupe. */
-  check: string;
-  /** `'error'` = stamp-of-record disagrees with reality; `'warn'` = softer disagreement. */
-  severity: 'error' | 'warn';
-  /** Human-readable location — e.g. `"CHANGELOG.md:meta-stamp"`. */
-  location: string;
-  /** What this check expected to find. */
-  expected: string;
-  /** What was actually present. */
-  found: string;
-  /** Short one-line explanation suitable for surfacing in a report. */
-  message: string;
-}
-
-export interface ContradictionReport {
-  /** Contradictions detected. Empty = clean across all checks that ran. */
-  contradictions: Contradiction[];
-  /** Check IDs that actually ran (required inputs were present). */
-  checked: string[];
-  /** Check IDs that were skipped (a required input was missing). */
-  skipped: string[];
-}
-
-/** Optional external content for cross-checks beyond `.faf` + `.fafm`. */
-export interface ReferenceClaims {
-  /** Raw `package.json` content. */
-  packageJson?: string;
-  /** Raw `CHANGELOG.md` content. */
-  changelog?: string;
-  /** Raw `README.md` content. */
-  readme?: string;
-}
+// Re-export the canonical types so existing importers (`from '../integrity/check-id'`)
+// keep working unchanged. Single source of truth lives in `src/types/drift-signals.ts`.
+export type { Contradiction, ContradictionReport, ReferenceClaims } from '../types/drift-signals';
 
 // ── Internal extraction helpers ────────────────────────────────────────────
 

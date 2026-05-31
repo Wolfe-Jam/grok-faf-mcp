@@ -102,8 +102,9 @@ describe('🏁 WJTTC UMBRELLA — substrate composition (pre-#10 gate)', () => {
     test('DriftSignal from detector is accepted by tracker bridge (no shape drift)', () => {
       const signal = detectFafmDrift(DRIFTY_FAFM);
       expect(signal).not.toBeNull();
-      // The shape contract: tracker.recordFromDriftSignal expects FafmDriftSignalLike.
-      // If the real DriftSignal drifts from the Like duplicate, this call breaks.
+      // The shape contract: tracker.recordFromDriftSignal accepts the canonical
+      // DriftSignal directly (the Like duplicates were eliminated in PR 1 — types
+      // now live in `src/types/drift-signals.ts` as one source of truth).
       tracker.recordFromDriftSignal(signal as DriftSignal);
       const offenders = tracker.getRepeatOffenders({ now: T_NOW });
       expect(offenders.length).toBeGreaterThan(0);
@@ -230,7 +231,7 @@ describe('🏁 WJTTC UMBRELLA — substrate composition (pre-#10 gate)', () => {
       const signal = detectFafmDrift(DRIFTY_FAFM)!;
       receipts.recordReceipt({
         trigger: 'auto',
-        intensity: 'blend',
+        mode: 'blend',
         drift_signal: signal, // ← bridge: receipt accepts the detector's output verbatim
         fired_at: T_NOW,
       });
@@ -311,7 +312,7 @@ describe('🏁 WJTTC UMBRELLA — substrate composition (pre-#10 gate)', () => {
       // Log the auto-fire receipt with the signal that triggered it + the result
       receipts.recordReceipt({
         trigger: 'auto',
-        intensity: 'blend',
+        mode: 'blend',
         drift_signal: signal3, // the signal that motivated this fire
         fired_at: T_NOW,
         refresh_result: blendResult,
@@ -321,7 +322,7 @@ describe('🏁 WJTTC UMBRELLA — substrate composition (pre-#10 gate)', () => {
       const receiptLog = receipts.readReceipts();
       expect(receiptLog.length).toBe(1);
       expect(receiptLog[0].trigger).toBe('auto');
-      expect(receiptLog[0].intensity).toBe('blend');
+      expect(receiptLog[0].mode).toBe('blend');
       expect((receiptLog[0].drift_signal as DriftSignal).kind).toBe('repetition-rate');
       expect((receiptLog[0].refresh_result as { mode: string }).mode).toBe('blend');
     });
@@ -364,7 +365,7 @@ describe('🏁 WJTTC UMBRELLA — substrate composition (pre-#10 gate)', () => {
       tracker.recordFromDriftSignal(detectFafmDrift(DRIFTY_FAFM)!);
       receipts.recordReceipt({
         trigger: 'manual',
-        intensity: 'nuke',
+        mode: 'nuke',
         fired_at: T_NOW,
         refresh_result: { mode: 'nuke', ok: true },
       });
@@ -374,7 +375,7 @@ describe('🏁 WJTTC UMBRELLA — substrate composition (pre-#10 gate)', () => {
       const receiptsB = new RefreshReceiptsLog(receiptsPath);
       expect(trackerB.getRepeatOffenders({ now: T_NOW }).length).toBeGreaterThan(0);
       expect(receiptsB.readReceipts().length).toBe(1);
-      expect(receiptsB.readReceipts()[0].intensity).toBe('nuke');
+      expect(receiptsB.readReceipts()[0].mode).toBe('nuke');
     });
   });
 

@@ -29,31 +29,26 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import type { DriftSignal } from '../types/drift-signals';
 
 /** What initiated this refresh fire — auto by a detector, or manual by caller. */
 export type RefreshTrigger = 'auto' | 'manual';
 
-/** Refresh intensity used — matches refresh_blend's modes. */
-export type RefreshIntensity = 'blend' | 'nuke';
-
-/**
- * Minimal shape of a drift signal — duplicated as `Like` to avoid a cross-
- * module type import cycle. Same pattern as `FafmDriftSignalLike` in
- * `repeat-offender.ts`.
- */
-export interface DriftSignalLike {
-  kind: string;
-  [key: string]: unknown;
-}
+// `RefreshMode` is the canonical type for the `'blend' | 'nuke'` refresh
+// intensities — single source of truth in `src/types/refresh.ts`. Was
+// previously duplicated here as `RefreshIntensity` (different name, same
+// values) — eliminated in PR 101.
+import type { RefreshMode } from '../types/refresh';
+export type { RefreshMode } from '../types/refresh';
 
 /** A single refresh telemetry event. Append-only, never mutated. */
 export interface RefreshReceipt {
   /** What initiated this fire. */
   trigger: RefreshTrigger;
-  /** Which refresh intensity ran. */
-  intensity: RefreshIntensity;
+  /** Which refresh mode ran. Matches `refresh_blend` tool's `mode` arg vocabulary. */
+  mode: RefreshMode;
   /** The drift signal that motivated an auto-fire (undefined for manual). */
-  drift_signal?: DriftSignalLike;
+  drift_signal?: DriftSignal;
   /** ISO 8601 timestamp of when the refresh fired. */
   fired_at: string;
   /** Whatever the refresh primitive returned. Caller decides what to capture. */
@@ -98,7 +93,7 @@ export function filterReceipts(
   let result = receipts.filter((r): r is RefreshReceipt => {
     if (r === null || typeof r !== 'object') return false;
     if (r.trigger !== 'auto' && r.trigger !== 'manual') return false;
-    if (r.intensity !== 'blend' && r.intensity !== 'nuke') return false;
+    if (r.mode !== 'blend' && r.mode !== 'nuke') return false;
     if (typeof r.fired_at !== 'string') return false;
     if (!Number.isFinite(Date.parse(r.fired_at))) return false;
     return true;
@@ -164,8 +159,8 @@ export class RefreshReceiptsLog {
     if (receipt.trigger !== 'auto' && receipt.trigger !== 'manual') {
       throw new Error(`recordReceipt: trigger must be 'auto' or 'manual', got: ${receipt.trigger}`);
     }
-    if (receipt.intensity !== 'blend' && receipt.intensity !== 'nuke') {
-      throw new Error(`recordReceipt: intensity must be 'blend' or 'nuke', got: ${receipt.intensity}`);
+    if (receipt.mode !== 'blend' && receipt.mode !== 'nuke') {
+      throw new Error(`recordReceipt: mode must be 'blend' or 'nuke', got: ${receipt.mode}`);
     }
     const firedAt = receipt.fired_at ?? new Date().toISOString();
     if (!Number.isFinite(Date.parse(firedAt))) {

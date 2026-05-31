@@ -584,7 +584,23 @@ export class FafToolHandler {
    * (.fafb re-compile is the next layer, wired in the faf-cli consolidation.)
    */
   private async handleFafRefresh(args: any): Promise<CallToolResult> {
-    // cwd resolution — mirror handleFafScore (honour args.path, else session dir).
+    // cwd resolution — honour args.path when explicit, else use the LIVE session cwd.
+    //
+    // Was previously falling back to `this.engineAdapter.getWorkingDirectory()`
+    // which anchors to whatever `findBestWorkingDirectory()` resolved at
+    // server-construction time (often `~/Projects` regardless of where the
+    // user's project actually is). For drift tools that re-ground on the LIVE
+    // .faf, the live shell is the right truth — not a frozen anchor.
+    //
+    // Same fix as refresh_fafm + faf_orchestrate_recommendation got during
+    // their PRs (the AERO test tier catches this pattern). For refresh_faf
+    // the bug wasn't caught earlier because its existing AERO tests pass
+    // `path: tmpDir` explicitly, never exercising the no-path branch.
+    //
+    // Surfaced by the 1.5 substrate dogfood (2026-05-31): refresh_faf returned
+    // 29% RED scoring `~/Projects/project.faf` while the actual grok-faf-mcp
+    // project.faf was 🏆 100% TROPHY. Tool-discovery bug, not a .faf quality
+    // issue. Substrate caught its own ecosystem's bug.
     let cwd: string;
     const explicitPath: string | undefined = args?.path;
     if (explicitPath) {
@@ -599,7 +615,7 @@ export class FafToolHandler {
         this.engineAdapter.setWorkingDirectory(cwd);
       }
     } else {
-      cwd = this.engineAdapter.getWorkingDirectory();
+      cwd = process.cwd();
     }
 
     const { findFafFile: cliFindFafFile, readFafRaw, scoreFafYaml, getNextTier } = await fafCli;

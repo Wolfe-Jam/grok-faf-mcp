@@ -341,6 +341,37 @@ suite('🏁 WJTTC — refresh_faf (grok-faf-mcp)', () => {
         fs.rmSync(dir, { recursive: true, force: true });
       }
     });
+
+    // CWD-DISCOVERY regression test — locks the fix for the engineAdapter
+    // cwd-cache bug surfaced by the 1.5 substrate dogfood (2026-05-31).
+    // Without `path` arg, refresh_faf MUST use the LIVE process.cwd() — not
+    // engineAdapter.getWorkingDirectory() which caches at server-construction
+    // time and often anchors to a parent dir like `~/Projects`.
+    test('CWD-DISCOVERY: no-path call reads LIVE process.cwd(), not engineAdapter cache', async () => {
+      const liveDir = fs.mkdtempSync(path.join(os.tmpdir(), 'faf-refresh-live-cwd-'));
+      const distinctMarker = 'cwd-regression-marker-' + Date.now();
+      // Write a project.faf in liveDir that has a UNIQUE goal string — if
+      // refresh_faf reads engineAdapter's cached cwd (anything other than
+      // liveDir), the distinctMarker won't appear in the response.
+      fs.writeFileSync(
+        path.join(liveDir, 'project.faf'),
+        SAMPLE_FAF.replace('refresh-fixture', distinctMarker),
+      );
+      const savedCwd = process.cwd();
+      try {
+        process.chdir(liveDir);
+        // NO path arg — exercises the engineAdapter-vs-process.cwd() branch
+        const res = await client.callTool({ name: 'refresh_faf', arguments: {} });
+        const text = textOf(res);
+        expect(res.isError).toBeFalsy();
+        // Fresh DNA payload must contain liveDir's unique marker — proves
+        // the handler resolved cwd to liveDir, not the engineAdapter cache
+        expect(text).toContain(distinctMarker);
+      } finally {
+        process.chdir(savedCwd);
+        fs.rmSync(liveDir, { recursive: true, force: true });
+      }
+    });
   });
 
   // ── 🛞 TYRE — live cred roundtrips [pass-through] ───────────────────────

@@ -38,11 +38,11 @@
     "url": "https://github.com/Wolfe-Jam/grok-faf-mcp",
     "source": "github"
   },
-  "websiteUrl": "https://grok-faf-mcp.vercel.app",
+  "websiteUrl": "https://grok.faf.one",
   "remotes": [
     {
-      "type": "sse",
-      "url": "https://grok-faf-mcp.vercel.app/sse"
+      "type": "streamable-http",
+      "url": "https://mcpaas.live/grok/mcp/v1"
     }
   ],
   "packages": [

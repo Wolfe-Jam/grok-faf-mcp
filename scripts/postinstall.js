@@ -14,7 +14,7 @@ const fs = require('fs');
 const message = `
 \x1b[32m✓\x1b[0m grok-faf-mcp@${packageJson.version} installed successfully
   17 MCP tools ready
-  URL: https://grok-faf-mcp.vercel.app/sse
+  URL: https://mcpaas.live/grok/mcp/v1
 
 Test in Grok:
   Point MCP client to the URL above

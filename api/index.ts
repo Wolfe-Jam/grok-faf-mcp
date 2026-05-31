@@ -564,7 +564,7 @@ app.get('/.well-known/mcp/server-card.json', async (req, res) => {
       name: 'grok-faf-mcp',
       version: VERSION,
       description: 'grok-faf-mcp — the first MCP for Grok. Persistent project context for xAI/Grok.',
-      homepage: 'https://grok-faf-mcp.vercel.app',
+      homepage: 'https://grok.faf.one',
       repository: 'https://github.com/Wolfe-Jam/grok-faf-mcp'
     },
     capabilities: {

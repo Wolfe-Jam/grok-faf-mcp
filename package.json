@@ -83,7 +83,7 @@
   "bugs": {
     "url": "https://github.com/Wolfe-Jam/grok-faf-mcp/issues"
   },
-  "homepage": "https://grok-faf-mcp.vercel.app",
+  "homepage": "https://grok.faf.one",
   "engines": {
     "node": ">=20.0.0"
   },

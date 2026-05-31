@@ -4,19 +4,18 @@ compatibility_date = "2024-12-30"
 # grok-faf-mcp web surface — Cloudflare canonical (grok.faf.one)
 #
 # Pure-static deployment via Workers Assets. The docs/ directory
-# contains index.html — a snapshot of the v1.3.0 landing page
-# served at grok-faf-mcp.vercel.app.
+# contains index.html — the live landing page (auto-syncs version
+# from npm registry at page-load per commit 6e19f47).
 #
-# Companion surfaces (4-surface play, mirrors ZEPH pattern):
-#   1. grok-faf-mcp.vercel.app     — Vercel canonical (MCP wire: /sse, /health, /info)
-#   2. wolfe-jam.github.io/grok-faf-mcp/ — GitHub Pages mirror (serves same docs/)
-#   3. faf.one/grok                — discovery page (SvelteKit route)
-#   4. grok.faf.one                — THIS Worker (CF-edge canonical)
+# Surfaces (CF 100% as of 2026-05-31 — Vercel deprecated):
+#   1. grok.faf.one                — THIS Worker (CF-edge canonical landing page)
+#   2. mcpaas.live/grok/mcp/v1     — MCP endpoint (Cloudflare, served_by mcpaas-cf)
+#   3. wolfe-jam.github.io/grok-faf-mcp/ — GitHub Pages mirror (serves same docs/)
+#   4. faf.one/grok                — discovery page (SvelteKit route)
 #
-# Vercel stays as the operational URL — /sse for MCP, version-bumped
-# health/info endpoints. CF Worker is the clean-brand canonical for
-# the landing page. Static-only here; MCP wire requests still go to
-# grok-faf-mcp.vercel.app/sse.
+# Cloudflare is canonical for BOTH landing + MCP wire as of 2026-05-31.
+# The legacy grok-faf-mcp.vercel.app surface is deprecated (api/index.ts
+# + vercel.json kept pending v1.6 task #23 Vercel-infrastructure decision).
 #
 # Per `ask-before-going-live-website-deploys.md` doctrine, this
 # config is staged + committed autonomously; the actual

@@ -5,18 +5,18 @@
 
 ## What It Is
 
-The **first MCP (Model Context Protocol) server built specifically for Grok/xAI**, deployed on Vercel with URL-based access. No installation required—point your Grok integration at the endpoint and get instant access to 17 MCP tools + 14 bundled commands for universal AI context via IANA-registered .faf format.
+The **first MCP (Model Context Protocol) server built specifically for Grok/xAI**, deployed on Cloudflare Workers with URL-based access. No installation required—point your Grok integration at the endpoint and get instant access to 17 MCP tools + 14 bundled commands for universal AI context via IANA-registered .faf format.
 
 **Production URLs:**
-- **SSE Endpoint:** https://grok-faf-mcp.vercel.app/sse
-- **Health Check:** https://grok-faf-mcp.vercel.app/health
-- **Info:** https://grok-faf-mcp.vercel.app/info
+- **MCP Endpoint (Streamable HTTP):** https://mcpaas.live/grok/mcp/v1
+- **Server Info:** https://mcpaas.live/grok/mcp/v1/info
+- **Public Verifier:** https://grok.faf.one
 
 **Core Capabilities:**
 - 17 MCP tools (score, init, sync, validate, formats, etc.)
 - 14 bundled CLI commands (bi-directional sync, drift detection, framework discovery)
 - HTTP-SSE transport (Server-Sent Events)
-- Global Edge deployment via Vercel CDN
+- Global Edge deployment via Cloudflare network
 - IANA-registered format support (application/vnd.faf+yaml)
 
 ---
@@ -31,7 +31,7 @@ While `claude-faf-mcp` (6.7k downloads) and `faf-mcp` (universal MCP) serve the 
 **The Requirements:**
 1. **URL-based access** - No `npm install`, no local runtime, no configuration files
 2. **Production infrastructure** - Not a demo, not a prototype—battle-tested from day one
-3. **Global availability** - Vercel Edge = worldwide CDN, sub-50ms latency globally
+3. **Global availability** - Cloudflare Workers = 300+ edge locations, sub-50ms latency globally
 4. **Zero friction** - Add URL to config, start using tools immediately
 
 **The xAI Context:**
@@ -66,7 +66,7 @@ npm install -g some-mcp-server
 
 **grok-faf-mcp workflow (URL-based):**
 ```
-Point to: https://grok-faf-mcp.vercel.app/sse
+Point to: https://mcpaas.live/grok/mcp/v1
 
 Done.
 ```
@@ -76,7 +76,7 @@ Done.
 - ❌ No Node.js version conflicts
 - ❌ No local server management
 - ❌ No "works on my machine" debugging
-- ❌ No update cycles (Vercel deploys transparently)
+- ❌ No update cycles (Cloudflare deploys transparently)
 
 **What this enables:**
 - ✅ Instant access from any MCP client
@@ -99,7 +99,7 @@ Done.
 - **Infrastructure Precedent** - Demonstrates that AI tooling can be **URL-native**, not just installable packages
 - **Ecosystem Velocity** - Developers ship Grok integrations in minutes (not hours debugging local setups)
 - **Standards Alignment** - Built on IANA-registered .faf format + Anthropic MCP spec = interoperable foundation
-- **Global Accessibility** - Vercel Edge deployment means MCP tools work in 300+ edge locations worldwide
+- **Global Accessibility** - Cloudflare Workers means MCP tools work in 300+ edge locations worldwide
 
 ### Strategic Position:
 
@@ -107,7 +107,7 @@ Done.
 AI context formats (like .faf) only matter if AI agents can **access** them. grok-faf-mcp proves that access can be:
 1. **Instant** - No installation, no configuration
 2. **Global** - Works everywhere via CDN
-3. **Reliable** - Production Vercel infrastructure
+3. **Reliable** - Production Cloudflare Workers infrastructure
 4. **Standard** - MCP protocol + IANA format
 
 This combination transforms .faf from "interesting spec" to **production infrastructure**.
@@ -132,7 +132,7 @@ CLI Speedup:          16.2x faster
 MCP Tools:            17 total
 Bundled Commands:     14 total
 Transport:            HTTP-SSE
-Platform:             Vercel Edge
+Platform:             Cloudflare Workers
 Status:               Production
 ```
 
@@ -157,7 +157,7 @@ Status:               Production
 **Option 1: URL-Based (Instant)**
 ```
 Add to MCP client config:
-SSE Endpoint: https://grok-faf-mcp.vercel.app/sse
+MCP Endpoint: https://mcpaas.live/grok/mcp/v1
 ```
 
 **Option 2: Local Install (Optional)**
@@ -187,18 +187,18 @@ Use FAF to sync project context
 ## Technical Architecture
 
 **Deployment Stack:**
-- **Platform:** Vercel Serverless Functions
+- **Platform:** Cloudflare Workers
 - **Runtime:** Node.js 18+
 - **Transport:** HTTP Server-Sent Events (SSE)
 - **Protocol:** MCP via @modelcontextprotocol/sdk
 - **Format:** IANA-registered application/vnd.faf+yaml
 
 **Key Files:**
-- `api/index.ts` - Vercel serverless function (Express + MCP server)
-- `vercel.json` - Zero-config routing (all paths → /api/index)
+- `mcpaas-cf` - Cloudflare Workers MCP server (Streamable HTTP, served at mcpaas.live/grok/mcp/v1)
+- `wrangler.toml` - Cloudflare Workers config (custom domain grok.faf.one)
 - `package.json` - grok-faf-mcp package config (inherits faf-cli tools)
 
-**Why Vercel?**
+**Why Cloudflare?**
 - Global Edge network (300+ locations)
 - Zero-config deployments
 - Automatic HTTPS
@@ -211,7 +211,7 @@ Use FAF to sync project context
 
 **Official Links:**
 - **Website:** https://faf.one
-- **Production:** https://grok-faf-mcp.vercel.app/
+- **Production:** https://grok.faf.one/
 - **Discord:** https://discord.com/invite/56fPBUJKfk
 - **npm:** https://www.npmjs.com/package/grok-faf-mcp
 - **GitHub:** https://github.com/Wolfe-Jam/grok-faf-mcp
@@ -238,14 +238,14 @@ grok-faf-mcp delivered—first to ship, zero friction, production-ready from day
 
 **This is championship engineering:**
 - Standards that work (IANA + MCP)
-- Code that ships (Vercel production)
+- Code that ships (Cloudflare production)
 - Experiences that resonate (instant access, no setup)
 
 **Built for Grok. Built for Speed. Built Right.**
 
 ---
 
-**Built with:** Node.js 18+ | Vercel Edge | MCP Protocol | IANA Format
-**Status:** Production (https://grok-faf-mcp.vercel.app/)
+**Built with:** Node.js 18+ |  Cloudflare Workers | MCP Protocol | IANA Format
+**Status:** Production (https://grok.faf.one/)
 **Philosophy:** FAST⚡️AF - First to Ship, Zero Friction
 **Repository:** https://github.com/Wolfe-Jam/grok-faf-mcp

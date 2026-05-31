@@ -12,6 +12,7 @@ import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } f
 import { getRAGIntegrator } from '../rag/index.js';
 import { runRefreshBlend, type RefreshMode } from '../orchestrator/refresh-blend';
 import { orchestrate } from '../orchestrator/recommendation';
+import { getOrchestrationPolicy } from '../orchestrator/get-policy';
 // v1.4.1: single-source scoring — port-then-wire the truthful scorer into the
 // live FafToolHandler (grok has no ChampionshipToolHandler wired). faf_score
 // now reads faf-cli's real scoreFafYaml (the IANA-spec one) instead of the
@@ -109,6 +110,20 @@ export class FafToolHandler {
           inputSchema: {
             type: 'object',
             properties: {},
+            additionalProperties: false,
+          },
+        },
+        {
+          name: 'faf_get_orchestration_policy',
+          description: 'Introspect the effective orchestration policy WITHOUT running the orchestrator. Returns `{ tier, thresholds, source, overrides_applied }` — what aggressiveness tier the next `faf_orchestrate_recommendation` call would use, and whether it came from defaults or a `.faf:orchestration:` override. No drift detection, no signals, no receipt — pure introspection. Read-only.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              path: {
+                type: 'string',
+                description: 'Optional explicit `.faf` file path or project directory (supports ~). When omitted, the live process cwd is searched for project.faf / .faf.',
+              },
+            },
             additionalProperties: false,
           },
         },
@@ -347,6 +362,8 @@ export class FafToolHandler {
         return await this.handleRefreshBlend(args);
       case 'faf_orchestrate_recommendation':
         return await this.handleOrchestrateRecommendation(args);
+      case 'faf_get_orchestration_policy':
+        return await this.handleGetOrchestrationPolicy(args);
       case 'faf_init':
         return await this.handleFafInit(args);
       case 'faf_trust':
@@ -1054,6 +1071,65 @@ export class FafToolHandler {
         {
           type: 'text',
           text: header + '\n```json\n' + JSON.stringify(recommendation, null, 2) + '\n```\n',
+        },
+      ],
+    };
+  }
+
+  /**
+   * `faf_get_orchestration_policy` — pure introspection of the effective
+   * policy without running the orchestrator. Companion to
+   * `faf_orchestrate_recommendation`: the orchestrator's `hints.effective_policy`
+   * tells the agent what THIS analysis used; this tool tells the agent what
+   * the NEXT analysis would use (without paying the analysis cost or writing
+   * a receipt).
+   *
+   * Useful for:
+   *   - Debugging unexpected orchestrator behavior ("why was severity 'block'?")
+   *   - Pre-flight check before bulk operations ("am I in conservative or aggressive?")
+   *   - .faf:orchestration: override verification ("did my edit take effect?")
+   *
+   * Per Grok-1's Round 2 follow-up. Single-source: wraps the canonical
+   * `resolvePolicyFromFaf()` resolver — can never disagree with the orchestrator
+   * about what the policy is. Read-only WRT all state.
+   */
+  private async handleGetOrchestrationPolicy(args: any): Promise<CallToolResult> {
+    // Same cwd discipline as the other 1.5 tools (#104 lineage):
+    // live process cwd, NOT engineAdapter's construction-time cache.
+    const explicitPath: string | undefined = args?.path;
+    let cwd: string;
+    let fafPathOverride: string | undefined;
+
+    if (explicitPath) {
+      const expandedPath = explicitPath.startsWith('~')
+        ? path.join(require('os').homedir(), explicitPath.slice(1))
+        : explicitPath;
+      const resolvedPath = path.resolve(expandedPath);
+      // If they passed a file path, use it directly. If a dir, search inside.
+      if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile()) {
+        fafPathOverride = resolvedPath;
+        cwd = path.dirname(resolvedPath);
+      } else {
+        cwd = resolvedPath;
+      }
+    } else {
+      cwd = process.cwd();
+    }
+
+    const result = getOrchestrationPolicy({ cwd, fafPath: fafPathOverride });
+
+    const header =
+      `POLICY — tier: ${result.policy.tier} (source: ${result.policy.source})\n\n` +
+      `  faf_found: ${result.faf_found}\n` +
+      (result.faf_path ? `  faf_path:  ${result.faf_path}\n` : '') +
+      (result.read_error ? `  read_error: ${result.read_error}\n` : '') +
+      `  overrides_applied: ${result.policy.overrides_applied.length === 0 ? '(none)' : result.policy.overrides_applied.join(', ')}\n`;
+
+    return {
+      content: [
+        {
+          type: 'text',
+          text: header + '\n```json\n' + JSON.stringify(result, null, 2) + '\n```\n',
         },
       ],
     };

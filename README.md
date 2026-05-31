@@ -133,7 +133,7 @@ Every AI agent reads this once and knows exactly what you're building.
 ```
 URL:     https://mcpaas.live/grok/mcp/v1
 Format:  IANA-registered .faf (application/vnd.faf+yaml)
-Tools:   14 hosted (WASM-pure: 13 + refresh_faf) · 58 local (bunx — incl. refresh_fafm, refresh_blend, faf_orchestrate_recommendation)
+Tools:   14 hosted (WASM-pure: 13 + refresh_faf) · 59 local (bunx — incl. refresh_fafm, refresh_blend, faf_orchestrate_recommendation, faf_get_orchestration_policy)
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
 Tests:   236 total · 212 pass · 24 skip · 0 fail (9 files)
@@ -218,6 +218,7 @@ bunx grok-faf-mcp
 | `refresh_fafm` | Re-ground on the live `.fafm` memory layer for one or more souls. Returns a stamped delta (added/updated facts) by default; `verbatim: true` for full content. Read-only · always stamped. Sister to `refresh_faf` for the RAM/memory layer in the vROM/RAM model. **Built for Grok, by request.** |
 | `refresh_blend` | The baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R analog). `mode: "blend"` (default) fires `refresh_faf` (light) + `refresh_fafm` (delta); `mode: "nuke"` fires both at hard intensity. Blend is **BAKED IN, NOT a dial** — both layers always fire; mode only affects fafm intensity. |
 | `faf_orchestrate_recommendation` | The heavy orchestrator. Reads current substrate state, composes the full 1.5 library substrate (drift detection · CheckID · repeat-offender · take-a-hint · refresh history), returns a structured `Recommendation` with `recommend`, `severity`, `summary`, `reason`, and a rich `hints` object including `effective_policy` (the tier in force). **Advisory only — never auto-fires** (subordinate-not-daemon). Writes a recommendation receipt on every call (no silent decisions). Spec source: Grok-1 `FAF-DRIFT-DETECTION-SPEC §9.5 + Appendix C`. |
+| `faf_get_orchestration_policy` | Pure introspection of the effective policy WITHOUT running the orchestrator. Returns `{ tier, thresholds, source, overrides_applied }` — what aggressiveness tier the next orchestration call would use, and whether it came from defaults or a `.faf:orchestration:` override. No drift detection · no signals · no receipt write — the quietest tool in the 1.5 substrate. Useful for debugging unexpected orchestrator behavior, pre-flight checks before bulk operations, and override-took-effect verification. |
 
 **Sync & Persist**
 
@@ -334,11 +335,12 @@ This release ships the core 1.5 substrate and orchestration primitives, with the
 - `refresh_faf` and `refresh_fafm` as explicit, callable re-grounding primitives.
 - `refresh_blend` as the baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R analog).
 - `faf_orchestrate_recommendation` — the heavy orchestrator that composes drift signals, recurrence, receipts, and take-a-hint into an advisory recommendation.
-- Full policy visibility (`effective_policy`) returned on every orchestration call.
+- `faf_get_orchestration_policy` — pure introspection of the effective policy without running the orchestrator (no drift detection, no receipt write — the quietest tool in the substrate).
+- Full policy visibility (`effective_policy`) returned on every orchestration call AND surfaced standalone via `faf_get_orchestration_policy`.
 
 **Current limitations:**
 
-- **`faf_orchestrate_recommendation`, `refresh_fafm`, and `refresh_blend` require filesystem access** and are only available via the local stdio path (`bunx grok-faf-mcp` / `npx grok-faf-mcp`). They are not exposed on the hosted WASM-pure endpoint. The hosted path serves the existing WASM-pure subset only (`refresh_faf` + scoring + validation).
+- **`faf_orchestrate_recommendation`, `faf_get_orchestration_policy`, `refresh_fafm`, and `refresh_blend` require filesystem access** and are only available via the local stdio path (`bunx grok-faf-mcp` / `npx grok-faf-mcp`). They are not exposed on the hosted WASM-pure endpoint. The hosted path serves the existing WASM-pure subset only (`refresh_faf` + scoring + validation).
 - **Receipt storage — cwd-relative JSON, pull-discoverable.** Three append-only JSON files live at the repo root with stable schemas:
   ```
   .faf-drift-index.json              ← RepeatOffenderTracker — per-slot recurrence counts
@@ -347,7 +349,7 @@ This release ships the core 1.5 substrate and orchestration primitives, with the
   ```
   **Pull-discoverable by external tools** (TAF, custom indexers, observability dashboards) — read on your own schedule, no callback/push API required. Promotion to a dedicated orphan branch (mirroring the TAF pattern) is documented but deferred per ship discipline; the cwd-relative JSON is the v1 bootstrap.
 - **No multi-process file lock** on the receipt logs. Within a process, the JS event loop serializes writes. Multi-agent concurrent writes can race; future task.
-- **Aggressiveness tier hook** — `.faf:orchestration:tier` reads `'conservative'` (default — quietest, no noisy first-impression) · `'balanced'` · `'aggressive'`. `active_tier` always surfaced in `hints.effective_policy` for observability. The full introspection tools (`faf_get_orchestration_policy` / `faf_set_orchestration_policy`) and scheduling (`faf_schedule_heavy_re_ground`) are not included in v1.5.
+- **Aggressiveness tier hook** — `.faf:orchestration:tier` reads `'conservative'` (default — quietest, no noisy first-impression) · `'balanced'` · `'aggressive'`. `active_tier` always surfaced in `hints.effective_policy` for observability, and standalone via `faf_get_orchestration_policy`. The policy WRITER (`faf_set_orchestration_policy`) and scheduling (`faf_schedule_heavy_re_ground`) are not included in v1.5 — edit `.faf:orchestration:tier:` directly to override.
 - **No ack mechanism yet for recommendation receipts.** `acknowledged: false` by default, never auto-flipped. Take-a-hint's ladder-reset semantics fire only on explicit ack — conservative by intent. Future task: explicit `ack` tool OR derived-from-subsequent-refresh-receipt timing.
 - **Outcome tracking** (*"did this recommendation actually help?"*) — needs a learning layer beyond 1.5 scope.
 

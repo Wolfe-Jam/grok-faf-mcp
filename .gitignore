@@ -37,3 +37,11 @@ test-results/
 .env
 .env.test
 .env.vercel-*
+
+# 1.5 substrate runtime receipts (cwd-relative, per-machine telemetry).
+# Each install accumulates its own — must not be tracked in the repo.
+# Pull-discoverable by external tools (TAF, etc.) on the machine that
+# generated them; see README "Status & known limitations" for schemas.
+.faf-drift-index.json
+.faf-refresh-receipts.json
+.faf-recommendation-receipts.json

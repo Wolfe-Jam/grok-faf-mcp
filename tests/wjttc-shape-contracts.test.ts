@@ -29,6 +29,8 @@ import type { Contradiction as Canonical_Contradiction } from '../src/types/drif
 import type { ContradictionReport as Canonical_ContradictionReport } from '../src/types/drift-signals';
 import type { ReferenceClaims as Canonical_ReferenceClaims } from '../src/types/drift-signals';
 import type { RepeatOffender as Canonical_RepeatOffender } from '../src/types/drift-signals';
+import type { RefreshMode as Canonical_RefreshMode } from '../src/types/refresh';
+import type { EscalationLevel as Canonical_EscalationLevel } from '../src/types/escalation';
 
 // Re-exports from each substrate-component module — these MUST resolve to
 // the exact canonical type. If a re-export drifts (or accidentally redeclares
@@ -40,6 +42,9 @@ import type {
   ReferenceClaims as CheckId_ReferenceClaims,
 } from '../src/integrity/check-id';
 import type { RepeatOffender as Tracker_RepeatOffender } from '../src/orchestrator/repeat-offender';
+import type { RefreshMode as Blend_RefreshMode } from '../src/orchestrator/refresh-blend';
+import type { RefreshMode as Receipts_RefreshMode } from '../src/telemetry/refresh-receipts';
+import type { EscalationLevel as TakeAHint_EscalationLevel } from '../src/orchestrator/take-a-hint';
 
 // ── Compile-time bidirectional equality assertions ──────────────────────────
 //
@@ -73,6 +78,25 @@ type _AssertRepeatOffender_Rev = Canonical_RepeatOffender extends Tracker_Repeat
 const _checkRepeatOffender_Fwd: _AssertRepeatOffender_Fwd = true;
 const _checkRepeatOffender_Rev: _AssertRepeatOffender_Rev = true;
 
+// RefreshMode — re-exported from BOTH refresh-blend AND refresh-receipts.
+// Both MUST resolve to the canonical type. Tight loop catches the case where
+// one of the two re-exports accidentally goes local.
+type _AssertRefreshMode_Blend_Fwd = Blend_RefreshMode extends Canonical_RefreshMode ? true : never;
+type _AssertRefreshMode_Blend_Rev = Canonical_RefreshMode extends Blend_RefreshMode ? true : never;
+type _AssertRefreshMode_Receipts_Fwd = Receipts_RefreshMode extends Canonical_RefreshMode ? true : never;
+type _AssertRefreshMode_Receipts_Rev = Canonical_RefreshMode extends Receipts_RefreshMode ? true : never;
+const _checkRefreshMode_Blend_Fwd: _AssertRefreshMode_Blend_Fwd = true;
+const _checkRefreshMode_Blend_Rev: _AssertRefreshMode_Blend_Rev = true;
+const _checkRefreshMode_Receipts_Fwd: _AssertRefreshMode_Receipts_Fwd = true;
+const _checkRefreshMode_Receipts_Rev: _AssertRefreshMode_Receipts_Rev = true;
+
+// EscalationLevel — re-exported from take-a-hint. Will be imported directly
+// from `src/types/escalation` by PR 3's `#10` orchestrator output.
+type _AssertEscalationLevel_Fwd = TakeAHint_EscalationLevel extends Canonical_EscalationLevel ? true : never;
+type _AssertEscalationLevel_Rev = Canonical_EscalationLevel extends TakeAHint_EscalationLevel ? true : never;
+const _checkEscalationLevel_Fwd: _AssertEscalationLevel_Fwd = true;
+const _checkEscalationLevel_Rev: _AssertEscalationLevel_Rev = true;
+
 describe('🏁 WJTTC — Shape Contracts (compile-time canonical-type lock)', () => {
   test('all canonical types re-exported from producer modules unchanged (compile-time proven)', () => {
     // The real assertions are at COMPILE time above. This runtime check exists
@@ -84,5 +108,8 @@ describe('🏁 WJTTC — Shape Contracts (compile-time canonical-type lock)', ()
     expect(_checkContradictionReport_Fwd && _checkContradictionReport_Rev).toBe(true);
     expect(_checkReferenceClaims_Fwd && _checkReferenceClaims_Rev).toBe(true);
     expect(_checkRepeatOffender_Fwd && _checkRepeatOffender_Rev).toBe(true);
+    expect(_checkRefreshMode_Blend_Fwd && _checkRefreshMode_Blend_Rev).toBe(true);
+    expect(_checkRefreshMode_Receipts_Fwd && _checkRefreshMode_Receipts_Rev).toBe(true);
+    expect(_checkEscalationLevel_Fwd && _checkEscalationLevel_Rev).toBe(true);
   });
 });

@@ -22,13 +22,13 @@ import { describe, test, expect } from 'bun:test';
 import {
   evaluateTakeAHint,
   DEFAULT_THRESHOLDS,
-  type Recommendation,
+  type RecommendationRecord,
   type EscalationLevel,
 } from '../src/orchestrator/take-a-hint';
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 
-const rec = (timestamp: string, acknowledged = false): Recommendation => ({
+const rec = (timestamp: string, acknowledged = false): RecommendationRecord => ({
   timestamp,
   acknowledged,
 });

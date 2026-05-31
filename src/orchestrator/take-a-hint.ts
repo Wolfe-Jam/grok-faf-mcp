@@ -22,14 +22,23 @@
  * Pure function. No FS. No MCP. Deterministic.
  */
 
-/** Escalation level — spec-verbatim. `'block'` is advisory, not enforced. */
-export type EscalationLevel = 'none' | 'light' | 'hard' | 'block';
+import type { EscalationLevel } from '../types/escalation';
+
+// Re-export the canonical type so existing importers (`from '../orchestrator/take-a-hint'`)
+// keep working unchanged. Single source of truth lives in `src/types/escalation.ts`.
+export type { EscalationLevel } from '../types/escalation';
 
 /**
  * A prior recommendation, as recorded by the orchestrator. Order is recent-
  * last (chronological): `recent_recommendations[length-1]` is the latest.
+ *
+ * Renamed from `Recommendation` in PR 101 to free that name for the `#10`
+ * orchestrator's OUTPUT type (`src/orchestrator/recommendation.ts`). Same
+ * name was a foreseeable collision — different shape, different semantics.
+ * This one is the HISTORICAL RECORD of a past recommendation; PR 3's
+ * `Recommendation` is the full output of analyzeAndRecommend().
  */
-export interface Recommendation {
+export interface RecommendationRecord {
   /** ISO 8601 timestamp of when the recommendation was made. */
   timestamp: string;
   /** Whether the user/agent acknowledged this specific recommendation. */
@@ -69,7 +78,7 @@ export interface EvaluateTakeAHintInput {
    * Recommendation history for THIS slot (caller filters before passing).
    * Chronological order — latest at the end. May be empty.
    */
-  recent_recommendations: Recommendation[];
+  recent_recommendations: RecommendationRecord[];
   /**
    * Count of recommendations the caller has determined were "ignored".
    * Caller-defined semantics — typically "made but not acted on within a

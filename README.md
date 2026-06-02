@@ -19,6 +19,10 @@
 **Live demo:** [grok.faf.one](https://grok.faf.one)
 
 <div align="center">
+  ![grok-faf-mcp landing page / hero (SuperGrok recommended)](assets/grok-faf-mcp-hero.png)
+</div>
+
+<div align="center">
 
 [![FAF Trophy 100%](https://img.shields.io/badge/FAF-%F0%9F%8F%86%20100%25-000000?labelColor=FF6B35)](https://faf.one)
 [![CI](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml)
@@ -27,6 +31,8 @@
 [![project.faf](https://img.shields.io/badge/project.faf-inside-00D4D4)](https://github.com/Wolfe-Jam/faf)
 [![Chat to FAFA live](https://img.shields.io/badge/Chat_to_FAFA_live-000000?style=flat&labelColor=000)](https://faf-voice.vercel.app/agent)
 </div>
+
+[![Stars](https://img.shields.io/github/stars/Wolfe-Jam/grok-faf-mcp)](https://github.com/Wolfe-Jam/grok-faf-mcp/stargazers) [![License](https://img.shields.io/github/license/Wolfe-Jam/grok-faf-mcp)](https://github.com/Wolfe-Jam/grok-faf-mcp/blob/main/LICENSE) [![npm](https://img.shields.io/npm/v/grok-faf-mcp)](https://www.npmjs.com/package/grok-faf-mcp) [![Downloads](https://img.shields.io/npm/dt/grok-faf-mcp)](https://www.npmjs.com/package/grok-faf-mcp)
 
 **FAF defines. MD instructs. AI codes.**
 
@@ -393,6 +399,28 @@ Same family. Different surface. *Voice swappable; memory permanent.*
 
 ---
 
+### For the xAI / Grok Build team
+
+This MCP server was built **for** Grok and continues to be shaped by direct feedback from Grok itself.
+
+Open for deeper collaboration on:
+- Native Grok Build integration
+- .fafm memory layer
+- refresh_faf primitives inside the Grok TUI / CLI
+- Any other context or orchestration features the team needs
+
+I ship fast, test rigorously, and dogfood everything live on https://grok.faf.one and https://mcpaas.live/grok/mcp/v1.
+
+Happy to:
+- Open PRs
+- Run private dogfood sessions
+- Jump on a call
+- Or just ship whatever moves the needle
+
+Real software only. Just say the word.
+
+---
+
 ## Contributing
 
 PR conventions, code style, CI doctrine, MCP-tool contribution path,
@@ -403,6 +431,11 @@ xAI / Grok devs welcome — TL;DR setup at the top, F1-inspired tone throughout.
 ---
 
 If grok-faf-mcp has been useful, consider starring the repo ⭐️ it helps others find it.
+
+### For xAI / Grok Build team
+
+Open for deeper native integration, .fafm memory layer, or Grok Build CLI collaboration.  
+Happy to ship PRs, dogfood, or jump on a call. Just say the word.
 
 ---
 

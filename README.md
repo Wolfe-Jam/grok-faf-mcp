@@ -18,9 +18,7 @@
 **Home:** [faf.one/grok](https://faf.one/grok)
 **Live demo:** [grok.faf.one](https://grok.faf.one)
 
-<div align="center">
-  ![grok-faf-mcp landing page / hero (SuperGrok recommended)](assets/grok-faf-mcp-hero.png)
-</div>
+![grok-faf-mcp hero](https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/grok-faf-mcp-hero.png)
 
 <div align="center">
 

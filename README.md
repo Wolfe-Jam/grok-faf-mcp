@@ -77,6 +77,14 @@ Every README should answer these questions. Here's ours:
 **For AI:** Read the detailed sections below for full context.
 **For humans:** Use this pattern in YOUR README. Answer these 6 questions clearly.
 
+### For the xAI / Grok Build team
+
+Built **for** Grok and shaped by direct Grok feedback.  
+Open for native Grok Build integration, .fafm memory layer, refresh_faf primitives, or any other context features the team needs.  
+Live and dogfooded at https://grok.faf.one and https://mcpaas.live/grok/mcp/v1.
+
+Happy to ship PRs, run private dogfood sessions, or jump on a call. Real software only. Just say the word.
+
 ---
 
 ## The Problem

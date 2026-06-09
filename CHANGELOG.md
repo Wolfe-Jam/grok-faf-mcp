@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.5.1 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.5.2 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,29 @@ All notable changes to grok-faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [1.5.2] - 2026-06-08
+
+MCP capability completeness — the stdio server now answers every capability it
+advertises. Strict MCP clients (and Glama's MCP Inspector) probe each advertised
+capability; a `-32601` on any of them flags the server even when tools work.
+
+### Fixed
+
+- **`resources/templates/list` now returns `{ resourceTemplates: [] }`** instead
+  of `-32601 Method not found`. The `resources` capability is advertised, so the
+  method must answer with a valid (empty) list. Registered
+  `ListResourceTemplatesRequestSchema` in `src/server.ts`.
+- **Dropped `subscribe: true` from the advertised `resources` capability.** No
+  subscribe/unsubscribe handler is implemented, so advertising it made
+  `resources/subscribe` a `-32601`. Now advertises `resources: { listChanged: true }`
+  only — honest capability declaration. (`/info` payload aligned too.)
+
+### Notes
+
+- No tool changes; the full v1.5 substrate is unchanged. This is the stdio-lane
+  twin of the hosted-edge capability fix (mcpaas.live worker).
+- Repo hygiene: untracked `project.faf.backup-*` snapshots (gitignored).
 
 ## [1.5.1] - 2026-05-31
 

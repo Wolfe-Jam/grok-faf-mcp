@@ -90,9 +90,8 @@ describe('🏁 WJTTC — bun migration + MCP integrity (grok-faf-mcp)', () => {
 
   // ───────────────────────────────────────────────────────────────────────
   describe('⚙️ ENGINE (2) — MCP protocol core', () => {
-    test('server constructs on both transports', () => {
+    test('server constructs on the stdio transport', () => {
       expect(() => new GrokFafMcpServer({ transport: 'stdio', fafEnginePath: 'native' })).not.toThrow();
-      expect(() => new GrokFafMcpServer({ transport: 'http-sse', fafEnginePath: 'native' })).not.toThrow();
     });
 
     test('getServer() exposes the SDK Server', () => {

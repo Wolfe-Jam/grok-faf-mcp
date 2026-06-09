@@ -12,10 +12,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node start-http.js",
-    "dev": "ts-node src/server.ts",
-    "dev:stdio": "ts-node src/cli.ts --transport stdio",
-    "dev:http": "ts-node src/cli.ts --transport http-sse --port 3001",
+    "start": "node dist/src/index.js",
+    "dev": "ts-node src/cli.ts",
+    "dev:stdio": "ts-node src/cli.ts",
     "test": "sh scripts/run-tests.sh",
     "test:performance": "bun test tests/performance.test.ts",
     "bench:score": "node bench/score.bench.js",
@@ -111,15 +110,11 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@upstash/redis": "^1.37.0",
-    "cors": "^2.8.5",
-    "express": "^4.21.0",
     "faf-cli": "^6.7.1",
     "faf-scoring-kernel": "^2.0.3",
     "yaml": "^2.4.1"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.5",
     "@types/node": "^20.11.0",
     "@typescript-eslint/eslint-plugin": "^7.0.0",

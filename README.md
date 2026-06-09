@@ -1,7 +1,7 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
 <!-- faf: doc=readme | canonical=project.faf | score=100 | family=FAF -->
 
-# FAST⚡️AF Context
+# grok-faf-mcp — FAST⚡️AF Edition
 
 <div align="center">
   <img src="https://www.faf.one/orange-smiley.svg" alt="FAF" width="80" />
@@ -22,15 +22,15 @@
 
 <div align="center">
 
+[![npm version](https://img.shields.io/npm/v/grok-faf-mcp?color=00CCFF)](https://www.npmjs.com/package/grok-faf-mcp)
 [![FAF Trophy 100%](https://img.shields.io/badge/FAF-%F0%9F%8F%86%20100%25-000000?labelColor=FF6B35)](https://faf.one)
 [![CI](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/Wolfe-Jam/grok-faf-mcp/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/grok-faf-mcp?color=00CCFF)](https://www.npmjs.com/package/grok-faf-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![project.faf](https://img.shields.io/badge/project.faf-inside-00D4D4)](https://github.com/Wolfe-Jam/faf)
 [![Chat to FAFA live](https://img.shields.io/badge/Chat_to_FAFA_live-000000?style=flat&labelColor=000)](https://faf-voice.vercel.app/agent)
 </div>
 
-[![Stars](https://img.shields.io/github/stars/Wolfe-Jam/grok-faf-mcp)](https://github.com/Wolfe-Jam/grok-faf-mcp/stargazers) [![License](https://img.shields.io/github/license/Wolfe-Jam/grok-faf-mcp)](https://github.com/Wolfe-Jam/grok-faf-mcp/blob/main/LICENSE) [![npm](https://img.shields.io/npm/v/grok-faf-mcp)](https://www.npmjs.com/package/grok-faf-mcp) [![Downloads](https://img.shields.io/npm/dt/grok-faf-mcp)](https://www.npmjs.com/package/grok-faf-mcp)
+[![Stars](https://img.shields.io/github/stars/Wolfe-Jam/grok-faf-mcp)](https://github.com/Wolfe-Jam/grok-faf-mcp/stargazers) [![Downloads](https://img.shields.io/npm/dt/grok-faf-mcp)](https://www.npmjs.com/package/grok-faf-mcp)
 
 **FAF defines. MD instructs. AI codes.**
 
@@ -282,7 +282,7 @@ Benchmarked 10x per tool, warmed up, on local stdio execution. Hosted edge adds 
 ## Architecture
 
 ```
-grok-faf-mcp v1.5.2
+grok-faf-mcp
 ├── src/
 │   ├── server.ts             → MCP server (GrokFafMcpServer)
 │   ├── handlers/

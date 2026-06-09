@@ -12,10 +12,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node start-http.js",
-    "dev": "ts-node src/server.ts",
-    "dev:stdio": "ts-node src/cli.ts --transport stdio",
-    "dev:http": "ts-node src/cli.ts --transport http-sse --port 3001",
+    "start": "node dist/src/index.js",
+    "dev": "ts-node src/cli.ts",
+    "dev:stdio": "ts-node src/cli.ts",
     "test": "sh scripts/run-tests.sh",
     "test:performance": "bun test tests/performance.test.ts",
     "bench:score": "node bench/score.bench.js",

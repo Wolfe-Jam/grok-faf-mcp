@@ -45,3 +45,6 @@ test-results/
 .faf-drift-index.json
 .faf-refresh-receipts.json
 .faf-recommendation-receipts.json
+
+# .faf backup snapshots (kept local)
+project.faf.backup-*

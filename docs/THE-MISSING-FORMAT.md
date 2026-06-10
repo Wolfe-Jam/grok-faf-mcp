@@ -304,7 +304,7 @@ The missing format was never missing. It's been there all along
 - Format Spec: [faf-spec](https://github.com/faf-format/faf-spec)
 
 **MCP Integration:**
-- claude-faf-mcp: [Official Anthropic MCP steward](https://github.com/modelcontextprotocol/servers/tree/main/src/faf)
+- claude-faf-mcp: [Official Anthropic MCP steward](https://github.com/modelcontextprotocol/servers/pull/2759)
 - faf-mcp: [Universal MCP server](https://www.npmjs.com/package/faf-mcp) (5K+ downloads)
 
 **CLI Tools:**

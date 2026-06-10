@@ -101,7 +101,7 @@ The missing format was never missing. It's been there all along.
 **Links:**
 
 - IANA: [application/vnd.faf+yaml](https://www.iana.org/assignments/media-types/application/vnd.faf+yaml)
-- MCP: [claude-faf-mcp](https://github.com/modelcontextprotocol/servers/tree/main/src/faf)
+- MCP: [claude-faf-mcp](https://github.com/modelcontextprotocol/servers/pull/2759)
 - CLI: [faf-cli v3.1.5](https://www.npmjs.com/package/@faf/cli)
 - Full Article: [THE-MISSING-FORMAT.md](https://github.com/yourusername/faf-mcp/blob/main/docs/THE-MISSING-FORMAT.md)
 

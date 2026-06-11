@@ -7,6 +7,7 @@ import { parse as parseYAML, stringify as stringifyYAML } from '../fix-once/yaml
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { findFafFile, fileExists } from '../utils/file-utils';
+import { injectFafBlock } from '../inject';
 
 export interface BiSyncOptions {
   auto?: boolean;
@@ -185,9 +186,9 @@ export async function syncBiDirectional(projectPath?: string, options: BiSyncOpt
         }
       }
 
-      // Generate platform-specific content
+      // Generate platform-specific content — non-destructive: inject/update the faf block, preserve the rest.
       const platformContent = fafToPlatformFormat(fafContent, target);
-      await fs.writeFile(targetPath, platformContent, 'utf-8');
+      await injectFafBlock(targetPath, platformContent);
 
       result.filesChanged.push(path.basename(targetPath));
     }

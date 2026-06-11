@@ -15,6 +15,8 @@ import * as path from 'path';
 import { FafEngineAdapter } from './engine-adapter.js';
 import { DisplayProtocol } from '../utils/display-protocol.js';
 import { findFafFile, getNewFafFilePath, hasFafFile } from '../utils/faf-file-finder.js';
+import { injectFafBlock } from '../faf-core/inject.js';
+import { fafToPlatformFormat } from '../faf-core/commands/bi-sync.js';
 import type * as ToolTypes from './tool-types.js';
 import { VERSION } from '../version.js';
 import { getVisibilityConfig } from '../config/visibility.js';
@@ -1233,7 +1235,7 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
         return await this.formatResult('🔄 FAF Sync', 'No FAF file found to sync from');
       }
       const fafContent = await fs.readFile(fafResult.path, 'utf-8');
-      await fs.writeFile(path.join(cwd, 'CLAUDE.md'), fafContent + `\n\n# Synced from ${fafResult.filename}`);
+      await injectFafBlock(path.join(cwd, 'CLAUDE.md'), fafContent + `\n\n# Synced from ${fafResult.filename}`);
       return await this.formatResult('🔄 FAF Sync', `Synced ${fafResult.filename} → CLAUDE.md (native fallback)`);
     } else {
       // Write to project.faf (new standard)
@@ -1266,18 +1268,15 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
     }
 
     // Fallback to native implementation
+    // Native fallback: sync project.faf → CLAUDE.md, non-destructively.
+    // .faf is canonical — never overwrite it (the old merge corrupted it by
+    // concatenating CLAUDE.md back into project.faf). Inject the faf-derived
+    // block into CLAUDE.md and preserve everything the user wrote.
     const fafResult = await findFafFile(cwd);
-    const faf = fafResult ? await fs.readFile(fafResult.path, 'utf-8').catch(() => '') : '';
-    const claude = await fs.readFile(path.join(cwd, 'CLAUDE.md'), 'utf-8').catch(() => '');
-
-    const merged = `${faf}\n\n# BI-SYNC ACTIVE 🔗\n\n${claude}`;
-
-    // Write to project.faf (new standard)
-    const fafPath = getNewFafFilePath(cwd);
-    await Promise.all([
-      fs.writeFile(fafPath, merged),
-      fs.writeFile(path.join(cwd, 'CLAUDE.md'), merged)
-    ]);
+    if (fafResult) {
+      const fafContent = await fs.readFile(fafResult.path, 'utf-8').catch(() => '');
+      await injectFafBlock(path.join(cwd, 'CLAUDE.md'), fafToPlatformFormat(fafContent, 'CLAUDE.md'));
+    }
 
     const syncTime = Date.now() - startSync;
     return await this.formatResult('🔗 FAF Bi-Sync', `Synced in ${syncTime}ms (native) ${syncTime < 40 ? '🏎️' : ''}`);

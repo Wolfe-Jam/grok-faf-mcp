@@ -163,5 +163,24 @@ describe('🔒 SECURITY — path confinement (arbitrary-file-read disclosure)', 
       });
       expect(textOf(res)).not.toContain('SECRET-DO-NOT-LEAK');
     });
+
+    test('faf_read(path=/etc/passwd) is refused (general file tool, root-confined)', async () => {
+      const res: any = await client.callTool({
+        name: 'faf_read',
+        arguments: { path: '/etc/passwd' },
+      });
+      expect(res.isError).toBeTruthy();
+      expect(textOf(res)).not.toContain('root:');
+    });
+
+    test('faf_write outside the project root is refused (no arbitrary write)', async () => {
+      const target = path.join(os.homedir(), '.grokfaf_should_not_be_written');
+      const res: any = await client.callTool({
+        name: 'faf_write',
+        arguments: { path: target, content: 'pwned' },
+      });
+      expect(res.isError).toBeTruthy();
+      expect(fs.existsSync(target)).toBe(false);
+    });
   });
 });

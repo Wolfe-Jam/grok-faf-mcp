@@ -230,13 +230,13 @@ export class FafToolHandler {
         },
         {
           name: 'faf_read',
-          description: 'Read content from any file on the local filesystem',
+          description: 'Read a file within the project root (cwd / FAF_ALLOWED_ROOTS). Paths that escape the project are refused.',
           inputSchema: {
             type: 'object',
             properties: {
               path: {
                 type: 'string',
-                description: 'Absolute or relative file path to read'
+                description: 'File path within the project root. Paths outside it (e.g. /etc, ~/.ssh) are refused.'
               }
             },
             required: ['path'],
@@ -244,7 +244,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_write',
-          description: 'Write content to any file on the local filesystem',
+          description: 'Write a file within the project root (cwd / FAF_ALLOWED_ROOTS). Paths that escape the project are refused.',
           inputSchema: {
             type: 'object',
             properties: {

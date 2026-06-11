@@ -4,6 +4,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
 import type { Tool, CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import { confineFileOp, PathConfinementError } from '../utils/safe-path';
 
 /**
  * Security validator for file paths
@@ -96,20 +97,23 @@ export async function handleFafRead(args: any): Promise<CallToolResult> {
   const startTime = Date.now();
   
   try {
-    const { path: filePath } = args;
-    
-    // Validate path
-    const pathValidation = PathValidator.validate(filePath);
-    if (!pathValidation.valid) {
-      return {
-        content: [{
-          type: 'text',
-          text: `❌ Security error: ${pathValidation.error}`
-        }],
-        isError: true
-      };
+    const { path: rawPath } = args;
+
+    // Confine to the project root(s) — any file type, but no escape to
+    // /etc, ~/.ssh, or via ../ traversal (CWE-22). Returns symlink-canonical path.
+    let filePath: string;
+    try {
+      filePath = confineFileOp(rawPath);
+    } catch (err) {
+      if (err instanceof PathConfinementError) {
+        return {
+          content: [{ type: 'text', text: `❌ Security error: ${err.message}` }],
+          isError: true,
+        };
+      }
+      throw err;
     }
-    
+
     // Check file size
     const sizeValidation = await PathValidator.checkFileSize(filePath);
     if (!sizeValidation.valid) {
@@ -164,20 +168,24 @@ export async function handleFafWrite(args: any): Promise<CallToolResult> {
   const startTime = Date.now();
   
   try {
-    const { path: filePath, content } = args;
-    
-    // Validate path
-    const pathValidation = PathValidator.validate(filePath);
-    if (!pathValidation.valid) {
-      return {
-        content: [{
-          type: 'text',
-          text: `❌ Security error: ${pathValidation.error}`
-        }],
-        isError: true
-      };
+    const { path: rawPath, content } = args;
+
+    // Confine to the project root(s) before any write — closes arbitrary file
+    // write outside the project (e.g. overwriting ~/.bashrc). Note: for a
+    // not-yet-existing file confineFileOp validates the lexical path within root.
+    let filePath: string;
+    try {
+      filePath = confineFileOp(rawPath);
+    } catch (err) {
+      if (err instanceof PathConfinementError) {
+        return {
+          content: [{ type: 'text', text: `❌ Security error: ${err.message}` }],
+          isError: true,
+        };
+      }
+      throw err;
     }
-    
+
     // Check content size
     const contentSize = Buffer.byteLength(content, 'utf8');
     if (contentSize > 50 * 1024 * 1024) {

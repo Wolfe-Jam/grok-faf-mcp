@@ -74,6 +74,57 @@ function withinRoots(resolved: string, roots: string[]): boolean {
   return roots.some((root) => resolved === root || resolved.startsWith(root + path.sep));
 }
 
+/**
+ * Symlink-canonical absolute path, tolerant of a not-yet-existing target
+ * (a `faf_write` to a new file). Resolves the nearest EXISTING ancestor through
+ * symlinks, then re-appends the missing tail — so a new file under /tmp matches
+ * a /private/tmp root on macOS instead of slipping past the confinement check.
+ */
+function canonicalize(input: string): string {
+  let cur = path.resolve(input);
+  const tail: string[] = [];
+  for (;;) {
+    try {
+      const real = fs.realpathSync(cur);
+      return tail.length ? path.join(real, ...tail.reverse()) : real;
+    } catch {
+      const parent = path.dirname(cur);
+      if (parent === cur) return path.resolve(input); // hit filesystem root
+      tail.push(path.basename(cur));
+      cur = parent;
+    }
+  }
+}
+
+/**
+ * Roots for the general-purpose file tools (`faf_read` / `faf_write`). Unlike
+ * the `.faf` tools, these legitimately handle any file *type* — but they must
+ * still be confined to the project. Default root = the process cwd; override /
+ * extend with `FAF_ALLOWED_ROOTS`.
+ */
+export function fileOpRoots(): string[] {
+  const opt = allowedRoots();
+  if (opt.length) return opt;
+  // Default: the project (cwd) plus the OS temp dir(s) — legitimate scratch
+  // space for tools. Still blocks the high-value targets — $HOME secrets
+  // (~/.ssh, ~/.aws), /etc, and anything reached via ../ traversal.
+  const roots = [path.resolve(process.cwd()), os.tmpdir()];
+  // On macOS the canonical system temp (/tmp → /private/tmp) differs from
+  // os.tmpdir() (/var/folders/...); include it (roots are canonicalized later).
+  if (process.platform !== 'win32') roots.push('/tmp');
+  return roots;
+}
+
+/**
+ * Confine a general-purpose file read/write path: any file type, but it must
+ * stay within fileOpRoots(). Closes absolute-path escapes (`~/.ssh/id_rsa`),
+ * `..` traversal, and arbitrary writes outside the project. Throws
+ * PathConfinementError on violation. Returns the safe (symlink-canonical) path.
+ */
+export function confineFileOp(input: unknown): string {
+  return confinePath(input, { requireFafFile: false, roots: fileOpRoots() });
+}
+
 export interface ConfineOptions {
   /** Override allowed roots (resolved internally). Defaults to allowedRoots()
    *  (the opt-in `FAF_ALLOWED_ROOTS`). Empty = root confinement not enforced. */
@@ -101,18 +152,15 @@ export function confinePath(input: unknown, opts: ConfineOptions = {}): string {
   // `/etc/passwd` would pass a lexical name check but read the secret. We check
   // the real target's name instead. Missing paths stay lexical (nothing to read
   // yet — a directory walk or a downstream ENOENT handles them).
-  const lexical = path.resolve(expandTilde(input));
-  let resolved = lexical;
+  const resolved = canonicalize(expandTilde(input));
   let isFile = false;
   try {
-    resolved = fs.realpathSync(lexical);
     isFile = fs.statSync(resolved).isFile();
   } catch {
-    resolved = lexical;
     isFile = false;
   }
 
-  const roots = (opts.roots ?? allowedRoots()).map((r) => path.resolve(r));
+  const roots = (opts.roots ?? allowedRoots()).map(canonicalize);
 
   // Layer 2 (opt-in): enforce root confinement only when roots are configured.
   if (roots.length > 0 && !withinRoots(resolved, roots)) {

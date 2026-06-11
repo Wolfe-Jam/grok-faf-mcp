@@ -25,6 +25,7 @@ import {
   type EffectivePolicy,
   resolvePolicyFromFaf,
 } from './recommendation.js';
+import { isFafContextFile } from '../utils/safe-path.js';
 
 export interface GetPolicyOptions {
   /** Working dir to search for `.faf` / `project.faf`. Defaults to process.cwd(). */
@@ -78,6 +79,16 @@ function findFafFileSimple(cwd: string): string | undefined {
 export function getOrchestrationPolicy(options: GetPolicyOptions = {}): GetPolicyResult {
   const cwd = options.cwd ?? process.cwd();
   const fafPath = options.fafPath ?? findFafFileSimple(cwd);
+
+  // Defense-in-depth: this sink only ever reads `.faf` / `.fafm` context files.
+  // Even if a caller supplies an explicit fafPath, refuse non-context targets so
+  // this function can never be turned into an arbitrary-file read (CWE-22/200).
+  if (fafPath !== undefined && !isFafContextFile(fafPath)) {
+    return {
+      policy: resolvePolicyFromFaf(undefined),
+      faf_found: false,
+    };
+  }
 
   // Case 1: no .faf found → default policy
   if (fafPath === undefined) {

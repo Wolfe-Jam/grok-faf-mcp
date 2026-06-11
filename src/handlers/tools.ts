@@ -7,6 +7,7 @@ import * as crypto from 'crypto';
 import YAML from 'yaml';
 import { FuzzyDetector, applyIntelFriday } from '../utils/fuzzy-detector';
 import { findFafFile, getNewFafFilePath } from '../utils/faf-file-finder.js';
+import { confinePath, PathConfinementError } from '../utils/safe-path';
 import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
@@ -229,13 +230,13 @@ export class FafToolHandler {
         },
         {
           name: 'faf_read',
-          description: 'Read content from any file on the local filesystem',
+          description: 'Read a file within the project root (cwd / FAF_ALLOWED_ROOTS). Paths that escape the project are refused.',
           inputSchema: {
             type: 'object',
             properties: {
               path: {
                 type: 'string',
-                description: 'Absolute or relative file path to read'
+                description: 'File path within the project root. Paths outside it (e.g. /etc, ~/.ssh) are refused.'
               }
             },
             required: ['path'],
@@ -243,7 +244,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_write',
-          description: 'Write content to any file on the local filesystem',
+          description: 'Write a file within the project root (cwd / FAF_ALLOWED_ROOTS). Paths that escape the project are refused.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -449,6 +450,44 @@ export class FafToolHandler {
     }
   }
 
+  /**
+   * Resolve a caller-supplied `path` argument to a confined target.
+   * Throws PathConfinementError when the path escapes the allowed roots or
+   * points at a non-`.faf` file (see utils/safe-path.ts). No explicit path =
+   * the live process cwd (trusted, not confined).
+   */
+  private resolveConfinedTarget(explicitPath?: string): { cwd: string; fafPathOverride?: string } {
+    if (!explicitPath) {
+      return { cwd: process.cwd() };
+    }
+    const resolved = confinePath(explicitPath);
+    let cwd: string;
+    let fafPathOverride: string | undefined;
+    if (fs.existsSync(resolved) && fs.statSync(resolved).isFile()) {
+      fafPathOverride = resolved;
+      cwd = path.dirname(resolved);
+    } else {
+      cwd = resolved;
+    }
+    if (fs.existsSync(cwd)) {
+      this.engineAdapter.setWorkingDirectory(cwd);
+    }
+    return { cwd, fafPathOverride };
+  }
+
+  /** Uniform tool response for a denied/confined path. */
+  private pathDeniedResult(err: PathConfinementError): CallToolResult {
+    return {
+      content: [
+        {
+          type: 'text',
+          text: `PATH DENIED\n\n${err.message}`,
+        },
+      ],
+      isError: true,
+    };
+  }
+
   private async handleFafScore(args: any): Promise<CallToolResult> {
     // v1.4.1: single-sourced from faf-cli's real scorer — the same number
     // `faf score` (CLI) emits. The legacy file-presence pseudo-score
@@ -471,21 +510,11 @@ export class FafToolHandler {
     // server-construction time (often `~/Projects` regardless of where the user
     // actually is), causing `faf_score` with no path to score the wrong project.
     let cwd: string;
-    const explicitPath: string | undefined = args?.path;
-    if (explicitPath) {
-      const expandedPath = explicitPath.startsWith('~')
-        ? path.join(require('os').homedir(), explicitPath.slice(1))
-        : explicitPath;
-      const resolvedPath = path.resolve(expandedPath);
-      cwd = fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile()
-        ? path.dirname(resolvedPath)
-        : resolvedPath;
-      // Set session context so subsequent calls inherit (mirror faf-mcp).
-      if (fs.existsSync(cwd)) {
-        this.engineAdapter.setWorkingDirectory(cwd);
-      }
-    } else {
-      cwd = process.cwd();
+    try {
+      ({ cwd } = this.resolveConfinedTarget(args?.path));
+    } catch (err) {
+      if (err instanceof PathConfinementError) return this.pathDeniedResult(err);
+      throw err;
     }
 
     const { findFafFile: cliFindFafFile, readFafRaw, scoreFafYaml, getNextTier } = await fafCli;
@@ -630,20 +659,11 @@ export class FafToolHandler {
     // project.faf was 🏆 100% TROPHY. Tool-discovery bug, not a .faf quality
     // issue. Substrate caught its own ecosystem's bug.
     let cwd: string;
-    const explicitPath: string | undefined = args?.path;
-    if (explicitPath) {
-      const expandedPath = explicitPath.startsWith('~')
-        ? path.join(require('os').homedir(), explicitPath.slice(1))
-        : explicitPath;
-      const resolvedPath = path.resolve(expandedPath);
-      cwd = fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile()
-        ? path.dirname(resolvedPath)
-        : resolvedPath;
-      if (fs.existsSync(cwd)) {
-        this.engineAdapter.setWorkingDirectory(cwd);
-      }
-    } else {
-      cwd = process.cwd();
+    try {
+      ({ cwd } = this.resolveConfinedTarget(args?.path));
+    } catch (err) {
+      if (err instanceof PathConfinementError) return this.pathDeniedResult(err);
+      throw err;
     }
 
     const { findFafFile: cliFindFafFile, readFafRaw, scoreFafYaml, getNextTier } = await fafCli;
@@ -1096,24 +1116,13 @@ export class FafToolHandler {
   private async handleGetOrchestrationPolicy(args: any): Promise<CallToolResult> {
     // Same cwd discipline as the other 1.5 tools (#104 lineage):
     // live process cwd, NOT engineAdapter's construction-time cache.
-    const explicitPath: string | undefined = args?.path;
     let cwd: string;
     let fafPathOverride: string | undefined;
-
-    if (explicitPath) {
-      const expandedPath = explicitPath.startsWith('~')
-        ? path.join(require('os').homedir(), explicitPath.slice(1))
-        : explicitPath;
-      const resolvedPath = path.resolve(expandedPath);
-      // If they passed a file path, use it directly. If a dir, search inside.
-      if (fs.existsSync(resolvedPath) && fs.statSync(resolvedPath).isFile()) {
-        fafPathOverride = resolvedPath;
-        cwd = path.dirname(resolvedPath);
-      } else {
-        cwd = resolvedPath;
-      }
-    } else {
-      cwd = process.cwd();
+    try {
+      ({ cwd, fafPathOverride } = this.resolveConfinedTarget(args?.path));
+    } catch (err) {
+      if (err instanceof PathConfinementError) return this.pathDeniedResult(err);
+      throw err;
     }
 
     const result = getOrchestrationPolicy({ cwd, fafPath: fafPathOverride });

@@ -48,3 +48,4 @@ test-results/
 
 # .faf backup snapshots (kept local)
 project.faf.backup-*
+.faf-bench.json

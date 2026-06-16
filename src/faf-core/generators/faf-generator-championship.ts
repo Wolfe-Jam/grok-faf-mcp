@@ -16,6 +16,7 @@ import {
 import { generateFafContent } from "../utils/yaml-generator";
 import { FabFormatsProcessor, type FabFormatsAnalysis } from "../engines/fab-formats-processor";
 import { relentlessExtractor } from "../engines/relentless-context-extractor";
+import { composedTurboCatSlots } from "../extract/turbocat-bridge";
 
 export interface GenerateOptions {
   projectType?: string;
@@ -305,6 +306,27 @@ export async function generateFafFromProject(
   }
   if (readmeData.targetUser && !contextSlotsFilled['who']) {
     contextSlotsFilled['who'] = readmeData.targetUser;
+  }
+
+  // 🐱 Compose faf-cli's turbo-cat (the Truth) — authoritative gap-fill for stack
+  // slots. Every stack faf-cli knows (incl. content-aware Dart/Flutter since 6.13.0)
+  // reaches grok BY CONSTRUCTION, with NO forked detector here. Fills only slots
+  // nothing above set, so existing JS/TS/Python/Rust/CLI detection is untouched.
+  // Runs before the slot-score below so newly-filled slots count toward the score.
+  try {
+    const tcat = await composedTurboCatSlots(projectRoot);
+    if (tcat) {
+      const fillFromTurboCat = (key: string, val?: string) => {
+        if (val && !contextSlotsFilled[key]) contextSlotsFilled[key] = val;
+      };
+      fillFromTurboCat('main_language', tcat.project?.main_language);
+      fillFromTurboCat('framework', tcat.stack?.frontend);
+      fillFromTurboCat('backend', tcat.stack?.backend);
+      fillFromTurboCat('package_manager', tcat.stack?.package_manager);
+      fillFromTurboCat('api_type', tcat.stack?.api_type);
+    }
+  } catch {
+    // turbo-cat unavailable (mis-installed old faf-cli) — fab-formats stands.
   }
 
   // Calculate slot-based score

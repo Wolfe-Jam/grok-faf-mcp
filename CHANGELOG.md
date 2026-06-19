@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.5.3 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.5.4 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -10,7 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-**Interop now enhances your files.** The same solid, structured `.faf` data is prefixed to the top of your context files for rapid AI consumption upfront — and your Markdown stays in the instruction lane. Across every sync target: CLAUDE.md, .cursorrules, .windsurfrules, .clinerules.
+## [1.5.4] - 2026-06-18
+
+Maintenance: non-destructive interop. The same solid, structured `.faf` data is prefixed to the top of your context files for rapid AI consumption upfront — and your Markdown stays in the instruction lane. Across every sync target: CLAUDE.md, .cursorrules, .windsurfrules, .clinerules.
 
 ### Changed
 

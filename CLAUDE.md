@@ -23,9 +23,9 @@ Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP on
 - **What:** First MCP for Grok — also first FAF MCP online. Persistent AI context via IANA-registered .faf + .fafm.
 - **Why:** Every AI session starts from zero. grok-faf-mcp gives Grok persistent project DNA.
 - **Where:** npm registry, Cloudflare Workers (mcpaas.live/grok/mcp/v1), MCP Registry
-- **When:** Shipped 2026 — current v1.5.4 (maintenance: non-destructive interop — faf_sync/faf_bi_sync inject a structured .faf block into each target and preserve your Markdown below; native bi-sync fallback no longer corrupts project.faf. Prior v1.5.3 added path confinement on caller-supplied `path` args via coordinated disclosure.)
-- **How:** bunx grok-faf-mcp (local stdio) or hosted on Cloudflare Workers (mcpaas.live/grok/mcp/v1) — 14 hosted (WASM-pure) + 59 local (bunx), Streamable HTTP transport, Mk4 WASM scoring kernel
+- **When:** Shipped 2026 — current v1.5.5 (Glama Core-tier: default tool surface is the Grok value — re-grounding, LAZY-RAG, orchestration substrate, FAF essentials; inherited claude-port leftovers retired; descriptions lifted. v1.5.4 added non-destructive interop; v1.5.3 added path confinement via coordinated disclosure.)
+- **How:** bunx grok-faf-mcp (local stdio) or hosted on Cloudflare Workers (mcpaas.live/grok/mcp/v1) — 12 core tools by default (extended set behind FAF_TOOLS=all), Streamable HTTP transport, Mk4 WASM scoring kernel
 
 ---
 
-*STATUS: BI-SYNC ACTIVE — 2026-06-19T01:21:39.293Z*
+*STATUS: BI-SYNC ACTIVE — 2026-06-19T02:31:42.872Z*

@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.5.4 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.5.5 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -9,6 +9,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.5.5] - 2026-06-18
+
+Glama Core-tier. The default tool surface is now GFM's Grok value, not the inherited claude-port sprawl — built to lift the Glama quality grade without trimming a single Grok-driven feature.
+
+### Changed
+
+- **Core-tier tool surface.** Default `tools/list` advertises the 12 Grok-value tools: the re-grounding trio (`refresh_faf`/`refresh_fafm`/`refresh_blend`), the LAZY-RAG surface (`rag_query`/`rag_cache_stats`/`rag_cache_clear`), the drift orchestration substrate (`faf_orchestrate_recommendation`/`faf_get_orchestration_policy`), and the FAF essentials (`faf_init`/`faf_score`/`faf_sync`/`faf_trust`). Low-level utilities (`faf_read`/`faf_write`/`faf_list`/`faf_debug`/`faf_clear`) move behind `FAF_TOOLS=all`. Every tool stays callable by name in `callTool` — nothing removed, only un-advertised.
+- **Description quality.** Lifted the thin essential descriptions (`faf_init`/`faf_score`/`faf_sync`/`faf_trust`/`rag_cache_clear`) to definition-grade — the lever for Glama's tool-definition score.
+
+### Removed (from the advertised surface)
+
+- Retired inherited claude-port leftovers — never Grok-driven: `faf_about` + `faf_what` (duplicate explainers), `faf_friday` (obscure), `faf_guide` (Claude-Desktop-specific), `faf_status` (thin), `faf_enhance` (scrapped), `faf_bi_sync` (merged into `faf_sync`).
 
 ## [1.5.4] - 2026-06-18
 

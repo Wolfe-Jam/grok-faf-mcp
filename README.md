@@ -145,7 +145,7 @@ Every AI agent reads this once and knows exactly what you're building.
 ```
 URL:     https://mcpaas.live/grok/mcp/v1
 Format:  IANA-registered .faf (application/vnd.faf+yaml)
-Tools:   14 hosted (WASM-pure: 13 + refresh_faf) · 59 local (bunx — incl. refresh_fafm, refresh_blend, faf_orchestrate_recommendation, faf_get_orchestration_policy)
+Tools:   12 core by default (bunx) — re-grounding (refresh_faf/fafm/blend), LAZY-RAG, orchestration substrate, FAF essentials · extended utilities via FAF_TOOLS=all · 14 hosted (WASM-pure) on the URL
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
 Tests: 27 .ts files (~518 test declarations) — WJTTC parity (heavy local ↔ light hosted) + full suites. Runner: sh scripts/run-tests.sh (bun + flake retry)

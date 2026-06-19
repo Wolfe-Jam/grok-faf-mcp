@@ -165,12 +165,13 @@ describe('🏁 MCP Conformance — over real protocol via SDK + in-memory transp
   // Category 5: Tool identity / visibility
   // ───────────────────────────────────────────────────────────────────────
   describe('5. Tool identity / visibility', () => {
-    test('core advertised tools are present (faf_score, faf_about, faf_status)', async () => {
+    test('core advertised tools are present (faf_score, refresh_faf, rag_query)', async () => {
       const { tools } = await client.listTools();
       const names = new Set(tools.map((t) => t.name));
+      // v1.5.5 Core-tier: the advertised default is GFM's Grok value surface.
       expect(names.has('faf_score')).toBe(true);
-      expect(names.has('faf_about')).toBe(true);
-      expect(names.has('faf_status')).toBe(true);
+      expect(names.has('refresh_faf')).toBe(true);
+      expect(names.has('rag_query')).toBe(true);
     });
 
     test('all advertised tools are namespaced (faf_/rag_, or a blessed cross-surface name) and have descriptions', async () => {
@@ -216,8 +217,8 @@ describe('🏁 MCP Conformance — over real protocol via SDK + in-memory transp
       // Each advertised name must be dispatchable: probe a read-only one and
       // confirm the unknown-tool path is the ONLY thing that errors by name.
       const { tools } = await client.listTools();
-      const aboutTool = tools.find((t) => t.name === 'faf_about');
-      expect(aboutTool).toBeDefined();
+      const coreTool = tools.find((t) => t.name === 'faf_score');
+      expect(coreTool).toBeDefined();
     });
   });
 

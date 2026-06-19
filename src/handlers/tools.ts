@@ -29,12 +29,38 @@ import { getOrchestrationPolicy } from '../orchestrator/get-policy';
 // drops the bad `bun` condition.
 import { fafCli } from '../utils/faf-cli-bridge.js';
 
+/**
+ * Glama Core-tier (v1.5.5) — the advertised default surface is GFM's Grok value:
+ * the re-grounding trio, the RAG surface, the orchestration substrate, and the
+ * FAF essentials. All 8 Grok-driven tools (refresh_*, rag_*, orchestration) lead;
+ * we never trim Grok-driven features. FAF_TOOLS=all adds the low-level utilities.
+ * Every tool stays callable by name in callTool regardless of advertisement.
+ */
+const CORE_TOOLS = new Set<string>([
+  // Grok-driven (the identity — re-ground, RAG, orchestration)
+  'refresh_faf', 'refresh_fafm', 'refresh_blend',
+  'rag_query', 'rag_cache_stats', 'rag_cache_clear',
+  'faf_orchestrate_recommendation', 'faf_get_orchestration_policy',
+  // FAF essentials
+  'faf_init', 'faf_score', 'faf_sync', 'faf_trust',
+]);
+
+/**
+ * Retired claude-port leftovers — never Grok-driven, never advertised.
+ * Joke/dup explainers (faf_about, faf_what), obscure (faf_friday), Claude-Desktop-
+ * specific (faf_guide), thin (faf_status), scrapped (faf_enhance), merged into
+ * faf_sync (faf_bi_sync). Kept callable for back-compat; not part of the surface.
+ */
+const RETIRED_TOOLS = new Set<string>([
+  'faf_about', 'faf_what', 'faf_friday', 'faf_guide',
+  'faf_status', 'faf_enhance', 'faf_bi_sync',
+]);
+
 export class FafToolHandler {
   constructor(private engineAdapter: FafEngineAdapter) {}
 
   async listTools() {
-    return {
-      tools: [
+    const allTools = [
         {
           name: 'faf_about',
           description: 'Learn what .faf format is',
@@ -61,7 +87,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_score',
-          description: 'Calculate AI-readiness score (0-100%)',
+          description: 'Score a project\'s AI-readiness 0–100% against the fixed 33-slot context model — how much project DNA an agent has before it has to guess. Deterministic: the same .faf always scores the same. Returns the score, tier, and per-slot breakdown.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -150,7 +176,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_init',
-          description: 'Create project.faf for a project',
+          description: 'Create a project.faf — the IANA-registered context file (application/vnd.faf+yaml) that gives Grok persistent project DNA: stack, structure, and intent in one portable file. Write it once; an agent reads the whole project cold every session instead of re-discovering it.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -163,7 +189,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_trust',
-          description: 'Validate project.faf integrity',
+          description: 'Validate a project.faf\'s structure and integrity — confirm the context file is well-formed and parses cleanly before an agent grounds on it. The pre-flight trust check: never build on a broken context layer.',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -171,7 +197,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_sync',
-          description: 'Sync .faf with CLAUDE.md',
+          description: 'Sync project.faf into your AI context files (CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md). Non-destructive: injects a structured .faf block at the top for fast machine reading and preserves your prose below. One source of truth, every tool kept current.',
           inputSchema: {
             type: 'object',
             properties: {},
@@ -334,14 +360,20 @@ export class FafToolHandler {
         },
         {
           name: 'rag_cache_clear',
-          description: 'Clear the LAZY-RAG cache to start fresh',
+          description: 'Clear the LAZY-RAG cache — drop all cached retrievals so the next rag_query rebuilds from source. Use when the underlying context has changed and you want fresh results instead of cached ones.',
           inputSchema: {
             type: 'object',
             properties: {}
           }
         }
-      ] as Tool[]
-    };
+      ] as Tool[];
+
+    // Glama Core-tier gate. Default surface = the Grok value (CORE_TOOLS); the
+    // retired claude-port leftovers are never advertised; FAF_TOOLS=all (or
+    // FAF_EXTENDED=1) adds the low-level utilities. callTool keeps every case.
+    const showAll = process.env.FAF_TOOLS === 'all' || process.env.FAF_EXTENDED === '1';
+    const visible = allTools.filter((t) => !RETIRED_TOOLS.has(t.name));
+    return { tools: showAll ? visible : visible.filter((t) => CORE_TOOLS.has(t.name)) };
   }
 
   async callTool(name: string, args: any): Promise<CallToolResult> {

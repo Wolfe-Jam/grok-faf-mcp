@@ -475,12 +475,12 @@ describe('🏁 WJTTC — bun migration + MCP integrity (grok-faf-mcp)', () => {
 
       test('listTools count is in a sane envelope (catches accidental removal)', async () => {
         const { tools } = await client.listTools();
-        // Today's count is 21 (probed live: 17 faf_* + 3 rag_* + grok_*-style
-        // already absent, FafToolHandler dispatch table at L259-303 + the
-        // /info endpoint at server.ts L143-149). Floor at 15 catches any
-        // major accidental removal without being brittle to incremental
-        // additions.
-        expect(tools.length).toBeGreaterThanOrEqual(15);
+        // v1.5.5 Glama Core-tier: default tools/list advertises the 12 Grok-value
+        // Core (8 Grok-driven: refresh_*/rag_*/orchestration + 4 FAF essentials);
+        // FAF_TOOLS=all adds the low-level utilities. Floor at 10 catches a major
+        // accidental Core removal without being brittle to the gate. (callTool
+        // still dispatches every tool by name regardless of advertisement.)
+        expect(tools.length).toBeGreaterThanOrEqual(10);
         // Ceiling guards against accidental duplication / runaway tool
         // registration.
         expect(tools.length).toBeLessThanOrEqual(200);
@@ -489,17 +489,19 @@ describe('🏁 WJTTC — bun migration + MCP integrity (grok-faf-mcp)', () => {
       test('core tool names are present', async () => {
         const { tools } = await client.listTools();
         const names = new Set(tools.map((t) => t.name));
-        // Verified live against FafToolHandler.listTools — these are the
-        // names the active handler actually advertises. Includes the RAG
-        // surface that distinguishes grok-faf-mcp from sibling faf-mcp.
+        // v1.5.5 Core-tier: the advertised default is GFM's Grok value surface —
+        // the re-grounding trio + LAZY-RAG + FAF essentials. (faf_about/faf_status
+        // are retired claude-port leftovers, no longer advertised by default.)
         for (const required of [
-          'faf_about',
-          'faf_score',
-          'faf_status',
-          'faf_init',
-          'faf_sync',
+          'refresh_faf',
+          'refresh_fafm',
+          'refresh_blend',
           'rag_query',
           'rag_cache_stats',
+          'faf_score',
+          'faf_init',
+          'faf_sync',
+          'faf_trust',
         ]) {
           expect(names.has(required)).toBe(true);
         }

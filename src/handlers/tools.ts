@@ -750,6 +750,7 @@ export class FafToolHandler {
     // (null) keeps the canonical number; under FAF_DEBUG a divergence is logged
     // (it would be a ZEPH bug — parity is proven byte-identical 5→100).
     let score = result.score;
+    let engineUsed: 'zeph' | 'canonical' = 'canonical';
     if (zephEnabled()) {
       const z = await zephScore(raw);
       if (z !== null) {
@@ -758,7 +759,14 @@ export class FafToolHandler {
           console.error(`[ZEPH] parity delta on ${fafPath}: zeph=${z} canonical=${result.score}`);
         }
         score = z;
+        engineUsed = 'zeph';
       }
+    }
+    // R11 — observability: which engine answered (stderr only, never stdout/the
+    // MCP wire). Gated on FAF_DEBUG so it's silent in normal operation.
+    if (process.env.FAF_DEBUG) {
+      // eslint-disable-next-line no-console
+      console.error(`[ZEPH] engine=${engineUsed} score=${score} ${fafPath}`);
     }
     const tierDisplay = strip(result.tier.indicator);
     const next = getNextTier(score);

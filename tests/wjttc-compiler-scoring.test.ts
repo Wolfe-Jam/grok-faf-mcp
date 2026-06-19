@@ -148,6 +148,54 @@ human_context:
     expect(result.total).toBe(21);
   });
 
+  it('should score 100% for complete monorepo project (all 33 slots)', async () => {
+    // Mk4 33-slot parity: a monorepo activates the 12 enterprise_infra/app/ops
+    // slots; filling all 33 reaches Trophy 100% on the full enterprise model.
+    const result = await scoreFaf(`
+project:
+  name: my-monorepo
+  type: turborepo
+  goal: Multi-package platform
+  main_language: TypeScript
+stack:
+  frontend: React
+  css_framework: Tailwind
+  ui_library: Radix
+  state_management: Zustand
+  backend: Express
+  api_type: REST
+  runtime: Node.js
+  database: PostgreSQL
+  connection: pg
+  hosting: Vercel
+  build: Turbo
+  cicd: GitHub Actions
+  monorepo_tool: Turborepo
+  package_manager: pnpm
+  workspaces: apps/*, packages/*
+  admin: AdminJS
+  cache: Redis
+  search: Meilisearch
+  storage: S3
+monorepo:
+  packages_count: "12"
+  build_orchestrator: Turbo
+  versioning_strategy: changesets
+  shared_configs: tsconfig, eslint
+  remote_cache: Vercel Remote Cache
+human_context:
+  who: Platform team
+  what: Multi-package platform
+  why: Shared infra at scale
+  where: Cloud
+  when: "2026"
+  how: Monorepo
+`);
+    expect(result.score).toBe(100);
+    expect(result.filled).toBe(33);
+    expect(result.total).toBe(33);
+  });
+
   it('should score 0% for empty project', async () => {
     const result = await scoreFaf(`
 project: {}

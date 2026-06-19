@@ -458,7 +458,8 @@ project:
     expect(result.total).toBe(21);
   });
 
-  it('monorepo should have 21 slots (all categories)', async () => {
+  it('monorepo should have 33 slots (all categories + enterprise/monorepo)', async () => {
+    // Mk4 33-slot: monorepo types activate the 12 enterprise_infra/app/ops slots
     const result = await scoreFaf(`
 project:
   name: test
@@ -466,7 +467,7 @@ project:
   goal: test
   main_language: TypeScript
 `);
-    expect(result.total).toBe(21);
+    expect(result.total).toBe(33);
   });
 
   it('chrome-extension should have 9 slots (project + human)', async () => {
@@ -562,7 +563,7 @@ project:
     expect(result.total).toBe(17);
   });
 
-  it('turbo should resolve to turborepo (21 slots)', async () => {
+  it('turbo should resolve to turborepo (33 slots — enterprise/monorepo)', async () => {
     const result = await scoreFaf(`
 project:
   name: test
@@ -570,7 +571,7 @@ project:
   goal: test
   main_language: TypeScript
 `);
-    expect(result.total).toBe(21);
+    expect(result.total).toBe(33);
   });
 
   it('gha should resolve to github-action (9 slots)', async () => {

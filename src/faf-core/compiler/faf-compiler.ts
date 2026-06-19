@@ -36,7 +36,16 @@ const ALL_SLOTS = {
   universal: ['stack.hosting', 'stack.build', 'stack.cicd'],
 
   // Human context slots (6)
-  human: ['human.who', 'human.what', 'human.why', 'human.where', 'human.when', 'human.how']
+  human: ['human.who', 'human.what', 'human.why', 'human.where', 'human.when', 'human.how'],
+
+  // --- Mk4 33-slot ENTERPRISE extension (the 12 slots beyond Base-21) ---
+  // Canonical paths sourced from faf-cli ENTERPRISE_SLOTS (the truth — compose, don't fork).
+  // A parity test asserts these match faf-cli, so drift is CAUGHT, not frozen.
+  // These apply ONLY to monorepo/enterprise project types; everything else
+  // slotignores them, so normal projects score identically on the 33-slot model.
+  enterprise_infra: ['stack.monorepo_tool', 'stack.package_manager', 'stack.workspaces', 'monorepo.packages_count', 'monorepo.build_orchestrator'],
+  enterprise_app: ['stack.admin', 'stack.cache', 'stack.search', 'stack.storage'],
+  enterprise_ops: ['monorepo.versioning_strategy', 'monorepo.shared_configs', 'monorepo.remote_cache']
 } as const;
 
 /**
@@ -45,7 +54,7 @@ const ALL_SLOTS = {
  */
 const TYPE_DEFINITIONS: Record<string, {
   description: string;
-  categories: ('project' | 'frontend' | 'backend' | 'universal' | 'human')[];
+  categories: ('project' | 'frontend' | 'backend' | 'universal' | 'human' | 'enterprise_infra' | 'enterprise_app' | 'enterprise_ops')[];
   aliases?: string[];
 }> = {
   // CLI/Tool Types (9 slots: project + human)
@@ -463,30 +472,30 @@ const TYPE_DEFINITIONS: Record<string, {
   // Monorepo Types (CONTAINERS - need ALL slots)
   'monorepo': {
     description: 'Monorepo - multi-package repository',
-    categories: ['project', 'frontend', 'backend', 'universal', 'human'],
+    categories: ['project', 'frontend', 'backend', 'universal', 'human', 'enterprise_infra', 'enterprise_app', 'enterprise_ops'],
     aliases: ['mono', 'workspace']
   },
   'turborepo': {
     description: 'Turborepo monorepo',
-    categories: ['project', 'frontend', 'backend', 'universal', 'human'],
+    categories: ['project', 'frontend', 'backend', 'universal', 'human', 'enterprise_infra', 'enterprise_app', 'enterprise_ops'],
     aliases: ['turbo']
   },
   'nx': {
     description: 'Nx monorepo',
-    categories: ['project', 'frontend', 'backend', 'universal', 'human']
+    categories: ['project', 'frontend', 'backend', 'universal', 'human', 'enterprise_infra', 'enterprise_app', 'enterprise_ops']
   },
   'lerna': {
     description: 'Lerna monorepo',
-    categories: ['project', 'frontend', 'backend', 'universal', 'human']
+    categories: ['project', 'frontend', 'backend', 'universal', 'human', 'enterprise_infra', 'enterprise_app', 'enterprise_ops']
   },
   'pnpm-workspace': {
     description: 'pnpm workspace monorepo',
-    categories: ['project', 'frontend', 'backend', 'universal', 'human'],
+    categories: ['project', 'frontend', 'backend', 'universal', 'human', 'enterprise_infra', 'enterprise_app', 'enterprise_ops'],
     aliases: ['pnpm-mono']
   },
   'yarn-workspace': {
     description: 'Yarn workspace monorepo',
-    categories: ['project', 'frontend', 'backend', 'universal', 'human'],
+    categories: ['project', 'frontend', 'backend', 'universal', 'human', 'enterprise_infra', 'enterprise_app', 'enterprise_ops'],
     aliases: ['yarn-mono']
   },
 
@@ -937,7 +946,9 @@ export class FafCompiler {
 
     // --- Mk4 Kernel Scoring (WASM) ---
     // The Bouncer: type detection → applicable slots → slotignored for the rest
-    // Then kernel.score_faf() gets the canonical Mk4 score
+    // Then kernel.score_faf_enterprise() gets the canonical Mk4 33-slot score.
+    // Normal projects slotignore the 12 enterprise slots → score identically on
+    // total:33; monorepo/enterprise types keep them active for richer scoring.
     let mk4Score: number | null = null;
     let mk4Filled: number | null = null;
     let mk4Total: number | null = null;
@@ -953,13 +964,16 @@ export class FafCompiler {
       // Also parse user's slot_ignore from the .faf file
       const userIgnored = parseSlotIgnore(ast);
 
-      // All 21 slot paths
+      // All 33 slot paths (Base-21 + the 12 enterprise/monorepo slots)
       const allSlotPaths = [
         ...ALL_SLOTS.project,
         ...ALL_SLOTS.frontend,
         ...ALL_SLOTS.backend,
         ...ALL_SLOTS.universal,
-        ...ALL_SLOTS.human
+        ...ALL_SLOTS.human,
+        ...ALL_SLOTS.enterprise_infra,
+        ...ALL_SLOTS.enterprise_app,
+        ...ALL_SLOTS.enterprise_ops
       ];
 
       // Bouncer: inject slotignored for inapplicable slots AND user slot_ignore
@@ -977,6 +991,9 @@ export class FafCompiler {
         } else if (parts[0] === 'human') {
           if (!normalizedAst.human_context) normalizedAst.human_context = {};
           normalizedAst.human_context[parts[1]] = 'slotignored';
+        } else if (parts[0] === 'monorepo') {
+          if (!normalizedAst.monorepo) normalizedAst.monorepo = {};
+          normalizedAst.monorepo[parts[1]] = 'slotignored';
         }
       };
 
@@ -987,7 +1004,7 @@ export class FafCompiler {
       }
 
       const normalizedYaml = stringify(normalizedAst);
-      const kernelResult = JSON.parse(kernel.score_faf(normalizedYaml));
+      const kernelResult = JSON.parse(kernel.score_faf_enterprise(normalizedYaml));
 
       mk4Score = kernelResult.score;
       mk4Filled = kernelResult.populated;

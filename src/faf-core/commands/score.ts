@@ -5,6 +5,8 @@
 
 import { FafCompiler, type CompilationResult } from '../compiler/faf-compiler.js';
 import { findFafFile } from '../utils/file-utils.js';
+import { zephScore, zephEnabled } from '../../zeph/zeph-score.js';
+import { readFile } from 'node:fs/promises';
 
 export interface ScoreOptions {
   json?: boolean;
@@ -89,6 +91,19 @@ export async function scoreFafFile(file?: string, options: ScoreOptions = {}): P
 
   if (options.checksum || options.verify) {
     scoreResult.checksum = result.checksum;
+  }
+
+  // Phase II — ZEPH fast-path (flag-gated, hybrid): route the SCORE through the
+  // Zig→WASM engine; the breakdown above stays from FafCompiler. Parity is proven
+  // byte-identical 5→100, so the number is unchanged — only the cost of computing
+  // it. Any failure falls back to the compiler score (ZEPH never breaks scoring).
+  if (zephEnabled()) {
+    try {
+      const z = await zephScore(await readFile(fafPath, 'utf8'));
+      if (z !== null) scoreResult.score = z;
+    } catch {
+      /* fallback: keep the compiler score */
+    }
   }
 
   return scoreResult;

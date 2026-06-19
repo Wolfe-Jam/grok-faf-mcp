@@ -312,12 +312,10 @@
       <div class="about-title">FAST⚡️AF Context</div>
       <div class="about-subtitle">Persistent project DNA for Grok</div>
       <div class="about-items">
-        <div class="about-item"><span>Engine:</span> Mk4 WASM via faf-scoring-kernel</div>
+        <div class="about-item"><span>Engine:</span> WASM via faf-scoring-kernel</div>
         <div class="about-item"><span>Scoring:</span> 21 slots, type-aware, slotignored</div>
-        <div class="about-item"><span>Fallback:</span> Mk3.1 TypeScript (zero downtime)</div>
         <div class="about-item"><span>Tools:</span> 14 hosted (WASM-pure) · 12 core local (bunx; extended via FAF_TOOLS=all)</div>
         <div class="about-item"><span>Format:</span> IANA-registered .faf (application/vnd.faf+yaml)</div>
-        <div class="about-item"><span>Speed:</span> 137 µs/score · 7,279 ops/sec (Mk4 WASM, p50)</div>
       </div>
       <button class="about-close" onclick="hideAbout()">Got it</button>
       <div class="about-progress" id="aboutProgress"></div>
@@ -361,7 +359,10 @@
       clearInterval(progressInterval);
       document.getElementById('aboutOverlay').classList.remove('visible');
     }
-    window.addEventListener('load', function() { setTimeout(function() { showAbout(true); }, 500); });
+    // Auto-launch disabled in v1.5.5 — the About box stays callable (tagline +
+    // edition-label onclick -> showAbout()). Content refresh (engine/slot labels)
+    // deferred to v6. Re-enable the line below when the box is current.
+    // window.addEventListener('load', function() { setTimeout(function() { showAbout(true); }, 500); });
 
     // ── Live version sync (auto-correcting, no manual bumps) ────────────────
     // Static fallback in the HTML is the current-at-build-time value; this

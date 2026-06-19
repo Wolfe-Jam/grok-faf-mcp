@@ -1,6 +1,8 @@
 # grok-faf-mcp: First MCP Server for Grok
 **v1.0.0 | FAST⚡️AF - Zero Friction, Instant Access**
 
+> ⚠️ **REFERENCE ONLY — superseded launch doc (May 2026).** Describes v1.0.0 (17 tools, HTTP-SSE, "forked from faf-mcp"). Does NOT reflect current state: **v1.5.3** — `refresh_faf`, `.fafm` memory, non-destructive interop, Mk4 WASM scoring, SSE retired, 14 hosted / 59 local tools. Kept for history; **do not share as the current one-pager.**
+
 ---
 
 ## What It Is

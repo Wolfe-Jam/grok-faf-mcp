@@ -8,6 +8,7 @@ import YAML from 'yaml';
 import { FuzzyDetector, applyIntelFriday } from '../utils/fuzzy-detector';
 import { findFafFile, getNewFafFilePath } from '../utils/faf-file-finder.js';
 import { confinePath, PathConfinementError } from '../utils/safe-path';
+import { zephScore, zephEnabled } from '../zeph/zeph-score.js';
 import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
@@ -743,7 +744,30 @@ export class FafToolHandler {
       };
     }
 
-    const score = result.score;
+    // Phase II — ZEPH fast path (flag-gated, USE_ZEPH). ZEPH returns THE score,
+    // faster; faf-cli's scoreFafYaml (above) stays the canonical truth — the
+    // tier/breakdown source AND the fallback. Score is score: any ZEPH miss
+    // (null) keeps the canonical number; under FAF_DEBUG a divergence is logged
+    // (it would be a ZEPH bug — parity is proven byte-identical 5→100).
+    let score = result.score;
+    let engineUsed: 'zeph' | 'canonical' = 'canonical';
+    if (zephEnabled()) {
+      const z = await zephScore(raw);
+      if (z !== null) {
+        if (process.env.FAF_DEBUG && z !== result.score) {
+          // eslint-disable-next-line no-console
+          console.error(`[ZEPH] parity delta on ${fafPath}: zeph=${z} canonical=${result.score}`);
+        }
+        score = z;
+        engineUsed = 'zeph';
+      }
+    }
+    // R11 — observability: which engine answered (stderr only, never stdout/the
+    // MCP wire). Gated on FAF_DEBUG so it's silent in normal operation.
+    if (process.env.FAF_DEBUG) {
+      // eslint-disable-next-line no-console
+      console.error(`[ZEPH] engine=${engineUsed} score=${score} ${fafPath}`);
+    }
     const tierDisplay = strip(result.tier.indicator);
     const next = getNextTier(score);
     const nextLine = next ? `  next: ${strip(next.indicator)} (${next.threshold}%)\n` : '';

@@ -338,9 +338,9 @@ sh scripts/run-tests.sh
 
 ---
 
-## Status & known limitations (v1.5)
+## Status & known limitations (v1.6)
 
-This release ships the core 1.5 substrate and orchestration primitives, with the new tools available on the local stdio path. Operating it honestly means surfacing what's NOT in v1 alongside what is.
+v1.6.0 — **The ZEPH Edition** — adds the ZEPH fast path for re-grounding: `refresh_faf` (and transitively `refresh_blend`) can score via the Zig→WASM engine (`cascade.wasm`, ~12µs) when enabled with `USE_ZEPH=1`. It's **flag-gated and off by default** — `faf-cli` stays the canonical scorer, parity is locked in CI (ZEPH returns THE score, just faster). Everything below still applies. Operating it honestly means surfacing what's NOT in here alongside what is.
 
 **What is fully supported:**
 - WASM-pure tools on the hosted endpoint (`https://mcpaas.live/grok/mcp/v1` and client-specific routes) — scoring · validation · `refresh_faf`.

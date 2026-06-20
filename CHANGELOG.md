@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.5.5 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.6.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.6.0] - 2026-06-XX
+## [1.6.0] - 2026-06-20
 
 The ZEPH Edition. The ZEPH fast path for re-grounding — Zig→WASM scoring (`cascade.wasm`, ~12µs) that makes continuous re-grounding microsecond-cheap. Flag-gated (`USE_ZEPH`, off by default); `faf-cli` stays the canonical fallback; parity locked in CI. Same number — just faster.
 

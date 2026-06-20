@@ -10,6 +10,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-06-XX
+
+The ZEPH Edition. The ZEPH fast path for re-grounding — Zig→WASM scoring (`cascade.wasm`, ~12µs) that makes continuous re-grounding microsecond-cheap. Flag-gated (`USE_ZEPH`, off by default); `faf-cli` stays the canonical fallback; parity locked in CI. Same number — just faster.
+
+### Added
+
+- **ZEPH fast path for re-grounding.** `refresh_faf` (and transitively `refresh_blend`) score via ZEPH (`cascade.wasm`, Zig→WASM, ~12µs) when enabled — continuous re-grounding at negligible latency, the "always-grounded, no drift" pattern across subagents and long sessions. Opt-in via `USE_ZEPH=1` (off by default); `faf-cli` remains the canonical fallback. ZEPH returns THE score, just faster.
+- **Parity gate** (`tests/zeph-parity.test.ts`) — locks ZEPH == `faf-cli` byte-identical across the range (5→100) in CI. Score is score, or the build fails.
+- **Engine observability** — with `FAF_DEBUG`, logs `engine=zeph|canonical score=N` so the scoring path is visible.
+
+### Notes
+
+- Flag-gated by design: zero behavior change unless `USE_ZEPH=1`. Default promotion to follow once prod-validated.
+
 ## [1.5.5] - 2026-06-18
 
 Glama Core-tier. The default tool surface is now GFM's Grok value, not the inherited claude-port sprawl — built to lift the Glama quality grade without trimming a single Grok-driven feature.

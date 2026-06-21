@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.6.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.7.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -9,6 +9,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.7.0] - 2026-06-21
+
+The Grounded Memory Edition. ZEPH-powered fast re-grounding + the FRC layer above Grok Collections. Gate what deserves promotion (`faf_gate`), retrieve exact structured sections (`faf_section`), and query durable `.fafm` memory (`faf_memory`). Opt-in via `USE_FRC` and `USE_ZEPH`; core 12-tool surface unchanged.
+
+### Added
+
+- **FRC quality gate** (`faf_gate`) — pre-promotion, deterministic. Scores + sizes a `.faf` candidate and returns a promote/hold verdict BEFORE it goes to a Grok Collection ("better candidates for Collections, not better search"). Built from `faf_score` + a token estimate; makes no Collections call. Promote IFF score ≥ min_score AND tokens ≤ max_tokens; on hold, returns the actionable gaps.
+- **Structure-aware retrieval** (`faf_section`) — returns an EXACT, WHOLE `.faf` section by dotted path (`stack`, `stack.backend`, `human_context`), structure and relationships preserved — the deterministic complement to Collections' blind chunking (which flattens a `.faf` at scale). Omit the path to list every section.
+- **Portable structured memory** (`faf_memory`) — query the durable `.fafm` model (decisions/invariants/conventions/WHY) by type/tag/priority/text — the structured upgrade to a hand-maintained GROK.md/AGENTS.md. `.fafm` is **not scored**: this selects facts (provenance preserved), it never grades them. Complements `refresh_fafm`/`recall`.
+- **One real Collections client** — a single `fetch`-based xAI Collections REST client (search via `api.x.ai`, create/list via `management-api.x.ai`), replacing the chat-completions shim and killing the Python/TS split-brain. Runs local and on the edge; live-verified against production Collections.
+
+### Notes
+
+- **All FRC tools are flag-gated behind `USE_FRC`, OFF by default** — same rollout discipline as `USE_ZEPH`. The 12-tool core surface is unchanged; the 3 FRC tools appear only when enabled. Zero behavior change for existing users.
 
 ## [1.6.0] - 2026-06-20
 

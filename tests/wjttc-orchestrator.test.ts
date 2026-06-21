@@ -411,19 +411,13 @@ describe('🏁 WJTTC — faf_orchestrate_recommendation (grok-faf-mcp 1.5)', () 
         const blendRes = await client.callTool({ name: 'refresh_blend', arguments: { mode: rec1.mode ?? 'blend' } });
         expect(blendRes.isError).toBeFalsy();
 
-        // 4. refresh_blend does NOT auto-write a receipt (the substrate is pull-discoverable, not
-        // push-driven). So we manually write one to simulate the agent recording the fire,
-        // which is the realistic flow: agent receives recommendation, decides to fire, records.
-        refreshLog.recordReceipt({
-          trigger: 'auto',
-          mode: 'blend',
-          drift_signal: rec1.hints.drift_signal,
-          fired_at: new Date().toISOString(),
-        });
-
-        // Verify the recommendation receipt landed + the refresh receipt landed
+        // 4. refresh_blend now AUTO-WRITES a refresh receipt via the handler path
+        // (it composes refresh_faf → recordRefreshFire). No simulation needed —
+        // the write-path is wired (was previously library-only; Grok-Build caught
+        // it). Both receipts landed for real: the recommendation (from orchestrate)
+        // and the refresh fire (from refresh_blend's composed refresh_faf).
         expect(recLog.readRecommendations().length).toBe(recCountAfterOrchestrate);
-        expect(refreshLog.readReceipts().length).toBe(1);
+        expect(refreshLog.readReceipts().length).toBe(1); // written by the handler, not simulated
 
         // 5. Re-orchestrate → verify state reflects the fire (recent_refresh_count > 0)
         const rec2 = payloadOf(await client.callTool({ name: 'faf_orchestrate_recommendation', arguments: {} }));

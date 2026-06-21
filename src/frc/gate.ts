@@ -4,8 +4,8 @@
  * "Better candidates for Collections, not better search." The gate decides
  * whether a `.faf` candidate is worth promoting to a Grok Collection — built
  * ENTIRELY from shipped pieces: faf-cli's deterministic `faf_score` (0–100) +
- * the in-repo token estimate. No new engine, no Collections call (the gate is
- * PRE-promotion — it scores/sizes/decides; the upload is a separate step).
+ * the canonical FAF token count (slash-tokens). No new engine, no Collections
+ * call (the gate is PRE-promotion — it scores/sizes/decides; upload is separate).
  *
  * Flag-gated as the Phase III (FRC) module — OFF by default, same rollout
  * discipline as USE_ZEPH in Phase II (opt-in → prod → default).
@@ -79,7 +79,25 @@ export function frcEnabled(): boolean {
   );
 }
 
-/** Estimate tokens the same way the rest of grok-faf-mcp does (~chars/4). */
-export function estimateTokens(text: string): number {
-  return Math.ceil(text.length / 4);
+/**
+ * Token count via slash-tokens — the canonical FAF token engine (calibrated
+ * Zig→WASM, content-aware: YAML ~3.3 chars/tok, prose ~5.8, NOT a naive /4).
+ * One number across FAF (gate · faf_estimate_tokens · slash-tokens), wired to
+ * the token-reduction commercial lever. Retires the old chars/4 heuristic.
+ *
+ * ASYNC by necessity: slash-tokens ships ESM-only; grok-faf-mcp is CJS
+ * (NodeNext), so we load it via dynamic import() (the CJS-compatible path to an
+ * ESM dep) and cache the function. All call sites are already async.
+ */
+let _slash: ((content: string, model?: string) => number) | null = null;
+async function getSlash(): Promise<(content: string, model?: string) => number> {
+  if (!_slash) {
+    const mod = await import('slash-tokens');
+    _slash = mod.slash;
+  }
+  return _slash;
+}
+export async function estimateTokens(text: string): Promise<number> {
+  if (!text) return 0;
+  return (await getSlash())(text);
 }

@@ -7,6 +7,7 @@
  */
 import { describe, it, expect } from 'bun:test';
 import { evaluateGate, frcEnabled, estimateTokens, GATE_DEFAULTS } from '../src/frc/gate';
+import { slash } from 'slash-tokens';
 
 describe('FRC gate — evaluateGate (deterministic promote/hold)', () => {
   it('PROMOTES quality context (high score, small)', () => {
@@ -62,10 +63,13 @@ describe('FRC gate — evaluateGate (deterministic promote/hold)', () => {
 });
 
 describe('FRC gate — helpers', () => {
-  it('estimateTokens ~ chars / 4 (ceil)', () => {
-    expect(estimateTokens('')).toBe(0);
-    expect(estimateTokens('abcd')).toBe(1);
-    expect(estimateTokens('abcde')).toBe(2);
+  it('estimateTokens delegates to slash-tokens (calibrated engine, NOT chars/4)', async () => {
+    expect(await estimateTokens('')).toBe(0);
+    // The canonical FAF token engine — content-calibrated, the same number
+    // slash-tokens reports (and the commercial token-reduction meter). chars/4 retired.
+    const yaml = 'stack:\n  backend: TypeScript\n  runtime: Node.js\n';
+    expect(await estimateTokens(yaml)).toBe(slash(yaml));
+    expect(await estimateTokens(yaml)).toBeGreaterThan(0);
   });
 
   it('frcEnabled is OFF by default, ON with USE_FRC=1', () => {

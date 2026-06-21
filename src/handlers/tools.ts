@@ -787,7 +787,7 @@ export class FafToolHandler {
     const emptySlots = Object.entries(result.slots)
       .filter(([, state]) => state === 'empty')
       .map(([slot]) => slot);
-    const tokens = estimateTokens(raw);
+    const tokens = await estimateTokens(raw);
 
     const policy: { minScore?: number; maxTokens?: number } = {};
     if (typeof args?.min_score === 'number') policy.minScore = args.min_score;
@@ -1304,7 +1304,7 @@ export class FafToolHandler {
         parsed.length === 1 ? parsed[0].raw : parsed.map((p) => p.raw).join('\n---\n');
       const hash = sha256(fullYaml);
       const sizeBytes = Buffer.byteLength(fullYaml, 'utf-8');
-      const tokenEstimate = Math.ceil(fullYaml.length / 4);
+      const tokenEstimate = await estimateTokens(fullYaml); // slash-tokens (calibrated), not chars/4
       const status: 'restored' | 'partial' =
         parsed.length > 1 && populatedCount < parsed.length ? 'partial' : 'restored';
       const summary =
@@ -1355,7 +1355,7 @@ export class FafToolHandler {
     const deltaYaml = YAML.stringify({ added, updated });
     const hash = sha256(deltaYaml);
     const sizeBytes = Buffer.byteLength(deltaYaml, 'utf-8');
-    const tokenEstimate = Math.ceil(deltaYaml.length / 4);
+    const tokenEstimate = await estimateTokens(deltaYaml); // slash-tokens (calibrated), not chars/4
 
     const sinceLabel = since ?? 'epoch';
     const soulLabel = parsed.length === 1 ? parsed[0].soul : `${parsed.length} souls`;

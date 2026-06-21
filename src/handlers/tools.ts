@@ -16,6 +16,7 @@ import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
 import { runRefreshBlend, type RefreshMode } from '../orchestrator/refresh-blend';
+import { RefreshReceiptsLog } from '../telemetry/refresh-receipts';
 import { orchestrate } from '../orchestrator/recommendation';
 import { getOrchestrationPolicy } from '../orchestrator/get-policy';
 // v1.4.1: single-source scoring — port-then-wire the truthful scorer into the
@@ -1138,6 +1139,18 @@ export class FafToolHandler {
       driftLine = `  re-grounded at ${score}%\n`;
     }
 
+    // Telemetry — append a refresh receipt (the handler write-path, previously
+    // library-only). The orchestrator reads these for refresh history, and the
+    // ZEPH→default-ON gate depends on real refresh volume. Fire-and-forget:
+    // captures every .faf re-ground fire (direct + composed by refresh_blend,
+    // which calls this handler) and NEVER breaks the refresh.
+    this.recordRefreshFire(cwd, {
+      score,
+      engine: engineUsed,
+      baseline,
+      drift: baseline != null ? score - baseline : null,
+    });
+
     return {
       content: [
         {
@@ -1152,6 +1165,28 @@ export class FafToolHandler {
         },
       ],
     };
+  }
+
+  /**
+   * Append a refresh telemetry receipt — fire-and-forget. THE handler write-path
+   * for `.faf-refresh-receipts.json` (was previously library-only; only tests
+   * wrote receipts). The orchestrator's read-path (`recent_refresh_fires`) and
+   * the ZEPH→default-ON telemetry gate depend on this. Path = the refreshed
+   * project's cwd, aligning with the orchestrator's
+   * `path.join(cwd, '.faf-refresh-receipts.json')`. `trigger:'manual'` (an
+   * explicit MCP invocation), `mode:'blend'` (refresh_faf is the light .faf
+   * path). Telemetry MUST NEVER break a refresh — any failure is swallowed.
+   */
+  private recordRefreshFire(cwd: string, refresh_result: unknown): void {
+    try {
+      new RefreshReceiptsLog(path.join(cwd, '.faf-refresh-receipts.json')).recordReceipt({
+        trigger: 'manual',
+        mode: 'blend',
+        refresh_result,
+      });
+    } catch {
+      /* telemetry must never break a refresh — swallow */
+    }
   }
 
   /**

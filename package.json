@@ -112,6 +112,7 @@
     "@upstash/redis": "^1.37.0",
     "faf-cli": "^6.7.1",
     "faf-scoring-kernel": "^2.0.3",
+    "slash-tokens": "^1.4.1",
     "yaml": "^2.4.1"
   },
   "devDependencies": {

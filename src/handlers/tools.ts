@@ -10,6 +10,7 @@ import { findFafFile, getNewFafFilePath } from '../utils/faf-file-finder.js';
 import { confinePath, PathConfinementError } from '../utils/safe-path';
 import { zephScore, zephEnabled } from '../zeph/zeph-score.js';
 import { evaluateGate, GATE_DEFAULTS, frcEnabled, estimateTokens } from '../frc/gate.js';
+import { parseFaf, listSections, getSection } from '../frc/retrieve.js';
 import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
@@ -66,6 +67,7 @@ const RETIRED_TOOLS = new Set<string>([
  */
 const FRC_TOOLS = new Set<string>([
   'faf_gate',
+  'faf_section',
 ]);
 
 export class FafToolHandler {
@@ -116,6 +118,17 @@ export class FafToolHandler {
               path: { type: 'string', description: 'Optional project path; defaults to the confined project root.' },
               min_score: { type: 'number', description: `Minimum faf_score to promote (default ${GATE_DEFAULTS.minScore}).` },
               max_tokens: { type: 'number', description: `Maximum estimated tokens to promote (default ${GATE_DEFAULTS.maxTokens}).` }
+            },
+          }
+        },
+        {
+          name: 'faf_section',
+          description: `Phase III — structure-aware retrieval. Returns an EXACT, WHOLE .faf section by dotted path (e.g. "stack", "stack.backend", "human_context"), structure and relationships preserved — the deterministic complement to Collections' blind ~1024-token chunking (which flattens a .faf). Omit "section" to list every available path. No LLM, no Collections call: parse → resolve path → return the whole subtree as YAML.`,
+          inputSchema: {
+            type: 'object',
+            properties: {
+              path: { type: 'string', description: 'Optional project path; defaults to the confined project root.' },
+              section: { type: 'string', description: 'Dotted path to retrieve (e.g. "stack.backend"). Omit to list all available section paths.' }
             },
           }
         },
@@ -420,6 +433,8 @@ export class FafToolHandler {
         return await this.handleFafScore(args);
       case 'faf_gate':
         return await this.handleFafGate(args);
+      case 'faf_section':
+        return await this.handleFafSection(args);
       case 'refresh_faf':
         return await this.handleFafRefresh(args);
       case 'refresh_fafm':
@@ -770,6 +785,99 @@ export class FafToolHandler {
       : `Held — fix before promoting:\n${gate.reasons.map((r) => `  - ${r}`).join('\n')}`;
 
     return { content: [{ type: 'text', text: output }] };
+  }
+
+  /**
+   * `faf_section` — Phase III (FRC): STRUCTURE-AWARE retrieval.
+   *
+   * Returns an EXACT, WHOLE `.faf` section by dotted path — structure and
+   * relationships preserved. The deterministic complement to Collections' blind
+   * ~1024-token chunking (which flattens a `.faf` at scale, the answer to OBS-6).
+   * Omit `section` to list every available path. No LLM, no Collections call:
+   * parse → resolve path → return the whole subtree as YAML. The retrieval
+   * RANKING / weighted depth is the private engine and lives elsewhere.
+   */
+  async handleFafSection(args: any): Promise<CallToolResult> {
+    let cwd: string;
+    try {
+      ({ cwd } = this.resolveConfinedTarget(args?.path));
+    } catch (err) {
+      if (err instanceof PathConfinementError) return this.pathDeniedResult(err);
+      throw err;
+    }
+
+    const { findFafFile: cliFindFafFile, readFafRaw } = await fafCli;
+
+    const fafPath = cliFindFafFile(cwd);
+    if (!fafPath) {
+      return {
+        content: [{
+          type: 'text',
+          text: `FAF SECTION: no .faf\n\nNo \`.faf\` found in \`${cwd}\`. Run \`faf_init\` first.`,
+        }],
+      };
+    }
+
+    let raw: string;
+    try {
+      raw = readFafRaw(fafPath);
+    } catch (error: any) {
+      return {
+        content: [{ type: 'text', text: `FAF SECTION: unreadable\n\nCould not read \`${fafPath}\`: ${error?.message ?? String(error)}` }],
+        isError: true,
+      };
+    }
+
+    let faf: Record<string, unknown>;
+    try {
+      faf = parseFaf(raw);
+    } catch (error: any) {
+      return {
+        content: [{ type: 'text', text: `FAF SECTION: invalid\n\n\`${fafPath}\` is not valid .faf YAML: ${error?.message ?? String(error)}` }],
+        isError: true,
+      };
+    }
+
+    const requested: string | undefined =
+      typeof args?.section === 'string' && args.section.trim() ? args.section.trim() : undefined;
+
+    // No section → list every available path (discover before you get).
+    if (!requested) {
+      const paths = listSections(faf);
+      return {
+        content: [{
+          type: 'text',
+          text:
+            `FAF SECTION: ${paths.length} paths in \`${fafPath}\`\n\n` +
+            paths.map((p) => `  - ${p}`).join('\n') +
+            `\n\nRetrieve one whole, exact: faf_section { section: "stack" }`,
+        }],
+      };
+    }
+
+    const result = getSection(faf, requested);
+    if (!result.found) {
+      const paths = listSections(faf);
+      return {
+        content: [{
+          type: 'text',
+          text:
+            `FAF SECTION: not found — "${requested}"\n\n` +
+            `No such path. Available:\n` +
+            paths.map((p) => `  - ${p}`).join('\n'),
+        }],
+      };
+    }
+
+    const kind = result.isBranch ? 'section' : 'leaf';
+    return {
+      content: [{
+        type: 'text',
+        text:
+          `FAF SECTION: "${result.path}" (${kind}, structure preserved)\n\n` +
+          '```yaml\n' + result.yaml + '\n```',
+      }],
+    };
   }
 
   /**

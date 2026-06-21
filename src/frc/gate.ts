@@ -14,8 +14,6 @@
  * Public framing flips the agency: "FAF scores it; you decide what to promote."
  */
 
-import { slash } from 'slash-tokens';
-
 export interface GatePolicy {
   /** Minimum faf_score (0–100) to be promotable. */
   minScore: number;
@@ -85,9 +83,21 @@ export function frcEnabled(): boolean {
  * Token count via slash-tokens — the canonical FAF token engine (calibrated
  * Zig→WASM, content-aware: YAML ~3.3 chars/tok, prose ~5.8, NOT a naive /4).
  * One number across FAF (gate · faf_estimate_tokens · slash-tokens), wired to
- * the token-reduction commercial lever. Retires the old chars/4 heuristic —
- * you can't bill a reduction you measured with a toy.
+ * the token-reduction commercial lever. Retires the old chars/4 heuristic.
+ *
+ * ASYNC by necessity: slash-tokens ships ESM-only; grok-faf-mcp is CJS
+ * (NodeNext), so we load it via dynamic import() (the CJS-compatible path to an
+ * ESM dep) and cache the function. All call sites are already async.
  */
-export function estimateTokens(text: string): number {
-  return slash(text);
+let _slash: ((content: string, model?: string) => number) | null = null;
+async function getSlash(): Promise<(content: string, model?: string) => number> {
+  if (!_slash) {
+    const mod = await import('slash-tokens');
+    _slash = mod.slash;
+  }
+  return _slash;
+}
+export async function estimateTokens(text: string): Promise<number> {
+  if (!text) return 0;
+  return (await getSlash())(text);
 }

@@ -11,6 +11,7 @@ import { confinePath, PathConfinementError } from '../utils/safe-path';
 import { zephScore, zephEnabled } from '../zeph/zeph-score.js';
 import { evaluateGate, GATE_DEFAULTS, frcEnabled, estimateTokens } from '../frc/gate.js';
 import { parseFaf, listSections, getSection } from '../frc/retrieve.js';
+import { parseFafm, selectFacts, summarizeMemory, type MemoryFact } from '../frc/memory.js';
 import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
@@ -68,6 +69,7 @@ const RETIRED_TOOLS = new Set<string>([
 const FRC_TOOLS = new Set<string>([
   'faf_gate',
   'faf_section',
+  'faf_memory',
 ]);
 
 export class FafToolHandler {
@@ -129,6 +131,21 @@ export class FafToolHandler {
             properties: {
               path: { type: 'string', description: 'Optional project path; defaults to the confined project root.' },
               section: { type: 'string', description: 'Dotted path to retrieve (e.g. "stack.backend"). Omit to list all available section paths.' }
+            },
+          }
+        },
+        {
+          name: 'faf_memory',
+          description: `Phase III — structured portable memory. Query the durable .fafm model (decisions/invariants/conventions/WHY) by type/tag/priority/text instead of scrolling a flat GROK.md. Omit all filters for a structured summary (counts by type/priority + tag vocabulary + index). NOTE: .fafm is NOT scored — this SELECTS and returns facts (provenance preserved), it never grades them. Read-only; complements refresh_fafm/recall.`,
+          inputSchema: {
+            type: 'object',
+            properties: {
+              soul: { type: 'string', description: "Soul to query: 'default' (soul.fafm or first *.fafm) or '<name>' for <name>.fafm. Default 'default'." },
+              type: { type: 'string', description: 'Filter by fact type (e.g. "feedback", "reference", "project").' },
+              tag: { type: 'string', description: 'Filter by a tag the fact must carry.' },
+              priority: { type: 'string', description: 'Filter by priority (e.g. "critical", "high").' },
+              query: { type: 'string', description: 'Case-insensitive substring match against fact text.' },
+              limit: { type: 'number', description: 'Max facts to return (default 20).' }
             },
           }
         },
@@ -435,6 +452,8 @@ export class FafToolHandler {
         return await this.handleFafGate(args);
       case 'faf_section':
         return await this.handleFafSection(args);
+      case 'faf_memory':
+        return await this.handleFafMemory(args);
       case 'refresh_faf':
         return await this.handleFafRefresh(args);
       case 'refresh_fafm':
@@ -876,6 +895,118 @@ export class FafToolHandler {
         text:
           `FAF SECTION: "${result.path}" (${kind}, structure preserved)\n\n` +
           '```yaml\n' + result.yaml + '\n```',
+      }],
+    };
+  }
+
+  /**
+   * `faf_memory` — Phase III (FRC): STRUCTURED PORTABLE MEMORY.
+   *
+   * Query the durable `.fafm` model (decisions/invariants/conventions/WHY) by
+   * type/tag/priority/text — the structured upgrade to the hand-maintained
+   * GROK.md/AGENTS.md (the wedge Grok named). Omit filters → a structured
+   * summary. ⚠️ `.fafm` is NOT scored: this SELECTS facts (provenance intact),
+   * it never grades them. Read-only; complements refresh_fafm/recall.
+   */
+  async handleFafMemory(args: any): Promise<CallToolResult> {
+    // Memory tools follow the LIVE shell cwd (cf. handleFafmRefresh), not the
+    // construction-time project anchor.
+    const cwd = process.cwd();
+    const soul: string =
+      typeof args?.soul === 'string' && args.soul.length > 0 ? args.soul : 'default';
+
+    // Resolve the .fafm file for the requested soul.
+    let fafmPath: string | null = null;
+    try {
+      if (soul === 'default') {
+        const primary = path.join(cwd, 'soul.fafm');
+        if (fs.existsSync(primary)) fafmPath = primary;
+        else {
+          const all = fs.readdirSync(cwd).filter((f) => f.endsWith('.fafm'));
+          fafmPath = all.length ? path.join(cwd, all[0]) : null;
+        }
+      } else {
+        const named = path.join(cwd, `${soul}.fafm`);
+        fafmPath = fs.existsSync(named) ? named : null;
+      }
+    } catch {
+      fafmPath = null;
+    }
+
+    if (!fafmPath) {
+      return {
+        content: [{
+          type: 'text',
+          text: `FAF MEMORY: no .fafm\n\nNo \`.fafm\` for soul "${soul}" in \`${cwd}\`. Etch memory first (\`etch\`).`,
+        }],
+      };
+    }
+
+    let fafm;
+    try {
+      fafm = parseFafm(fs.readFileSync(fafmPath, 'utf8'));
+    } catch (error: any) {
+      return {
+        content: [{ type: 'text', text: `FAF MEMORY: invalid\n\n\`${fafmPath}\` is not valid .fafm YAML: ${error?.message ?? String(error)}` }],
+        isError: true,
+      };
+    }
+
+    const selector = {
+      type: typeof args?.type === 'string' ? args.type : undefined,
+      tag: typeof args?.tag === 'string' ? args.tag : undefined,
+      priority: typeof args?.priority === 'string' ? args.priority : undefined,
+      query: typeof args?.query === 'string' ? args.query : undefined,
+    };
+    const hasFilter = Object.values(selector).some((v) => v !== undefined);
+
+    // No filter → structured summary (counts + tag vocabulary + index).
+    if (!hasFilter) {
+      const s = summarizeMemory(fafm);
+      const byType = Object.entries(s.byType).map(([k, n]) => `${k}:${n}`).join('  ');
+      const byPrio = Object.entries(s.byPriority).map(([k, n]) => `${k}:${n}`).join('  ');
+      return {
+        content: [{
+          type: 'text',
+          text:
+            `FAF MEMORY: ${s.totalFacts} facts in \`${path.basename(fafmPath)}\` (not scored — durable model)\n` +
+            `by type: ${byType}\nby priority: ${byPrio}\n` +
+            `tags: ${s.tags.join(', ')}\n\n` +
+            `index:\n${s.index.map((i) => `  - ${i}`).join('\n')}\n\n` +
+            `Query one: faf_memory { type: "feedback" } · { tag: "doctrine" } · { query: "scoring" }`,
+        }],
+      };
+    }
+
+    const limit = typeof args?.limit === 'number' && args.limit > 0 ? args.limit : 20;
+    const matched = selectFacts(fafm, selector);
+    const shown = matched.slice(0, limit);
+
+    const filterDesc = Object.entries(selector)
+      .filter(([, v]) => v !== undefined)
+      .map(([k, v]) => `${k}="${v}"`)
+      .join(', ');
+
+    if (shown.length === 0) {
+      return {
+        content: [{ type: 'text', text: `FAF MEMORY: 0 facts match (${filterDesc})\n\nTry faf_memory with no filter for the summary + index.` }],
+      };
+    }
+
+    const render = (f: MemoryFact): string => {
+      const meta = [f.type, f.priority].filter(Boolean).join(' · ');
+      const tags = f.tags.length ? `  [${f.tags.join(', ')}]` : '';
+      const prov = f.verificationStatus ? ` (${f.verificationStatus})` : '';
+      return `• ${meta}${prov}${tags}\n  ${f.text.replace(/\s+/g, ' ').trim()}`;
+    };
+
+    const more = matched.length > shown.length ? `\n\n…${matched.length - shown.length} more (raise limit)` : '';
+    return {
+      content: [{
+        type: 'text',
+        text:
+          `FAF MEMORY: ${matched.length} fact(s) match (${filterDesc}) — not scored, selected\n\n` +
+          shown.map(render).join('\n\n') + more,
       }],
     };
   }

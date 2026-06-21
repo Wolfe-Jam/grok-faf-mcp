@@ -9,6 +9,7 @@ import { FuzzyDetector, applyIntelFriday } from '../utils/fuzzy-detector';
 import { findFafFile, getNewFafFilePath } from '../utils/faf-file-finder.js';
 import { confinePath, PathConfinementError } from '../utils/safe-path';
 import { zephScore, zephEnabled } from '../zeph/zeph-score.js';
+import { evaluateGate, GATE_DEFAULTS, frcEnabled, estimateTokens } from '../frc/gate.js';
 import { VERSION } from '../version';
 import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
@@ -57,6 +58,16 @@ const RETIRED_TOOLS = new Set<string>([
   'faf_status', 'faf_enhance', 'faf_bi_sync',
 ]);
 
+/**
+ * Phase III (FRC — FAF-RAG-Collections) module tools. Advertised ONLY when the
+ * module is enabled (frcEnabled(): USE_FRC=1) — off by default, same rollout
+ * discipline as USE_ZEPH in Phase II. Callable regardless (back-compat); just
+ * not on the surface until opted in.
+ */
+const FRC_TOOLS = new Set<string>([
+  'faf_gate',
+]);
+
 export class FafToolHandler {
   constructor(private engineAdapter: FafEngineAdapter) {}
 
@@ -93,6 +104,18 @@ export class FafToolHandler {
             type: 'object',
             properties: {
               details: { type: 'boolean', description: 'Include detailed breakdown and improvement suggestions' }
+            },
+          }
+        },
+        {
+          name: 'faf_gate',
+          description: `Phase III — the pre-promotion quality gate. Scores + sizes a .faf candidate and returns a deterministic promote/hold verdict BEFORE it goes to a Grok Collection — "better candidates for Collections, not better search." Built from faf_score + a token estimate; makes no Collections call. Promote IFF faf_score >= min_score AND tokens <= max_tokens (defaults ${GATE_DEFAULTS.minScore}/${GATE_DEFAULTS.maxTokens}); on hold it returns the actionable gaps.`,
+          inputSchema: {
+            type: 'object',
+            properties: {
+              path: { type: 'string', description: 'Optional project path; defaults to the confined project root.' },
+              min_score: { type: 'number', description: `Minimum faf_score to promote (default ${GATE_DEFAULTS.minScore}).` },
+              max_tokens: { type: 'number', description: `Maximum estimated tokens to promote (default ${GATE_DEFAULTS.maxTokens}).` }
             },
           }
         },
@@ -373,8 +396,15 @@ export class FafToolHandler {
     // retired claude-port leftovers are never advertised; FAF_TOOLS=all (or
     // FAF_EXTENDED=1) adds the low-level utilities. callTool keeps every case.
     const showAll = process.env.FAF_TOOLS === 'all' || process.env.FAF_EXTENDED === '1';
-    const visible = allTools.filter((t) => !RETIRED_TOOLS.has(t.name));
-    return { tools: showAll ? visible : visible.filter((t) => CORE_TOOLS.has(t.name)) };
+    const showFrc = frcEnabled(); // Phase III module — off by default
+    const visible = allTools.filter(
+      (t) => !RETIRED_TOOLS.has(t.name) && (!FRC_TOOLS.has(t.name) || showFrc),
+    );
+    return {
+      tools: showAll
+        ? visible
+        : visible.filter((t) => CORE_TOOLS.has(t.name) || (showFrc && FRC_TOOLS.has(t.name))),
+    };
   }
 
   async callTool(name: string, args: any): Promise<CallToolResult> {
@@ -388,6 +418,8 @@ export class FafToolHandler {
         return await this.handleFafStatus(args);
       case 'faf_score':
         return await this.handleFafScore(args);
+      case 'faf_gate':
+        return await this.handleFafGate(args);
       case 'refresh_faf':
         return await this.handleFafRefresh(args);
       case 'refresh_fafm':
@@ -657,6 +689,87 @@ export class FafToolHandler {
         },
       ],
     };
+  }
+
+  /**
+   * `faf_gate` — Phase III (FRC): the pre-promotion QUALITY GATE.
+   *
+   * Scores + sizes the live `.faf` and returns a deterministic promote/hold
+   * verdict BEFORE anything is promoted to a Grok Collection. Reuses the
+   * SINGLE-SOURCE faf-cli scorer (scoring is NEVER reimplemented) + the in-repo
+   * token estimate; makes NO Collections call. "Better candidates for
+   * Collections, not better search." Promote IFF score ≥ min_score AND
+   * tokens ≤ max_tokens; on hold, returns the actionable gaps.
+   */
+  async handleFafGate(args: any): Promise<CallToolResult> {
+    let cwd: string;
+    try {
+      ({ cwd } = this.resolveConfinedTarget(args?.path));
+    } catch (err) {
+      if (err instanceof PathConfinementError) return this.pathDeniedResult(err);
+      throw err;
+    }
+
+    const { findFafFile: cliFindFafFile, readFafRaw, scoreFafYaml } = await fafCli;
+
+    const fafPath = cliFindFafFile(cwd);
+    if (!fafPath) {
+      return {
+        content: [{
+          type: 'text',
+          text:
+            `FAF GATE: HOLD — no .faf\n\n` +
+            `No \`.faf\` found in \`${cwd}\`. Run \`faf_init\` first — there's nothing to promote yet.`,
+        }],
+      };
+    }
+
+    let raw: string;
+    try {
+      raw = readFafRaw(fafPath);
+    } catch (error: any) {
+      return {
+        content: [{
+          type: 'text',
+          text: `FAF GATE: HOLD — unreadable\n\nCould not read \`${fafPath}\`: ${error?.message ?? String(error)}`,
+        }],
+        isError: true,
+      };
+    }
+
+    let result: ReturnType<Awaited<typeof fafCli>['scoreFafYaml']>;
+    try {
+      result = scoreFafYaml(raw);
+    } catch (error: any) {
+      return {
+        content: [{
+          type: 'text',
+          text: `FAF GATE: HOLD — invalid\n\n\`${fafPath}\` is not valid .faf YAML: ${error?.message ?? String(error)}`,
+        }],
+        isError: true,
+      };
+    }
+
+    const emptySlots = Object.entries(result.slots)
+      .filter(([, state]) => state === 'empty')
+      .map(([slot]) => slot);
+    const tokens = estimateTokens(raw);
+
+    const policy: { minScore?: number; maxTokens?: number } = {};
+    if (typeof args?.min_score === 'number') policy.minScore = args.min_score;
+    if (typeof args?.max_tokens === 'number') policy.maxTokens = args.max_tokens;
+
+    const gate = evaluateGate({ score: result.score, tokens, emptySlots, policy });
+
+    const badge = gate.verdict === 'promote' ? 'PROMOTE ✅' : 'HOLD ⛔';
+    let output =
+      `FAF GATE: ${badge}\n` +
+      `score ${gate.score}/100  ·  ~${gate.tokens} tokens  ·  policy: score >= ${gate.policy.minScore}, tokens <= ${gate.policy.maxTokens}\n\n`;
+    output += gate.verdict === 'promote'
+      ? `Eligible for a Grok Collection — quality context worth promoting.`
+      : `Held — fix before promoting:\n${gate.reasons.map((r) => `  - ${r}`).join('\n')}`;
+
+    return { content: [{ type: 'text', text: output }] };
   }
 
   /**

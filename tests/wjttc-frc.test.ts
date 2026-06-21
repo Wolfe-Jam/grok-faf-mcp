@@ -24,14 +24,30 @@ const FRC_TOOL_NAMES = ['faf_gate', 'faf_section', 'faf_memory'];
 const REPO = process.cwd(); // has project.faf (Trophy 100%) + soul.fafm
 
 let handler: FafToolHandler;
-const savedFlag = process.env.USE_FRC;
+
+// frcEnabled() reads THREE triggers — clear/set ALL of them, never just one, or
+// ambient env (CI, or another test file under --isolate that toggles a sibling
+// trigger) leaks "FRC on" into a test that thinks it's off. Hermetic by design.
+const FRC_ENV = ['USE_FRC', 'FAF_FRC', 'PHASE3'] as const;
+const savedEnv: Record<string, string | undefined> = {};
+for (const k of FRC_ENV) savedEnv[k] = process.env[k];
+
+function frcOff(): void {
+  for (const k of FRC_ENV) delete process.env[k];
+}
+function frcOn(): void {
+  frcOff();
+  process.env['USE_FRC'] = '1';
+}
 
 beforeAll(() => {
   handler = new FafToolHandler(new FafEngineAdapter('native'));
 });
 afterAll(() => {
-  if (savedFlag === undefined) delete process.env.USE_FRC;
-  else process.env.USE_FRC = savedFlag;
+  for (const k of FRC_ENV) {
+    if (savedEnv[k] === undefined) delete process.env[k];
+    else process.env[k] = savedEnv[k]!;
+  }
 });
 
 function textOf(r: any): string {
@@ -44,28 +60,35 @@ async function toolNames(): Promise<string[]> {
 
 describe('🏁 WJTTC FRC — the FLAG-GATE CONTRACT (opt-in, zero behavior change)', () => {
   it('USE_FRC OFF → the 3 FRC tools are INVISIBLE on the default surface', async () => {
-    delete process.env.USE_FRC;
+    frcOff();
     const names = await toolNames();
     for (const t of FRC_TOOL_NAMES) expect(names).not.toContain(t);
   });
 
-  it('USE_FRC OFF → core surface is exactly 12 (unchanged)', async () => {
-    delete process.env.USE_FRC;
+  it('USE_FRC OFF → the core surface stands (known core tools present, FRC absent)', async () => {
+    frcOff();
     const names = await toolNames();
-    expect(names.length).toBe(12);
+    // Anchor on STABLE core tools, never an absolute count — FAF_TOOLS=all (and
+    // future custom tools) shift the number; the count is a guide, not a gate.
+    expect(names).toContain('faf_score');
+    expect(names).toContain('refresh_faf');
+    for (const t of FRC_TOOL_NAMES) expect(names).not.toContain(t);
   });
 
-  it('USE_FRC ON → the 3 FRC tools appear (12 → 15)', async () => {
-    process.env.USE_FRC = '1';
-    const names = await toolNames();
-    for (const t of FRC_TOOL_NAMES) expect(names).toContain(t);
-    expect(names.length).toBe(15);
+  it('USE_FRC ON → enabling FRC adds EXACTLY the FRC tools (count-agnostic delta)', async () => {
+    frcOff();
+    const offCount = (await toolNames()).length;
+    frcOn();
+    const on = await toolNames();
+    for (const t of FRC_TOOL_NAMES) expect(on).toContain(t);
+    // base + exactly the FRC set, whatever the base surface is (12, or 17 with FAF_TOOLS=all)
+    expect(on.length).toBe(offCount + FRC_TOOL_NAMES.length);
   });
 
   it('flipping the flag is the ONLY difference — off-surface ⊂ on-surface, delta == FRC', async () => {
-    delete process.env.USE_FRC;
+    frcOff();
     const off = new Set(await toolNames());
-    process.env.USE_FRC = '1';
+    frcOn();
     const on = await toolNames();
     const delta = on.filter((t) => !off.has(t)).sort();
     expect(delta).toEqual([...FRC_TOOL_NAMES].sort());
@@ -75,7 +98,7 @@ describe('🏁 WJTTC FRC — the FLAG-GATE CONTRACT (opt-in, zero behavior chang
 });
 
 describe('🛑 BRAKE — every FRC tool is callable through callTool() and never crashes', () => {
-  beforeAll(() => { process.env.USE_FRC = '1'; });
+  beforeAll(() => { frcOn(); });
 
   for (const tool of FRC_TOOL_NAMES) {
     it(`${tool}: callable, returns MCP content, no throw`, async () => {
@@ -98,7 +121,7 @@ describe('🛑 BRAKE — every FRC tool is callable through callTool() and never
 });
 
 describe('⚙️ ENGINE — right answer at the MCP boundary (against this repo)', () => {
-  beforeAll(() => { process.env.USE_FRC = '1'; });
+  beforeAll(() => { frcOn(); });
 
   it('faf_gate: a Trophy-100% .faf PROMOTES', async () => {
     const r = await handler.callTool('faf_gate', { path: REPO });
@@ -129,7 +152,7 @@ describe('⚙️ ENGINE — right answer at the MCP boundary (against this repo)
 });
 
 describe('🌬️ AERO — determinism + invariants + surface stability', () => {
-  beforeAll(() => { process.env.USE_FRC = '1'; });
+  beforeAll(() => { frcOn(); });
 
   it('faf_gate is deterministic — same call, same verdict', async () => {
     const a = textOf(await handler.callTool('faf_gate', { path: REPO }));
@@ -149,9 +172,9 @@ describe('🌬️ AERO — determinism + invariants + surface stability', () => 
   });
 
   it('surface stability: enabling FRC adds ONLY FRC — the 12 core tools are untouched', async () => {
-    delete process.env.USE_FRC;
+    frcOff();
     const off = (await toolNames()).sort();
-    process.env.USE_FRC = '1';
+    frcOn();
     const on = (await toolNames()).filter((t) => !FRC_TOOL_NAMES.includes(t)).sort();
     expect(on).toEqual(off); // core surface identical with/without the flag
   });

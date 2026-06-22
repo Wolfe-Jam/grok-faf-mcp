@@ -566,5 +566,34 @@ export function orchestrate(options: ReadOrchestrationStateOptions = {}): Recomm
     acknowledged: false,
   });
 
+  // ── Gap B: the repeat-offender WRITE-path the orchestrator previously lacked ──
+  // readOrchestrationState READS the index (getRepeatOffenders) but nothing wrote
+  // to it → `.faf-drift-index.json` stayed empty in real sessions and recurrence
+  // never climbed (the #132 sibling). Bridge the detected signals into the tracker
+  // here. READ-THEN-RECORD: this run already used PRIOR history for recurrence
+  // (state.offenders, read above); we now bank THIS run's signals so the count
+  // grows across sessions. Fire-and-forget — telemetry must never break the
+  // recommendation. (Cadence = one record per orchestrate call, matching the
+  // recommendation-receipt above; a once-per-change dedup is a future refinement
+  // if within-session over-counting is ever observed — YAGNI until then.)
+  try {
+    const tracker = new RepeatOffenderTracker(
+      options.trackerPath ?? path.join(options.cwd ?? process.cwd(), '.faf-drift-index.json'),
+    );
+    if (rec.hints.drift_signal) {
+      tracker.recordFromDriftSignal(rec.hints.drift_signal);
+    }
+    if (rec.hints.contradictions.length > 0) {
+      // recordFromContradictionReport reads only `.contradictions`; checked/skipped
+      // aren't carried in hints and are irrelevant to recurrence recording.
+      tracker.recordFromContradictionReport(
+        { contradictions: rec.hints.contradictions, checked: [], skipped: [] },
+        options.now,
+      );
+    }
+  } catch {
+    /* fire-and-forget: a telemetry write must never break orchestrate() */
+  }
+
   return rec;
 }

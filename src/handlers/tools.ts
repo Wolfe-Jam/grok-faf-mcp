@@ -17,6 +17,7 @@ import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } f
 import { getRAGIntegrator } from '../rag/index.js';
 import { runRefreshBlend, type RefreshMode } from '../orchestrator/refresh-blend';
 import { RefreshReceiptsLog } from '../telemetry/refresh-receipts';
+import { FafmRefreshReceiptsLog, type FafmRefreshMode } from '../telemetry/fafm-refresh-receipts';
 import { orchestrate } from '../orchestrator/recommendation';
 import { getOrchestrationPolicy } from '../orchestrator/get-policy';
 // v1.4.1: single-source scoring — port-then-wire the truthful scorer into the
@@ -1190,6 +1191,27 @@ export class FafToolHandler {
   }
 
   /**
+   * Append a `.fafm` refresh telemetry receipt — fire-and-forget. THE handler
+   * write-path for `.fafm-refresh-receipts.json`, symmetric to `recordRefreshFire`
+   * (.faf): PR #132 wired the `.faf` side; this closes the asymmetry so BOTH
+   * refresh primitives leave a measurable trail. **NO score** — `.fafm` memories
+   * are not scored (the log enforces this). `trigger:'manual'` (explicit MCP
+   * invocation); `mode` = delta|verbatim per the actual call. Telemetry MUST NEVER
+   * break a refresh — any failure is swallowed.
+   */
+  private recordFafmRefreshFire(cwd: string, mode: FafmRefreshMode, refresh_result: unknown): void {
+    try {
+      new FafmRefreshReceiptsLog(path.join(cwd, '.fafm-refresh-receipts.json')).recordReceipt({
+        trigger: 'manual',
+        mode,
+        refresh_result,
+      });
+    } catch {
+      /* telemetry must never break a refresh — swallow */
+    }
+  }
+
+  /**
    * `refresh_fafm` — re-ground on the live .fafm memory layer. Sibling primitive
    * to `refresh_faf` for accumulated memory (vROM/RAM model).
    *
@@ -1355,6 +1377,16 @@ export class FafToolHandler {
         metadata: { size_bytes: sizeBytes, token_estimate: tokenEstimate },
       };
 
+      // Symmetric telemetry — append a .fafm refresh receipt (NO score). Captures
+      // every memory re-ground (direct + composed by refresh_blend). Fire-and-forget.
+      this.recordFafmRefreshFire(cwd, 'verbatim', {
+        status,
+        souls: scope.souls,
+        fact_count: scope.fact_count,
+        hash,
+        version: parsed[0].version,
+      });
+
       return {
         content: [{ type: 'text', text: this.formatFafmRefresh(payload) }],
       };
@@ -1407,6 +1439,16 @@ export class FafToolHandler {
       summary,
       metadata: { size_bytes: sizeBytes, token_estimate: tokenEstimate },
     };
+
+    // Symmetric telemetry — append a .fafm refresh receipt (NO score). Captures
+    // every memory re-ground (direct + composed by refresh_blend). Fire-and-forget.
+    this.recordFafmRefreshFire(cwd, 'delta', {
+      status,
+      souls: scope.souls,
+      fact_count: scope.fact_count,
+      hash,
+      version: parsed[0].version,
+    });
 
     return {
       content: [{ type: 'text', text: this.formatFafmRefresh(payload) }],

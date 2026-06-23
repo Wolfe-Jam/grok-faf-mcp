@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.7.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.8.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -9,6 +9,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.8.0] - 2026-06-23
+
+Observability + token accuracy. Four changes since v1.7.0 — token sizing, two telemetry write-paths, and a locked flag contract. No new tool surface.
+
+### Changed
+
+- **Canonical token engine** (#131) — FRC's `estimateTokens` now delegates to **slash-tokens** (`slash()`), retiring the `chars/4` estimate. slash-tokens is content-aware (Zig→WASM; YAML ≈ 3.3 chars/tok) + per-provider cost. One token number across FAF (the gate and related token-sizing paths via slash-tokens). Engine roles intact: Zig owns the token engine.
+
+### Fixed
+
+- **Refresh-receipt write-path** (#132) — `handleFafRefresh` now writes a receipt per `.faf` re-ground (direct + composed via `refresh_blend`, no double-count). Was test-only; the orchestrator's `recent_refresh_fires` had nothing to read in real sessions.
+- **Drift-index write-path** (#133) — `orchestrate()` now records detected drift + contradictions (read-then-record). Was read-only; the index never got written, so recurrence never climbed.
+
+### Tested
+
+- **FRC flag-gate contract locked** (#130) — test-enforced at the MCP boundary: `USE_FRC` off ⇒ core surface unchanged (12 tools, FRC invisible); on ⇒ exactly 15, nothing dropped.
+- 605 tests passing, typecheck clean.
 
 ## [1.7.0] - 2026-06-21
 

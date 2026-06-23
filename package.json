@@ -1,6 +1,6 @@
 {
   "name": "grok-faf-mcp",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "mcpName": "io.github.Wolfe-Jam/grok-faf-mcp",
   "description": "Persistent Project Context for xAI Grok. IANA-registered .faf format, MCP server on a URL.",
   "icon": "./assets/icons/faf-icon-256.png",

@@ -338,11 +338,12 @@ sh scripts/run-tests.sh
 
 ---
 
-## Status & known limitations (v1.7)
+## Status & known limitations (v1.8)
 
-v1.7.0 — **The Grounded Memory Edition** — ZEPH-powered fast re-grounding + the FRC layer above Grok Collections. Gate what deserves promotion (`faf_gate`), retrieve exact structured sections (`faf_section`), and query durable `.fafm` memory (`faf_memory`). Opt-in via `USE_FRC` and `USE_ZEPH`; core 12-tool surface unchanged. All FRC tools are **flag-gated and off by default** — they appear only when `USE_FRC=1`, so existing setups see zero change. Everything below still applies. Operating it honestly means surfacing what's NOT in here alongside what is.
+v1.8.0 — **The Closed-Loop Edition** — observability writes, token math is honest, FRC contract locked. No surface change; the drift→refresh→re-ground loop can finally be measured. Flags still off by default — existing setups see zero change. Everything below still applies; operating it honestly means surfacing what's NOT in here alongside what is.
 
-> Earlier: v1.6.0 — **The ZEPH Edition** — added the ZEPH fast path for re-grounding (`refresh_faf`/`refresh_blend` score via the Zig→WASM engine `cascade.wasm`, ~12µs, when `USE_ZEPH=1`; `faf-cli` stays the canonical scorer, parity locked in CI).
+> Earlier: v1.7.0 — **The Grounded Memory Edition** — ZEPH + the FRC layer over Grok Collections (`faf_gate`/`faf_section`/`faf_memory`), opt-in via `USE_FRC`/`USE_ZEPH`; 12-tool core unchanged.
+> Earlier: v1.6.0 — **The ZEPH Edition** — the ZEPH fast path for re-grounding (`refresh_faf`/`refresh_blend` via Zig→WASM `cascade.wasm`, ~12µs, `USE_ZEPH=1`; `faf-cli` stays canonical, parity locked in CI).
 
 **What is fully supported:**
 - WASM-pure tools on the hosted endpoint (`https://mcpaas.live/grok/mcp/v1` and client-specific routes) — scoring · validation · `refresh_faf`.

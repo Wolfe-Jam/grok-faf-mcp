@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.8.0] - 2026-06-23
+## [1.8.0] - 2026-06-23 — The Closed-Loop Edition
 
-Observability + token accuracy. Four changes since v1.7.0 — token sizing, two telemetry write-paths, and a locked flag contract. No new tool surface.
+Observability writes, token math is honest, FRC contract locked. No surface change — the drift→refresh→re-ground loop can finally be measured. Flags still off by default; existing setups see zero change.
+
+Four changes since v1.7.0: slash-tokens for honest sizing, refresh-receipt write-path, drift-index write-path, and a WJTTC-locked FRC flag contract. The observability layer now writes, not just reads — so you can prove whether re-grounding helped before turning ZEPH on by default.
 
 ### Changed
 

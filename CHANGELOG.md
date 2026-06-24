@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.8.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.8.1 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.8.1] - 2026-06-24
+
+Patch — inherits The Closed-Loop Edition. Symmetric telemetry on the memory layer; no surface change.
 
 ### Added
 - **Symmetric `.fafm` refresh receipts** — `refresh_fafm` now appends to `.fafm-refresh-receipts.json` on every fire (direct + composed by `refresh_blend`), closing the asymmetry PR #132 left on the `.faf` side. Mode `delta|verbatim`, captures souls/fact_count/hash/version, and carries **NO score** (.fafm memories are not scored — the log refuses a score-bearing receipt). Fire-and-forget; telemetry never breaks a refresh. New `FafmRefreshReceiptsLog`; 6 WJTTC tests. Extends the Closed-Loop Edition's "observability writes, not just reads" to the memory layer.

@@ -12,10 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.1] - 2026-06-24
 
-Patch — inherits The Closed-Loop Edition. Symmetric telemetry on the memory layer; no surface change.
+Patch — inherits The Closed-Loop Edition. Symmetric `.fafm` telemetry + `--version`/`--help` CLI flags; no MCP tool-surface change.
 
 ### Added
 - **Symmetric `.fafm` refresh receipts** — `refresh_fafm` now appends to `.fafm-refresh-receipts.json` on every fire (direct + composed by `refresh_blend`), closing the asymmetry PR #132 left on the `.faf` side. Mode `delta|verbatim`, captures souls/fact_count/hash/version, and carries **NO score** (.fafm memories are not scored — the log refuses a score-bearing receipt). Fire-and-forget; telemetry never breaks a refresh. New `FafmRefreshReceiptsLog`; 6 WJTTC tests. Extends the Closed-Loop Edition's "observability writes, not just reads" to the memory layer.
+- **`--version` / `--help` CLI flags** — `grok-faf-mcp --version` prints the version; `--help` shows usage. Handled in the entry *before* the server starts, so they never pollute the stdio/MCP channel; bare launch (how an MCP host starts it) is unaffected. Closes #134.
 
 ## [1.8.0] - 2026-06-23 — The Closed-Loop Edition
 

@@ -11,6 +11,11 @@ updates:
       - "security"
     commit-message:
       prefix: "deps"
+    # Group updates into a single PR — fewer threads, less maintenance churn
+    groups:
+      npm:
+        patterns:
+          - "*"
     # Security-only: ignore all version updates, only alert on vulnerabilities
     ignore:
       - dependency-name: "*"
@@ -25,3 +30,8 @@ updates:
       - "ci"
     commit-message:
       prefix: "ci"
+    # Group action bumps into a single monthly PR
+    groups:
+      github-actions:
+        patterns:
+          - "*"

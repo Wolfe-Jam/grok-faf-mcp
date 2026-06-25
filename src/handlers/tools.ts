@@ -232,14 +232,21 @@ export class FafToolHandler {
         },
         {
           name: 'faf_init',
-          description: 'Create a project.faf — the IANA-registered context file (application/vnd.faf+yaml) that gives Grok persistent project DNA: stack, structure, and intent in one portable file. Write it once; an agent reads the whole project cold every session instead of re-discovering it.',
+          description: 'Create a project.faf — the IANA-registered context file (application/vnd.faf+yaml) that gives Grok persistent project DNA (stack, structure, intent) in one portable file, so an agent reads the whole project cold each session instead of re-discovering it. Writes project.faf to the target directory (created if missing) and refuses to overwrite an existing context file unless `force` is set. Run once at project start, or with `force` to regenerate, then call faf_score to check readiness. Returns a text confirmation with the written file path and the detected project type.',
+          annotations: {
+            title: 'Initialize project.faf',
+            readOnlyHint: false,
+            destructiveHint: true,
+            idempotentHint: false,
+            openWorldHint: false
+          },
           inputSchema: {
             type: 'object',
             properties: {
-              force: { type: 'boolean', description: 'Force reinitialize existing FAF context' },
-              directory: { type: 'string', description: 'Project directory path (supports ~ tilde expansion). Creates directory if it doesn\'t exist.' },
-              path: { type: 'string', description: 'Alias for directory parameter' },
-              projectName: { type: 'string', description: 'Project name for path inference (used with Projects convention)' }
+              force: { type: 'boolean', description: 'Overwrite an existing project.faf. Default false: if a context file already exists, faf_init refuses and leaves it untouched.' },
+              directory: { type: 'string', description: 'Absolute or ~-relative project directory to initialize; created if it does not exist. Defaults to the current working directory.' },
+              path: { type: 'string', description: 'Alias for `directory`; takes precedence if both are supplied.' },
+              projectName: { type: 'string', description: 'Project name used to resolve the directory via the Projects convention when no directory/path is given.' }
             },
           }
         },

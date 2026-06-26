@@ -24,26 +24,42 @@
 
 set -u
 
-# Capture stdout AND stderr (pipe via tee so we can see live output in CI)
 TMP=$(mktemp -t grok-faf-mcp-tests.XXXXXX)
 trap 'rm -f "$TMP"' EXIT
 
-bun test --isolate --timeout=120000 --path-ignore-patterns="**/performance.test.ts" "$@" 2>&1 | tee "$TMP"
-RC=${PIPESTATUS:-$?}
+# The --isolate epoll flake is LINUX-only and manifests two ways: a fast error
+# (epoll_ctl in output) OR a HARNESS HANG (no output, never exits). The old
+# wrapper caught only the fast-fail; an unbounded hang ran until the CI run was
+# CANCELLED — a red npm badge. So on Linux we now BOUND the run with `timeout`
+# (exit 124 on a hang) and treat a hang as the same flake. macOS/Windows don't
+# flake and have no portable `timeout`, so they run bare.
+if [ "$(uname)" = "Linux" ] && command -v timeout >/dev/null 2>&1; then
+  TIMEOUT="timeout 600"
+else
+  TIMEOUT=""
+fi
+
+# Capture exit via a file, not `| tee` + PIPESTATUS — PIPESTATUS is a bashism
+# that masks the real exit under `sh`/dash (a hang killed by `timeout` would
+# otherwise read as tee's exit 0 → a false green). Echo the file after.
+$TIMEOUT bun test --isolate --timeout=120000 --path-ignore-patterns="**/performance.test.ts" "$@" > "$TMP" 2>&1
+RC=$?
+cat "$TMP"
 
 if [ "$RC" -eq 0 ]; then
   exit 0
 fi
 
-# Discriminating retry — only on the known epoll flake signature
-if grep -q "epoll_ctl" "$TMP"; then
+# Discriminating retry — the epoll flake, whether it fails fast (epoll_ctl in
+# output) or HANGS (timeout kills it, exit 124). Real failures still propagate.
+if grep -q "epoll_ctl" "$TMP" || [ "$RC" -eq 124 ]; then
   echo ""
   echo "============================================================"
-  echo "Detected Linux bun --isolate epoll flake — retrying ONCE."
+  echo "Detected Linux bun --isolate epoll flake (fail or hang) — retrying ONCE."
   echo "Task #22 tracks the proper upstream fix."
   echo "============================================================"
   echo ""
-  bun test --isolate --timeout=120000 --path-ignore-patterns="**/performance.test.ts" "$@"
+  $TIMEOUT bun test --isolate --timeout=120000 --path-ignore-patterns="**/performance.test.ts" "$@"
   exit $?
 fi
 

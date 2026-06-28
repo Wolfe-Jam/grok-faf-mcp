@@ -14,9 +14,9 @@
 ## Stack
 
 - **backend:** MCP SDK (TS)
-- **api_type:** MCP (stdio/SSE)
+- **api_type:** MCP (stdio + Streamable HTTP)
 - **runtime:** Node.js
-- **hosting:** Vercel
+- **hosting:** Cloudflare Workers
 - **build:** TypeScript (tsc)
 - **cicd:** GitHub Actions
 
@@ -27,4 +27,4 @@
 - **why:** Every AI session starts from zero. grok-faf-mcp gives Grok persistent project DNA.
 - **where:** npm registry, Cloudflare Workers (mcpaas.live/grok/mcp/v1), MCP Registry
 - **when:** Shipped 2026 — current v1.3.0
-- **how:** npx grok-faf-mcp or deploy to Vercel — 21 core MCP tools + 34 advanced, SSE transport, Mk4 WASM scoring kernel
+- **how:** bunx grok-faf-mcp (local stdio) or hosted on Cloudflare Workers (mcpaas.live/grok/mcp/v1) — 12 core tools by default (extended set behind FAF_TOOLS=all), Streamable HTTP transport, Mk4 WASM scoring kernel

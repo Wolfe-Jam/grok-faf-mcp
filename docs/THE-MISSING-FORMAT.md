@@ -243,7 +243,7 @@ Format layers emerge through adoption, not permission.
 
 **Production Deployments:**
 - GALLERY-SVELTE: Interactive FAF showcase (SvelteKit + MCP)
-- faf.one: Public FAF portal (Vercel + Supabase)
+- faf.one: Public FAF portal (Cloudflare + Supabase)
 - fafdev.tools: Development environment
 - Multiple enterprise projects (stealth mode)
 

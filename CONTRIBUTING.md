@@ -28,7 +28,7 @@ Local dev: `npm run dev:http` (port 3001).
 | Bug fix | A regression test that fails on the bug, passes after the fix. |
 | New MCP tool | Tool registration in `api/index.ts` + jest test for the tool's response shape. |
 | Doc-only | No tests required. Build must still pass. |
-| Vercel config change | Local `vercel dev` must build cleanly + the PR's preview deploy must serve. |
+| Cloudflare config change | Local `wrangler dev` must build cleanly + the deploy must serve. |
 | Refactor | Existing tests must pass unchanged. No behavior changes without a CHANGELOG note. |
 
 ---
@@ -36,7 +36,7 @@ Local dev: `npm run dev:http` (port 3001).
 ## Branch model
 
 - `main` is always shippable. Tagged releases come from `main`.
-- Vercel auto-deploys `main` to the production URL.
+- `main` deploys to Cloudflare Workers (grok.faf.one) via wrangler.
 - Work on feature branches. PR → squash-merge into `main`.
 - Don't open PRs against tagged commits. Tags are immutable; any fix lands on `main` and gets a new version if it's release-worthy.
 
@@ -94,7 +94,7 @@ Firm design rules, not up for debate in PRs:
 
 1. **URL-based deployment is the differentiator.** New features should preserve the zero-config URL path.
 2. **`.faf` is the format.** Format alternatives are an IETF / IANA conversation, not a PR conversation.
-3. **Vercel is the production deploy target.** Self-hosted Express works (per the Dockerfile) but Vercel is canonical.
+3. **Cloudflare Workers is the production deploy target.** Self-hosted Express works (per the Dockerfile) but Cloudflare is canonical.
 4. **`grok-faf-mcp` ships the `.faf` Foundational Context Layer.** Voice memory is a different layer — see Voice variant below.
 
 ---

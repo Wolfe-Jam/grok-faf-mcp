@@ -1,25 +1,17 @@
-name: Publish to MCP Registry
+name: 📡 MCP Registry Publish (DNS)
 
-# Keeps the MCP Registry (and downstream directories like Glama) in lock-step
-# with the repo: every published GitHub Release pushes the current server.json
-# to registry.modelcontextprotocol.io. No human, no hand-cranked mcp-publisher,
-# no drift (this is why claude sat at a stale v2.6.1 while the repo was at 5.7.x).
+# DNS-authenticated registry publish for the one.faf/* namespace. GitHub-OIDC
+# only authorises io.github.<owner>/* — DNS auth proves ownership of faf.one →
+# authorises one.faf/*. Fires on every release so the registry stays current
+# automatically; no manual `mcp-publisher login dns` step in /pubpro.
 #
-# Auth = GitHub OIDC. NO stored secret — the registry trusts the workflow's
-# identity to authorise the io.github.Wolfe-Jam/* namespace (repo owner matches).
+# Requires repo secret FAF_ONE_MCP_PRIVATE_KEY = the ed25519 private key (64-hex)
+# whose public key is the `v=MCPv1; k=ed25519; p=...` TXT record at the faf.one apex.
 
 on:
   release:
-    types: [published]      # each release = a new server.json version → publish it
-  workflow_dispatch: {}      # manual re-publish if ever needed
-
-permissions:
-  contents: read
-  id-token: write            # REQUIRED for `mcp-publisher login github-oidc`
-
-concurrency:
-  group: mcp-registry-publish
-  cancel-in-progress: false
+    types: [published]
+  workflow_dispatch: {}
 
 jobs:
   publish:
@@ -29,39 +21,29 @@ jobs:
 
       - name: Install mcp-publisher
         run: |
-          set -euo pipefail
-          TAG=$(curl -fsSL https://api.github.com/repos/modelcontextprotocol/registry/releases/latest \
-                  | grep -o '"tag_name"[[:space:]]*:[[:space:]]*"[^"]*"' | head -1 | cut -d'"' -f4)
-          echo "mcp-publisher ${TAG}"
-          # Asset name carries NO version: mcp-publisher_<os>_<arch>.tar.gz
-          curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/download/${TAG}/mcp-publisher_linux_amd64.tar.gz" \
-            | tar -xz mcp-publisher
-          chmod +x mcp-publisher
+          curl -sL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" -o mcp-publisher.tar.gz
+          tar -xzf mcp-publisher.tar.gz && chmod +x ./mcp-publisher
 
-      - name: Validate server.json
-        run: ./mcp-publisher validate
-
-      - name: Check if this version is already published (idempotent)
-        id: ver
+      - name: Verify server.json version == release tag
+        if: github.event_name == 'release'
         run: |
-          NAME=$(jq -r .name server.json)
-          LOCAL=$(jq -r .version server.json)
-          PUBLISHED=$(curl -fsSL "https://registry.modelcontextprotocol.io/v0/servers?search=${NAME}&version=latest" \
-            | jq -r --arg n "$NAME" '[.servers[].server | select(.name==$n) | .version] | first // ""')
-          if [ "$LOCAL" = "$PUBLISHED" ]; then
-            echo "publish=false" >> "$GITHUB_OUTPUT"
-            echo "✓ ${NAME} v${LOCAL} is already the registry's latest — nothing to do."
-          else
-            echo "publish=true" >> "$GITHUB_OUTPUT"
-            echo "${NAME} v${LOCAL} not yet published (registry latest: ${PUBLISHED:-none}) — will publish."
-          fi
+          TAG="${GITHUB_REF_NAME#v}"
+          MV=$(node -p "require('./server.json').version")
+          [ "$TAG" = "$MV" ] || { echo "::error::server.json $MV != tag $TAG"; exit 1; }
 
-      - name: Authenticate (GitHub OIDC — no stored secret)
-        if: steps.ver.outputs.publish == 'true'
-        run: ./mcp-publisher login github-oidc
+      - name: Wait for the .mcpb release asset to resolve (registry validates HTTP 200)
+        run: |
+          URL=$(node -e "const s=require('./server.json');const m=(s.packages||[]).find(p=>(p.registryType||p.registry_type)==='mcpb')||{};console.log((m.transport&&m.transport.url)||m.identifier||'')")
+          if [ -z "$URL" ]; then echo "no mcpb package — skipping asset check"; exit 0; fi
+          for i in $(seq 1 10); do
+            code=$(curl -sIL -o /dev/null -w '%{http_code}' "$URL")
+            if [ "$code" = "200" ]; then echo "✅ mcpb asset live: $URL"; exit 0; fi
+            echo "⏳ mcpb HTTP $code (attempt $i/10) — $URL"; sleep 6
+          done
+          echo "::error::mcpb asset never resolved to HTTP 200: $URL"; exit 1
+
+      - name: Login via DNS (one.faf namespace)
+        run: ./mcp-publisher login dns --domain faf.one --private-key "${{ secrets.FAF_ONE_MCP_PRIVATE_KEY }}"
 
       - name: Publish to MCP Registry
-        if: steps.ver.outputs.publish == 'true'
-        run: |
-          ./mcp-publisher publish
-          echo "Published $(jq -r .version server.json) to the MCP Registry. Glama re-syncs on its next crawl."
+        run: ./mcp-publisher publish server.json

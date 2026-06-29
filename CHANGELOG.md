@@ -10,13 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.9.0] - 2026-06-26 — ZEPH default-ON
+## [1.9.0] - 2026-06-29 — The ZEPH Default Edition
 
-Minor — the proven-fast scoring path becomes the default. No tool-surface change; the score is identical, just cheaper to compute. Completes the ZEPH rollout that began as opt-in in v1.6.0.
+The proven-fast scoring path becomes the default. No tool-surface change; the score is identical, just cheaper to compute. Completes the ZEPH rollout that began as opt-in in v1.6.0 — the fast path is now the floor, not a flag.
 
 ### Changed
 - **ZEPH scoring is now default-ON.** The Zig→WASM fast path (`cascade.wasm`, ~12µs) behind `refresh_faf` flips from opt-in (`USE_ZEPH=1`, since v1.6.0) to **default-ON**. It returns THE faf-cli score — proven byte-identical by the permanent CI parity gate *and* a fresh 91/91 sweep of every real `.faf` across the full 0–100 curve (2026-06-26) — so the default changes the *cost* of scoring, never the number. Fail-safe by design: any engine/runtime miss returns `null` and the caller keeps the canonical faf-cli score, so default-ON can only accelerate scoring, never break it.
 - **Kill switch retained.** `USE_ZEPH=0` (or `FAF_ZEPH=0` / `ZEPH=0`) forces the canonical scorer — reversible without a redeploy.
+- **Registry identity moved to `one.faf/grok-faf-mcp`.** Identity-only (no functional change) — joins `one.faf/claude-faf-mcp` and `one.faf/faf-mcp` on the DNS-verified namespace; registry publish now authenticates via DNS (`faf.one`), not GitHub OIDC.
 
 ### Added
 - **Gate regression test** — `zeph-parity.test.ts` now locks the v1.9.0 default (ON with no env set) + the kill switch, alongside the existing byte-identical parity assertions across the 5→100 range.

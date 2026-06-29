@@ -1,6 +1,6 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.Wolfe-Jam/grok-faf-mcp",
+  "name": "one.faf/grok-faf-mcp",
   "title": "Persistent Project Context for xAI Grok",
   "description": "Persistent project context for xAI Grok. IANA-registered .faf format.",
   "icons": [
@@ -39,12 +39,6 @@
     "source": "github"
   },
   "websiteUrl": "https://grok.faf.one",
-  "remotes": [
-    {
-      "type": "streamable-http",
-      "url": "https://mcpaas.live/grok/mcp/v1"
-    }
-  ],
   "packages": [
     {
       "registryType": "npm",
@@ -54,5 +48,16 @@
         "type": "stdio"
       }
     }
-  ]
+  ],
+  "_meta": {
+    "io.modelcontextprotocol.registry/publisher-provided": {
+      "one.faf/context": {
+        "faf": "./project.faf",
+        "mediaType": "application/vnd.faf+yaml",
+        "iana": "https://www.iana.org/assignments/media-types/application/vnd.faf+yaml",
+        "deterministic": true,
+        "generated": "2026-06-29T04:40:22.608Z"
+      }
+    }
+  }
 }

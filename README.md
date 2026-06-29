@@ -338,10 +338,11 @@ sh scripts/run-tests.sh
 
 ---
 
-## Status & known limitations (v1.8)
+## Status & known limitations (v1.9)
 
-v1.8.0 — **The Closed-Loop Edition** — observability writes, token math is honest, FRC contract locked. No surface change; the drift→refresh→re-ground loop can finally be measured. Flags still off by default — existing setups see zero change. Everything below still applies; operating it honestly means surfacing what's NOT in here alongside what is.
+v1.9.0 — **The ZEPH Default Edition** — the proven-fast Zig→WASM scoring path behind `refresh_faf` is now **default-ON** (same score, cheaper to compute; parity proven byte-identical — CI gate + 91/91 live). Kill switch `USE_ZEPH=0` forces the canonical scorer. No tool-surface change; FRC tools stay opt-in behind `USE_FRC`. Everything below still applies; operating it honestly means surfacing what's NOT in here alongside what is.
 
+> Earlier: v1.8.0 — **The Closed-Loop Edition** — observability writes, token math is honest, FRC contract locked. The drift→refresh→re-ground loop can finally be measured.
 > Earlier: v1.7.0 — **The Grounded Memory Edition** — ZEPH + the FRC layer over Grok Collections (`faf_gate`/`faf_section`/`faf_memory`), opt-in via `USE_FRC`/`USE_ZEPH`; 12-tool core unchanged.
 > Earlier: v1.6.0 — **The ZEPH Edition** — the ZEPH fast path for re-grounding (`refresh_faf`/`refresh_blend` via Zig→WASM `cascade.wasm`, ~12µs, `USE_ZEPH=1`; `faf-cli` stays canonical, parity locked in CI).
 

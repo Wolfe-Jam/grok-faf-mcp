@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.8.1 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.9.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -9,6 +9,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.9.0] - 2026-06-26 — ZEPH default-ON
+
+Minor — the proven-fast scoring path becomes the default. No tool-surface change; the score is identical, just cheaper to compute. Completes the ZEPH rollout that began as opt-in in v1.6.0.
+
+### Changed
+- **ZEPH scoring is now default-ON.** The Zig→WASM fast path (`cascade.wasm`, ~12µs) behind `refresh_faf` flips from opt-in (`USE_ZEPH=1`, since v1.6.0) to **default-ON**. It returns THE faf-cli score — proven byte-identical by the permanent CI parity gate *and* a fresh 91/91 sweep of every real `.faf` across the full 0–100 curve (2026-06-26) — so the default changes the *cost* of scoring, never the number. Fail-safe by design: any engine/runtime miss returns `null` and the caller keeps the canonical faf-cli score, so default-ON can only accelerate scoring, never break it.
+- **Kill switch retained.** `USE_ZEPH=0` (or `FAF_ZEPH=0` / `ZEPH=0`) forces the canonical scorer — reversible without a redeploy.
+
+### Added
+- **Gate regression test** — `zeph-parity.test.ts` now locks the v1.9.0 default (ON with no env set) + the kill switch, alongside the existing byte-identical parity assertions across the 5→100 range.
 
 ## [1.8.1] - 2026-06-24
 

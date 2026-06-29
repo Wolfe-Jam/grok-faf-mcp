@@ -3,7 +3,7 @@
 # This file IS the product solving the problem we observed building the product.
 version: "1.1"
 profile: "knowledge"
-namepoint: "@grok-faf-mcp:1.8"
+namepoint: "@grok-faf-mcp:1.9"
 created: "2026-05-30T17:37:31Z"
 last_etched: "2026-05-30T17:37:31Z"
 retention: "forever"

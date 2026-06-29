@@ -12,7 +12,10 @@
  * Fail-safe: any engine/runtime error returns null and the caller falls back to
  * the canonical scorer. ZEPH never breaks scoring; it only accelerates it.
  *
- * Opt-in via USE_ZEPH=1 (or FAF_ZEPH=1 / ZEPH=1). Default off until prod-validated.
+ * Default-ON since v1.9.0 — parity is proven byte-identical to faf-cli (the CI
+ * gate + a 91/91 sweep of real `.faf` across the full 0–100 curve), so routing
+ * the score through ZEPH changes the cost, never the number. Kill switch:
+ * USE_ZEPH=0 (or FAF_ZEPH=0 / ZEPH=0) forces the canonical scorer.
  */
 import { CASCADE_WASM_B64 } from './cascade-wasm.js';
 
@@ -64,7 +67,16 @@ export async function zephScore(yaml: string): Promise<number | null> {
   }
 }
 
-/** ZEPH scoring is opt-in (Phase II rollout: flag-gated → prod → default). */
+/**
+ * ZEPH scoring is default-ON since v1.9.0 (Phase II rollout complete:
+ * flag-gated → prod-validated → default). Parity is proven byte-identical to
+ * faf-cli (CI gate + 91/91 real `.faf`, full 0–100 curve) and the path is
+ * fail-safe — any miss returns null and the caller keeps the canonical score —
+ * so default-ON only accelerates scoring, it can't change a number.
+ * Kill switch: USE_ZEPH=0 / FAF_ZEPH=0 / ZEPH=0 forces the canonical scorer.
+ */
 export function zephEnabled(): boolean {
-  return process.env.USE_ZEPH === '1' || process.env.FAF_ZEPH === '1' || process.env.ZEPH === '1';
+  const off = (v: string | undefined): boolean => v === '0' || v === 'false' || v === 'off';
+  if (off(process.env.USE_ZEPH) || off(process.env.FAF_ZEPH) || off(process.env.ZEPH)) return false;
+  return true;
 }

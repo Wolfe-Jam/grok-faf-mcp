@@ -1105,7 +1105,7 @@ export class FafToolHandler {
       };
     }
 
-    // Phase II — ZEPH fast path (flag-gated, USE_ZEPH). ZEPH returns THE score,
+    // ZEPH fast path (default-ON since v1.9.0; kill switch USE_ZEPH=0). ZEPH returns THE score,
     // faster; faf-cli's scoreFafYaml (above) stays the canonical truth — the
     // tier/breakdown source AND the fallback. Score is score: any ZEPH miss
     // (null) keeps the canonical number; under FAF_DEBUG a divergence is logged

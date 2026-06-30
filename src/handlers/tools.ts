@@ -18,6 +18,7 @@ import { getRAGIntegrator } from '../rag/index.js';
 import { runRefreshBlend, type RefreshMode } from '../orchestrator/refresh-blend';
 import { RefreshReceiptsLog } from '../telemetry/refresh-receipts';
 import { FafmRefreshReceiptsLog, type FafmRefreshMode } from '../telemetry/fafm-refresh-receipts';
+import { FrcUsageReceiptsLog, type FrcTool } from '../telemetry/frc-usage-receipts';
 import { orchestrate } from '../orchestrator/recommendation';
 import { getOrchestrationPolicy } from '../orchestrator/get-policy';
 // v1.4.1: single-source scoring — port-then-wire the truthful scorer into the
@@ -812,6 +813,7 @@ export class FafToolHandler {
       ? `Eligible for a Grok Collection — quality context worth promoting.`
       : `Held — fix before promoting:\n${gate.reasons.map((r) => `  - ${r}`).join('\n')}`;
 
+    this.recordFrcUsage(cwd, 'faf_gate', { verdict: gate.verdict, score: gate.score, tokens: gate.tokens });
     return { content: [{ type: 'text', text: output }] };
   }
 
@@ -872,6 +874,7 @@ export class FafToolHandler {
     // No section → list every available path (discover before you get).
     if (!requested) {
       const paths = listSections(faf);
+      this.recordFrcUsage(cwd, 'faf_section', { listed: paths.length });
       return {
         content: [{
           type: 'text',
@@ -886,6 +889,7 @@ export class FafToolHandler {
     const result = getSection(faf, requested);
     if (!result.found) {
       const paths = listSections(faf);
+      this.recordFrcUsage(cwd, 'faf_section', { found: false, section: requested });
       return {
         content: [{
           type: 'text',
@@ -898,6 +902,7 @@ export class FafToolHandler {
     }
 
     const kind = result.isBranch ? 'section' : 'leaf';
+    this.recordFrcUsage(cwd, 'faf_section', { found: true, section: result.path, kind });
     return {
       content: [{
         type: 'text',
@@ -974,6 +979,7 @@ export class FafToolHandler {
       const s = summarizeMemory(fafm);
       const byType = Object.entries(s.byType).map(([k, n]) => `${k}:${n}`).join('  ');
       const byPrio = Object.entries(s.byPriority).map(([k, n]) => `${k}:${n}`).join('  ');
+      this.recordFrcUsage(cwd, 'faf_memory', { summary: s.totalFacts });
       return {
         content: [{
           type: 'text',
@@ -997,6 +1003,7 @@ export class FafToolHandler {
       .join(', ');
 
     if (shown.length === 0) {
+      this.recordFrcUsage(cwd, 'faf_memory', { matched: 0 });
       return {
         content: [{ type: 'text', text: `FAF MEMORY: 0 facts match (${filterDesc})\n\nTry faf_memory with no filter for the summary + index.` }],
       };
@@ -1010,6 +1017,7 @@ export class FafToolHandler {
     };
 
     const more = matched.length > shown.length ? `\n\n…${matched.length - shown.length} more (raise limit)` : '';
+    this.recordFrcUsage(cwd, 'faf_memory', { matched: matched.length });
     return {
       content: [{
         type: 'text',
@@ -1215,6 +1223,27 @@ export class FafToolHandler {
       });
     } catch {
       /* telemetry must never break a refresh — swallow */
+    }
+  }
+
+  /**
+   * Append an FRC usage telemetry receipt — fire-and-forget. THE Rail 1
+   * write-path for `.frc-usage-receipts.json` (FRC → default-ON promotion rail,
+   * cf. how `.faf-refresh-receipts.json` fed the ZEPH flip). Records the per-tool
+   * outcome (gate verdict, section hit/miss, memory selection count, rag
+   * cache/retrieved) so Rail 2's criteria have real data. Unconditional — fires
+   * regardless of `USE_FRC` (we measure the tools wherever they're called; the
+   * flag only governs surface visibility). Telemetry MUST NEVER break a tool —
+   * any failure is swallowed.
+   */
+  private recordFrcUsage(cwd: string, tool: FrcTool, outcome: Record<string, unknown>): void {
+    try {
+      new FrcUsageReceiptsLog(path.join(cwd, '.frc-usage-receipts.json')).recordReceipt({
+        tool,
+        outcome,
+      });
+    } catch {
+      /* telemetry must never break a tool — swallow */
     }
   }
 
@@ -2419,6 +2448,11 @@ All work: \`faf init\`, \`faf init new\`, \`faf init --new\`, \`faf init -new\`
       }
 
       const result = await rag.query(question);
+
+      this.recordFrcUsage(process.cwd(), 'rag_query', {
+        cached: result.cached,
+        retrieved: result.retrieved ?? false,
+      });
 
       const status = result.cached ? '⚡ CACHE HIT' : '🔄 API CALL';
       const elapsed = result.cached

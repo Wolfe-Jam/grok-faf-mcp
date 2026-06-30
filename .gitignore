@@ -44,7 +44,9 @@ test-results/
 # generated them; see README "Status & known limitations" for schemas.
 .faf-drift-index.json
 .faf-refresh-receipts.json
+.fafm-refresh-receipts.json
 .faf-recommendation-receipts.json
+.frc-usage-receipts.json
 
 # .faf backup snapshots (kept local)
 project.faf.backup-*

@@ -39,3 +39,17 @@ monorepo:
   versioning_strategy: slotignored
   shared_configs: slotignored
   remote_cache: slotignored
+surfaces:
+  # Distribution map — the machine-checkable form of human_context.where.
+  # Score-neutral (not a scored slot). Read by /surface for the declared-vs-live diff.
+  auto:                      # derived from manifests; regenerate with `faf surface --sync`
+    - { type: npm,          id: grok-faf-mcp,           source: "package.json#name" }
+    - { type: github,       id: Wolfe-Jam/grok-faf-mcp, source: "package.json#repository" }
+    - { type: mcp-registry, id: one.faf/grok-faf-mcp,   state: active, source: "server.json#name" }
+  declared:                  # hand-authored: surfaces the manifests don't carry + targets
+    - { type: mcpaas,       id: grok, url: "https://mcpaas.live/grok/mcp/v1", transport: streamable-http, status: live }
+    - { type: homebrew,     id: grok-faf-mcp, status: live }
+    - { type: mcp-registry, id: io.github.Wolfe-Jam/grok-faf-mcp, state: deprecated, superseded_by: one.faf/grok-faf-mcp }
+    - { type: pulsemcp,            id: grok-faf-mcp, status: pending }
+    - { type: glama,               id: grok-faf-mcp, status: pending }
+    - { type: awesome-mcp-servers, id: grok-faf-mcp, status: pending }

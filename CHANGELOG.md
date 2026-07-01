@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.9.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.9.1 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -9,6 +9,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.9.1] - 2026-07-01
+
+Patch — grok's registry display name is now **Grok FAF**, sourced from `project.title` through faf-cli's `faf server-card` emitter (compose-not-fork), replacing the long description GitHub's registry was showing as the title.
+
+### Fixed
+- **Display title is now `Grok FAF`** on the MCP Registry + github.com/mcp. The card showed the description ("Persistent Project Context for xAI Grok") because the published `server.json` carried no registry-reaching title. `project.title: Grok FAF` now flows through `faf server-card` into `server.json` — the same single source `claude-faf-mcp` uses, never a hand-edit. A BRAKE B1 test asserts the emitted server.json reproduces the live file (no drift).
+
+### Changed
+- faf-cli dependency → `^7.0.1` (brings the `faf server-card` central emitter).
 
 ## [1.9.0] - 2026-06-29 — The ZEPH Default Edition
 

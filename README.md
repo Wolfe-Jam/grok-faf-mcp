@@ -50,6 +50,12 @@ Restart Grok TUI (or `/mcps r`) to refresh. Tools: `faf_score`, `faf_validate`, 
 
 **Smithery:** [wolfe-jam/grok-faf-mcp](https://smithery.ai/servers/wolfe-jam/grok-faf-mcp) — gateway at `https://grok-faf-mcp--wolfe-jam.run.tools`
 
+**Homebrew (local stdio):**
+
+```bash
+brew install wolfe-jam/faf/grok-faf-mcp
+```
+
 **Hosted on Cloudflare Workers** — sub-ms cold start, no subprocess, edge-served. 4865-byte Zig WASM engine, parity-tested vs the Rust authority (`xai-faf-rust`). Externally validated by Grok S1 + S2 on 2026-05-27.
 
 **Verify the live contract:**
@@ -191,10 +197,12 @@ Point your MCP client at the production URL — edge-served on Cloudflare Worker
 }
 ```
 
-### 2. Local (bunx — for FS-touching workflows)
+### 2. Local (stdio — for FS-touching workflows)
 Use the local stdio path when you need filesystem access (`faf_init`, `faf_sync`, file-mutating tools):
 
 ```bash
+brew install wolfe-jam/faf/grok-faf-mcp   # macOS tap
+# or
 bunx grok-faf-mcp
 ```
 
@@ -386,7 +394,7 @@ One format, every AI platform.
 
 | Package | Platform | Registry |
 |---------|----------|----------|
-| **grok-faf-mcp** (this) | **xAI Grok** | **npm** |
+| **grok-faf-mcp** (this) | **xAI Grok** | **npm + Homebrew** |
 | [claude-faf-mcp](https://npmjs.com/package/claude-faf-mcp) | Anthropic | npm + MCP #2759 |
 | [gemini-faf-mcp](https://pypi.org/project/gemini-faf-mcp/) | Google | PyPI |
 | [rust-faf-mcp](https://crates.io/crates/rust-faf-mcp) | Rust | crates.io |

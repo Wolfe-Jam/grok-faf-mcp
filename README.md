@@ -92,7 +92,7 @@ Built **for** Grok and shaped by direct Grok feedback.
 Open for native Grok Build integration, .fafm memory layer, refresh_faf primitives, or any other context features the team needs.  
 Live and dogfooded at https://grok.faf.one and https://mcpaas.live/grok/mcp/v1.
 
-**Context for Grok agents:** faf-cli generates what Grok agents read from real project detection — `bunx faf export --agents`. The existing `src/interop/grok.ts` wires FAF MCP into `.grok/config.toml`. See [FAF-CLI for Grok & xAI agents 👀](https://github.com/Wolfe-Jam/faf-cli/blob/main/docs/faf-cli-for-agents.md).
+**Context for Grok agents:** faf-cli authors what Grok agents read from real project detection — `bunx faf export --agents`. The existing `src/interop/grok.ts` wires FAF MCP into `.grok/config.toml`. See [FAF-CLI for Grok & xAI agents 👀](https://github.com/Wolfe-Jam/faf-cli/blob/main/docs/faf-cli-for-agents.md).
 
 ---
 

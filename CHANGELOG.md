@@ -108,7 +108,7 @@ Maintenance: non-destructive interop. The same solid, structured `.faf` data is 
 
 ### Changed
 
-- **Non-destructive bi-sync.** `faf_sync` / `faf_bi_sync` now inject a structured `.faf` block into each target (CLAUDE.md, .cursorrules, .windsurfrules, .clinerules) and preserve everything you've written below. Re-runs update the block in place (idempotent); existing faf-generated files upgrade cleanly. The native bi-sync fallback no longer corrupts `project.faf` (it now syncs one-way, faf → file, leaving the canonical `.faf` untouched).
+- **Non-destructive bi-sync.** `faf_sync` / `faf_bi_sync` now inject a structured `.faf` block into each target (CLAUDE.md, .cursorrules, .windsurfrules, .clinerules) and preserve everything you've written below. Re-runs update the block in place (idempotent); existing faf-authored files upgrade cleanly. The native bi-sync fallback no longer corrupts `project.faf` (it now syncs one-way, faf → file, leaving the canonical `.faf` untouched).
 
 ## [1.5.3] - 2026-06-11
 
@@ -452,7 +452,7 @@ page + .faf.
   the canonical credentials, `transport`, plus `serverInfo` expanded
   with `description` / `homepage` / `repository`. Endpoint now
   advertised in `/info.endpoints` for MCP-client discovery.
-- **`GROK.md`** — frontier-vendor MD generated from `project.faf` via
+- **`GROK.md`** — frontier-vendor MD authored from `project.faf` via
   `faf sync`. Replaces the prior `CLAUDE.md` (wrong-vendor for the
   Grok MCP). `AGENTS.md` remains as the separate vendor-neutral file.
 

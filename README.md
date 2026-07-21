@@ -35,6 +35,8 @@
 
 **FAF defines. MD instructs. AI codes.**
 
+⭐ **A star helps other devs discover grok-faf-mcp** — despite the downloads, ~3 of 4 devs check stars first.
+
 **First v0.2-conformant reader** of the [FAF Context Ingestion Contract](https://github.com/Wolfe-Jam/faf/blob/main/CONTEXT-INGESTION.md) — the open standard co-authored in public with @grok.
 
 ---

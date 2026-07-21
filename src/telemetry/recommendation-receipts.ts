@@ -213,7 +213,7 @@ export class RecommendationReceiptsLog {
       receipt.recommend !== 'no_action'
     ) {
       throw new Error(
-        `recordRecommendation: recommend must be one of refresh_faf | refresh_fafm | refresh_blend | no_action, got: ${receipt.recommend}`,
+        `recordRecommendation: recommend must be one of refresh_faf | refresh_fafm | refresh_blend | no_action, got: ${String(receipt.recommend)}`,
       );
     }
     if (
@@ -223,14 +223,14 @@ export class RecommendationReceiptsLog {
       receipt.severity !== 'block'
     ) {
       throw new Error(
-        `recordRecommendation: severity must be one of none | light | hard | block, got: ${receipt.severity}`,
+        `recordRecommendation: severity must be one of none | light | hard | block, got: ${String(receipt.severity)}`,
       );
     }
     if (typeof receipt.reason !== 'string') {
       throw new Error('recordRecommendation: reason must be a string');
     }
     if (receipt.mode !== undefined && receipt.mode !== 'blend' && receipt.mode !== 'nuke') {
-      throw new Error(`recordRecommendation: mode (if present) must be 'blend' or 'nuke', got: ${receipt.mode}`);
+      throw new Error(`recordRecommendation: mode (if present) must be 'blend' or 'nuke', got: ${String(receipt.mode)}`);
     }
     const recommendedAt = receipt.recommended_at ?? new Date().toISOString();
     if (!Number.isFinite(Date.parse(recommendedAt))) {

@@ -29,10 +29,10 @@ declare const WebAssembly: {
 const INPUT_OFFSET = 65536; // inputs past the first 64 KB WASM page (matches ZEPH demo/bench)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let engine: any | null = null;
+let engine: any = null; // eslint-disable-line @typescript-eslint/no-explicit-any
 let initFailed = false;
 
-async function ensureEngine(): Promise<any | null> { // eslint-disable-line @typescript-eslint/no-explicit-any
+async function ensureEngine(): Promise<any> { // eslint-disable-line @typescript-eslint/no-explicit-any
   if (engine) return engine;
   if (initFailed) return null;
   try {

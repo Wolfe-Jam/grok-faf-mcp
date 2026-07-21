@@ -6,7 +6,7 @@
  */
 
 import { LazyRAGCache, ragCache, type CacheStats } from './cache.js';
-import { XAIClient, type XAIClientConfig } from './xai-client.js';
+import { XAIClient } from './xai-client.js';
 import { CollectionsClient, type CollectionMatch } from './collections-client.js';
 import { frcEnabled } from '../frc/gate.js';
 

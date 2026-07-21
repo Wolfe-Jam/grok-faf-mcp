@@ -3,7 +3,7 @@
  * Revolutionary project.faf ↔ CLAUDE.md Synchronization
  */
 
-import { parse as parseYAML, stringify as stringifyYAML } from '../fix-once/yaml';
+import { parse as parseYAML } from '../fix-once/yaml';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { findFafFile, fileExists } from '../utils/file-utils';

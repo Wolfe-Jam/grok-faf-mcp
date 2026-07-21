@@ -4,6 +4,7 @@
  */
 
 import { promises as fs } from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import { detectProjectType, fileExists } from '../utils/file-utils.js';
 import { generateFafFromProject } from '../generators/faf-generator-championship.js';
@@ -41,7 +42,7 @@ export async function initFafFile(
 
   try {
     const projectRoot = projectPath || process.cwd();
-    const homeDir = require('os').homedir();
+    const homeDir = os.homedir();
 
     // CRITICAL: Prevent running in home or root directory
     if (!projectPath && (projectRoot === homeDir || projectRoot === '/')) {

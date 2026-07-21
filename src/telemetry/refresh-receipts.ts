@@ -155,10 +155,10 @@ export class RefreshReceiptsLog {
   recordReceipt(receipt: Omit<RefreshReceipt, 'fired_at'> & { fired_at?: string }): void {
     if (!receipt) throw new Error('recordReceipt: receipt is required');
     if (receipt.trigger !== 'auto' && receipt.trigger !== 'manual') {
-      throw new Error(`recordReceipt: trigger must be 'auto' or 'manual', got: ${receipt.trigger}`);
+      throw new Error(`recordReceipt: trigger must be 'auto' or 'manual', got: ${String(receipt.trigger)}`);
     }
     if (receipt.mode !== 'blend' && receipt.mode !== 'nuke') {
-      throw new Error(`recordReceipt: mode must be 'blend' or 'nuke', got: ${receipt.mode}`);
+      throw new Error(`recordReceipt: mode must be 'blend' or 'nuke', got: ${String(receipt.mode)}`);
     }
     const firedAt = receipt.fired_at ?? new Date().toISOString();
     if (!Number.isFinite(Date.parse(firedAt))) {

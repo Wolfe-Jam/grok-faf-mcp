@@ -110,10 +110,10 @@ export class FafmRefreshReceiptsLog {
   recordReceipt(receipt: Omit<FafmRefreshReceipt, 'fired_at'> & { fired_at?: string }): void {
     if (!receipt) throw new Error('recordReceipt: receipt is required');
     if (receipt.trigger !== 'auto' && receipt.trigger !== 'manual') {
-      throw new Error(`recordReceipt: trigger must be 'auto' or 'manual', got: ${receipt.trigger}`);
+      throw new Error(`recordReceipt: trigger must be 'auto' or 'manual', got: ${String(receipt.trigger)}`);
     }
     if (receipt.mode !== 'delta' && receipt.mode !== 'verbatim') {
-      throw new Error(`recordReceipt: mode must be 'delta' or 'verbatim', got: ${receipt.mode}`);
+      throw new Error(`recordReceipt: mode must be 'delta' or 'verbatim', got: ${String(receipt.mode)}`);
     }
     if (
       receipt.refresh_result &&

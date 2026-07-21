@@ -156,7 +156,7 @@ ${FAF_COLORS.fafCyan('└──────────────────�
  * Generate static championship header (with optional scoreboard title)
  */
 export function generateFAFHeader(scoreboardTitle?: string): string {
-  const version = require('../../package.json').version;
+  const version = require('../../package.json').version; // eslint-disable-line @typescript-eslint/no-var-requires
 
   // Title line above ASCII box (scoreboard or default)
   const titleLine = scoreboardTitle

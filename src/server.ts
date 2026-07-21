@@ -116,7 +116,7 @@ export class GrokFafMcpServer {
         console.error('grok-faf-mcp started with stdio transport');
       }
     } else {
-      throw new Error(`Unsupported transport: ${this.config.transport}`);
+      throw new Error(`Unsupported transport: ${String(this.config.transport)}`);
     }
   }
 

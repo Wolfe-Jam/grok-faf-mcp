@@ -5,6 +5,7 @@
  */
 
 import { findFafFile } from '../utils/file-utils.js';
+import * as os from 'os';
 import { initFafFile, type InitResult } from './init.js';
 import { scoreFafFile, type ScoreResult } from './score.js';
 
@@ -35,7 +36,7 @@ export async function autoCommand(
 
   try {
     const targetDir = directory || process.cwd();
-    const homeDir = require('os').homedir();
+    const homeDir = os.homedir();
 
     // CRITICAL: Prevent running in home or root directory
     if (!directory && (targetDir === homeDir || targetDir === '/')) {

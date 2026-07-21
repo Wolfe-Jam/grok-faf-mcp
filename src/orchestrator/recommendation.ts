@@ -50,7 +50,6 @@ import type {
 import type { RefreshMode } from '../types/refresh';
 import type { EscalationLevel } from '../types/escalation';
 import type { RecommendationAction } from '../types/recommendation';
-import { fafCli } from '../utils/faf-cli-bridge.js';
 
 // ── Public types ────────────────────────────────────────────────────────────
 

@@ -1,4 +1,5 @@
 import type { CallToolResult, Tool } from '@modelcontextprotocol/sdk/types.js';
+import * as os from 'os';
 import { FafEngineAdapter } from './engine-adapter';
 import { fileHandlers } from './fileHandler';
 import * as fs from 'fs';
@@ -6,14 +7,14 @@ import * as path from 'path';
 import * as crypto from 'crypto';
 import YAML from 'yaml';
 import { FuzzyDetector, applyIntelFriday } from '../utils/fuzzy-detector';
-import { findFafFile, getNewFafFilePath } from '../utils/faf-file-finder.js';
+import { findFafFile } from '../utils/faf-file-finder.js';
 import { confinePath, PathConfinementError } from '../utils/safe-path';
 import { zephScore, zephEnabled } from '../zeph/zeph-score.js';
 import { evaluateGate, GATE_DEFAULTS, frcEnabled, estimateTokens } from '../frc/gate.js';
 import { parseFaf, listSections, getSection } from '../frc/retrieve.js';
 import { parseFafm, selectFacts, summarizeMemory, type MemoryFact } from '../frc/memory.js';
 import { VERSION } from '../version';
-import { resolveProjectPath, ensureProjectsDirectory, formatPathConfirmation } from '../utils/path-resolver';
+import { resolveProjectPath, ensureProjectsDirectory } from '../utils/path-resolver';
 import { getRAGIntegrator } from '../rag/index.js';
 import { runRefreshBlend, type RefreshMode } from '../orchestrator/refresh-blend';
 import { RefreshReceiptsLog } from '../telemetry/refresh-receipts';
@@ -1679,7 +1680,7 @@ export class FafToolHandler {
         // User explicit path always wins
         // Expand tilde (~) to home directory
         const expandedPath = explicitPath.startsWith('~')
-          ? path.join(require('os').homedir(), explicitPath.slice(1))
+          ? path.join(os.homedir(), explicitPath.slice(1))
           : explicitPath;
         targetDir = path.resolve(expandedPath);
         projectName = path.basename(targetDir);
@@ -2041,9 +2042,6 @@ REMEMBER: Always use ".faf" with the dot - it's a FORMAT!
     try {
       const fs = await import('fs');
       const path = await import('path');
-      const { exec } = await import('child_process');
-      const { promisify } = await import('util');
-      const execAsync = promisify(exec);
 
       // Debug surfaces BOTH cwd values — process.cwd() (where the user's shell
       // actually is) AND the engine adapter's cached cwd (where the engine is
@@ -2298,7 +2296,7 @@ All work: \`faf init\`, \`faf init new\`, \`faf init --new\`, \`faf init -new\`
 
       // Expand tilde
       const expandedPath = targetPath.startsWith('~')
-        ? path.join(require('os').homedir(), targetPath.slice(1))
+        ? path.join(os.homedir(), targetPath.slice(1))
         : targetPath;
 
       const resolvedPath = path.resolve(expandedPath);

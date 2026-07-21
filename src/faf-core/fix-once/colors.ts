@@ -130,7 +130,7 @@ export const colors = {
 
   // NO_COLOR support (accessibility)
   strip: (text: string): string => {
-    return text.replace(/\x1b\[[0-9;]*m/g, '');
+    return text.replace(/\x1b\[[0-9;]*m/g, ''); // eslint-disable-line no-control-regex
   }
 };
 

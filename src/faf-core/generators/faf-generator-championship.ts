@@ -65,7 +65,7 @@ export async function generateFafFromProject(
 
   // Read pyproject.toml if available (Python projects)
   const pyprojectPath = await findPyprojectToml(projectRoot);
-  let pyprojectData: any = {};
+  const pyprojectData: any = {};
 
   if (pyprojectPath) {
     try {
@@ -89,7 +89,7 @@ export async function generateFafFromProject(
 
   // Read requirements.txt if available (Python projects)
   const requirementsPath = await findRequirementsTxt(projectRoot);
-  let requirementsData: any = {};
+  const requirementsData: any = {};
 
   if (requirementsPath) {
     try {
@@ -366,11 +366,6 @@ export async function generateFafFromProject(
   // Cap at 99% (100% requires human verification)
   const fafScore = Math.min(Math.round(enhancedScore), 99);
 
-  // Build confidence level
-  let confidence = 'LOW';
-  if (fafScore >= 85) confidence = 'HIGH';
-  else if (fafScore >= 70) confidence = 'GOOD';
-  else if (fafScore >= 50) confidence = 'MODERATE';
 
   // Build quality indicators
   const qualityIndicators = [];
@@ -390,15 +385,6 @@ export async function generateFafFromProject(
     qualityIndicators.push('TypeScript strict mode');
   }
 
-  // Extract the stack for display
-  const stack = {
-    frontend: contextSlotsFilled['framework'] || packageData.dependencies?.react ? 'React' : undefined,
-    backend: contextSlotsFilled['backend'],
-    database: contextSlotsFilled['database'],
-    build: contextSlotsFilled['build_tool'],
-    package_manager: contextSlotsFilled['package_manager'] || 'npm',
-    hosting: contextSlotsFilled['hosting'],
-  };
 
   // Build the data structure for generateFafContent
   const fafData = {

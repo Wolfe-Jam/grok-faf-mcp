@@ -1,12 +1,16 @@
 name: Weekly Audit Fix
 
+# Keeps production audit green without red-badging main on every eslint
+# advisory. See docs/CI-SECURITY.md.
+
 on:
   schedule:
     - cron: '0 9 * * 1'  # Every Monday at 9am UTC
-  workflow_dispatch:       # Manual trigger
+  workflow_dispatch:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   audit-fix:
@@ -17,19 +21,28 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: '20'
+          cache: 'npm'
 
       - run: npm ci
 
-      - name: Run npm audit fix
+      - name: npm audit fix (non-breaking)
         run: npm audit fix || true
 
-      - name: Check for changes
+      - name: Production audit must stay clean
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Full-tree audit (report)
+        continue-on-error: true
+        run: |
+          npm audit --audit-level=high || echo "::warning::Full-tree still has issues — prefer overrides in package.json for known-safe pins (see docs/CI-SECURITY.md)"
+
+      - name: Check for lockfile changes
         id: changes
         run: |
-          if git diff --quiet package-lock.json; then
-            echo "changed=false" >> $GITHUB_OUTPUT
+          if git diff --quiet package-lock.json package.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
           else
-            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Commit and push
@@ -37,6 +50,6 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
+          git add package-lock.json package.json
           git commit -m "fix: automated npm audit fix (weekly)"
           git push

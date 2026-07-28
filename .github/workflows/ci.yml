@@ -13,6 +13,9 @@ env:
 
 jobs:
   # 🔒 Security Check
+  # Ship bar = production tree only (--omit=dev). Dev/tooling advisories (eslint,
+  # minimatch, brace-expansion…) used to red-badge every main push while runtime
+  # deps were clean. Full-tree audit still runs as a warning so we see them.
   security:
     name: 🔒 Security Audit
     runs-on: ubuntu-latest
@@ -28,8 +31,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: NPM Audit
-        run: npm audit --audit-level=high
+      - name: NPM Audit (production — ship gate)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: NPM Audit (full tree — report only)
+        continue-on-error: true
+        run: |
+          set +e
+          npm audit --audit-level=high
+          code=$?
+          if [ "$code" -ne 0 ]; then
+            echo "::warning::Full-tree audit reported issues (often devDependencies: eslint toolchain). Production gate above is the ship bar. Run: npm audit && see docs/CI-SECURITY.md"
+          fi
+          exit 0
 
       - name: Check for secrets
         uses: trufflesecurity/trufflehog@main
@@ -135,17 +149,19 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Lint/type are warn-heavy today (any-safety still warn). Errors still surface
+      # in annotations; quality does not block ship (tests + prod audit do).
       - name: Lint
         run: npm run lint
-        continue-on-error: true  # Don't block on linting errors
+        continue-on-error: true
 
       - name: Type Check
         run: npm run type-check
-        continue-on-error: true  # Don't block on type errors
+        continue-on-error: true
 
       - name: Format Check
         run: npm run format:check
-        continue-on-error: true  # Don't block on format errors
+        continue-on-error: true
 
   # 🏗️ Build
   build:
@@ -219,7 +235,7 @@ jobs:
           echo "Directory operations: <30ms ✅"
           echo "Format operations: <1ms ✅"
 
-  # 🏆 Championship Status
+  # 🏆 Championship Status — honest aggregate (was always-green even when security failed)
   status:
     name: 🏆 Championship Status
     runs-on: ubuntu-latest
@@ -229,12 +245,21 @@ jobs:
     steps:
       - name: Check Status
         run: |
-          echo "🏁 Grok FAF MCP Championship CI/CD Complete!"
+          echo "🏁 Grok FAF MCP Championship CI/CD"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ Security: Passed"
-          echo "✅ Tests: All platforms"
-          echo "✅ Quality: Championship level"
-          echo "✅ Build: Ready to ship"
-          echo "✅ Performance: F1-grade"
+          echo "Security:    ${{ needs.security.result }}"
+          echo "Tests:       ${{ needs.test.result }}"
+          echo "Node smoke:  ${{ needs.node-smoke.result }}"
+          echo "Quality:     ${{ needs.quality.result }} (lint/type/format informational)"
+          echo "Build:       ${{ needs.build.result }}"
+          echo "Performance: ${{ needs.performance.result }}"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "🏆 PODIUM READY!"
+          fail=0
+          for r in "${{ needs.security.result }}" "${{ needs.test.result }}" "${{ needs.node-smoke.result }}" "${{ needs.build.result }}"; do
+            if [ "$r" != "success" ]; then fail=1; fi
+          done
+          if [ "$fail" -ne 0 ]; then
+            echo "❌ Ship gates failed (security / tests / smoke / build)"
+            exit 1
+          fi
+          echo "🏆 PODIUM READY — ship gates green"

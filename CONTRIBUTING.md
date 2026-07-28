@@ -63,7 +63,9 @@ Local dev: `npm run dev:http` (port 3001).
 ## CI doctrine
 
 1. **Red means real.** A failing test is a real, actionable failure. We don't tolerate flaky tests — if a test fails intermittently, that's a bug in the test.
-2. **Lint is observability, not a gate.** Lint warnings show but don't block merges. Tests are the only gate.
+2. **Ship gates:** production `npm audit --omit=dev`, tests, Node smoke, build. See **`docs/CI-SECURITY.md`**.
+3. **Lint / full-tree audit are observability, not ship gates.** Dev-toolchain advisories (eslint chain) must not red-badge main while runtime is clean.
+4. **Championship Status** must reflect real job results (no fake all-green).
 
 If `main` goes red after a merge, the breaking change owns the fix — revert is on the table.
 

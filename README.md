@@ -35,7 +35,7 @@
 
 **FAF defines. MD instructs. AI codes.**
 
-⭐ **A star helps other devs discover grok-faf-mcp** — despite the downloads, ~3 of 4 devs check stars first.
+⭐ Bookmarks it for you, helps other devs find it too.
 
 **First v0.2-conformant reader** of the [FAF Context Ingestion Contract](https://github.com/Wolfe-Jam/faf/blob/main/CONTEXT-INGESTION.md) — the open standard co-authored in public with @grok.
 
@@ -454,8 +454,6 @@ npm publish discipline, architecture decisions: **[CONTRIBUTING.md](CONTRIBUTING
 xAI / Grok devs welcome — TL;DR setup at the top, F1-inspired tone throughout.
 
 ---
-
-If grok-faf-mcp has been useful, consider starring the repo ⭐️ it helps others find it.
 
 ### For xAI / Grok Build team
 

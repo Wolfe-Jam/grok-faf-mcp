@@ -13,6 +13,7 @@
 
   [![IANA: vnd.faf+yaml](https://img.shields.io/badge/IANA-vnd.faf%2Byaml-00D4D4)](https://www.iana.org/assignments/media-types/application/vnd.faf+yaml)
   [![DOI: Context paper](https://img.shields.io/badge/DOI-Context%20paper-FF6B35)](https://doi.org/10.5281/zenodo.18251362)
+  [![DOI: Agents paper](https://img.shields.io/badge/DOI-Agents%20paper-FF6B35)](https://doi.org/10.5281/zenodo.21951641)
 </div>
 
 **Home:** [faf.one/grok](https://faf.one/grok)
@@ -461,6 +462,38 @@ Open for deeper native integration, .fafm memory layer, or Grok Build CLI collab
 Happy to ship PRs, dogfood, or jump on a call. Just say the word.
 
 ---
+
+## Citation
+
+If you use `grok-faf-mcp` or the `.faf` / `.fafa` formats in research or production, please cite the format papers:
+
+> Wolfe, J. (2025). *Format-Driven AI Context Architecture: The .faf Standard for Persistent Project Understanding*. Zenodo. https://doi.org/10.5281/zenodo.18251362
+
+> Wolfe, J. (2026). *Why Agents Need a Passport: .fafa — Portable Identity for the Agentic Era*. Zenodo. https://doi.org/10.5281/zenodo.21951641
+
+### BibTeX
+
+```bibtex
+@article{wolfe2025faf,
+  title     = {Format-Driven AI Context Architecture: The .faf Standard for Persistent Project Understanding},
+  author    = {Wolfe, James},
+  year      = {2025},
+  month     = {nov},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.18251362},
+  url       = {https://doi.org/10.5281/zenodo.18251362}
+}
+
+@article{wolfe2026fafa,
+  title     = {Why Agents Need a Passport: .fafa — Portable Identity for the Agentic Era},
+  author    = {Wolfe, James},
+  year      = {2026},
+  month     = {aug},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.21951641},
+  url       = {https://doi.org/10.5281/zenodo.21951641}
+}
+```
 
 ## License
 

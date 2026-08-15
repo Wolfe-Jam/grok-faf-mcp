@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 type: software
 title: "grok-faf-mcp — URL-based FAF MCP server for xAI Grok"
-message: "If you use grok-faf-mcp in your work, please cite the FAF Context paper."
+message: "If you use grok-faf-mcp in your work, please cite the FAF Context paper in `preferred-citation`. The Agents paper in `references` is the companion for the agentic era."
 authors:
   - family-names: Wolfe
     given-names: James
@@ -18,6 +18,8 @@ keywords:
   - xai
   - url-mcp
   - iana
+  - .fafa
+  - AI agent identity
 preferred-citation:
   type: article
   title: "Format-Driven AI Context Architecture: The .faf Standard for Persistent Project Understanding"
@@ -30,3 +32,17 @@ preferred-citation:
   month: 11
   doi: 10.5281/zenodo.18251362
   url: "https://doi.org/10.5281/zenodo.18251362"
+references:
+  - type: article
+    title: "Why Agents Need a Passport: .fafa — Portable Identity for the Agentic Era"
+    authors:
+      - family-names: Wolfe
+        given-names: James
+        orcid: "https://orcid.org/0009-0007-0801-3841"
+        affiliation: "FAF Foundation"
+    year: 2026
+    month: 8
+    doi: 10.5281/zenodo.21951641
+    url: "https://doi.org/10.5281/zenodo.21951641"
+    publisher:
+      name: "Zenodo"

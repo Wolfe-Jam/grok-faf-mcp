@@ -56,12 +56,13 @@ const CORE_TOOLS = new Set<string>([
 /**
  * Retired claude-port leftovers — never Grok-driven, never advertised.
  * Joke/dup explainers (faf_about, faf_what), obscure (faf_friday), Claude-Desktop-
- * specific (faf_guide), thin (faf_status), scrapped (faf_enhance), merged into
- * faf_sync (faf_bi_sync). Kept callable for back-compat; not part of the surface.
+ * specific (faf_guide), thin (faf_status), merged into faf_sync (faf_bi_sync).
+ * faf_enhance is gone (not retired-callable): silent DNA clobber — same drop as
+ * faf-cli and claude-faf-mcp. Kept callable for back-compat; not part of the surface.
  */
 const RETIRED_TOOLS = new Set<string>([
   'faf_about', 'faf_what', 'faf_friday', 'faf_guide',
-  'faf_status', 'faf_enhance', 'faf_bi_sync',
+  'faf_status', 'faf_bi_sync',
 ]);
 
 /**
@@ -269,19 +270,6 @@ export class FafToolHandler {
           }
         },
         {
-          name: 'faf_enhance',
-          description: 'Enhance .faf with AI optimization',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              model: { type: 'string', description: 'Target AI model: grok|claude|chatgpt|gemini|universal (default: grok)' },
-              focus: { type: 'string', description: 'Enhancement focus: claude-optimal|human-context|ai-instructions|completeness' },
-              consensus: { type: 'boolean', description: 'Build consensus from multiple AI models' },
-              dryRun: { type: 'boolean', description: 'Preview enhancement without applying changes' }
-            },
-          }
-        },
-        {
           name: 'faf_bi_sync',
           description: 'Bi-directional sync between project.faf and CLAUDE.md. v4.5.0: Also sync to AGENTS.md, .cursorrules, GEMINI.md!',
           inputSchema: {
@@ -482,7 +470,7 @@ export class FafToolHandler {
       case 'faf_sync':
         return await this.handleFafSync(args);
       case 'faf_enhance':
-        return await this.handleFafEnhance(args);
+        return this.removedFafEnhance();
       case 'faf_bi_sync':
         return await this.handleFafBiSync(args);
       case 'faf_clear':
@@ -1848,44 +1836,14 @@ package_manager: ${projectData.package_manager}` : ''}
     };
   }
 
-  private async handleFafEnhance(args: any): Promise<CallToolResult> {
-    const enhanceArgs: string[] = [];
-
-    // Default to Grok optimization if no model specified
-    const model = args?.model || 'grok';
-    enhanceArgs.push('--model', model);
-
-    if (args?.focus) {
-      enhanceArgs.push('--focus', args.focus);
-    }
-    if (args?.consensus) {
-      enhanceArgs.push('--consensus');
-    }
-    if (args?.dryRun) {
-      enhanceArgs.push('--dry-run');
-    }
-
-    const result = await this.engineAdapter.callEngine('enhance', enhanceArgs);
-
-    if (!result.success) {
-      return {
-        content: [{
-          type: 'text',
-          text: `🚀 Grok FAF Enhancement:\n\nFailed to enhance: ${result.error}`
-        }],
-        isError: true
-      };
-    }
-
-    const output = typeof result.data === 'string'
-      ? result.data
-      : result.data?.output || JSON.stringify(result.data, null, 2);
-
+  /** Dropped: silent AI rewrite of project.faf. Old clients get the reason, not a write. */
+  private removedFafEnhance(): CallToolResult {
     return {
       content: [{
         type: 'text',
-        text: `🚀 Grok FAF Enhancement:\n\n${output}`
-      }]
+        text: 'faf_enhance was removed. AI rewrite of a filled project.faf was a silent DNA clobber. Fill stays on faf_auto (sourced from the repo) and faf_go (human). Same drop as faf-cli and claude-faf-mcp.'
+      }],
+      isError: true
     };
   }
 
@@ -2116,7 +2074,7 @@ ${debugInfo.permissions.fafError ? `   FAF Error: ${debugInfo.permissions.fafErr
 💡 Quick Start:
    1. If FAF CLI not found: npm install -g faf-cli
    2. If .faf file missing: use faf_init tool
-   3. For optimization: use faf_enhance tool with model="grok"
+   3. For empty slots: faf_auto (sourced) or faf_go (human) — no silent rewrite
 `;
       
       return {

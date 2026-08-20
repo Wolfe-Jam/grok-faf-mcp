@@ -31,7 +31,7 @@ app.get('/info', (req, res) => {
     },
     tools: [
       'faf_status', 'faf_score', 'faf_init', 'faf_trust',
-      'faf_sync', 'faf_enhance', 'faf_bi_sync', 'faf_clear', 'faf_debug'
+      'faf_sync', 'faf_bi_sync', 'faf_clear', 'faf_debug'
     ],
     endpoints: {
       health: '/health',

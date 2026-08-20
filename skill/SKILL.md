@@ -75,7 +75,7 @@ faf migrate           # Migrate to latest format
 - Quality: `faf_score`, `faf_validate`, `faf_doctor`, `faf_audit`
 - Intelligence: `faf_formats`, `faf_stacks`, `faf_skills`
 - Sync: `faf_sync`, `faf_bi_sync`, `faf_update`, `faf_migrate`
-- AI: `faf_chat`, `faf_enhance`
+- AI: `faf_chat`
 - Help: `faf_index`, `faf_faq`, `faf_about`
 
 **Advanced Tools (30+):**

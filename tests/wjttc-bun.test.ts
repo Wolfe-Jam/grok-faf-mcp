@@ -240,7 +240,7 @@ describe('🏁 WJTTC — bun migration + MCP integrity (grok-faf-mcp)', () => {
       //   - rag_cache_stats: reads in-memory LAZY-RAG cache only, no fs
       // Excluded: anything that mkdirs / writes (faf_init, faf_write, faf_clear),
       // anything that shells out to the FAF engine subprocess (faf_chat,
-      // faf_enhance, faf_sync, faf_bi_sync, faf_trust, faf_status), anything
+      // faf_sync, faf_bi_sync, faf_trust, faf_status), anything
       // that uses cwd state (faf_score, faf_debug, faf_list, faf_read),
       // and rag_query / rag_cache_clear (state-mutating).
       const READ_ONLY_TOOLS = [

@@ -156,8 +156,6 @@ function createTestArgs(toolName: string): any {
       return { prompt: 'Test project' };
     case 'faf_search':
       return { query: 'test' };
-    case 'faf_enhance':
-      return { model: 'grok' };
     case 'faf_analyze':
       return { models: ['claude'] };
     case 'faf_verify':

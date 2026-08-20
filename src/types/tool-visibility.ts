@@ -55,9 +55,8 @@ const _CORE_TOOLS = [
   'faf_update',
   'faf_migrate',
 
-  // AI Enhancement (2)
+  // AI Enhancement (1) — faf_enhance removed
   'faf_chat',
-  'faf_enhance',
 
   // Help (3)
   'faf_index',
@@ -246,20 +245,13 @@ export const TOOL_REGISTRY: Record<string, ToolMetadata> = {
     priority: 4,
   },
 
-  // AI Enhancement (2)
+  // AI Enhancement (1) — faf_enhance removed
   faf_chat: {
     name: 'faf_chat',
     visibility: 'core',
     category: 'ai',
     description: 'Interactive AI chat with .faf context',
     priority: 1,
-  },
-  faf_enhance: {
-    name: 'faf_enhance',
-    visibility: 'core',
-    category: 'ai',
-    description: 'Enhance .faf with AI optimization',
-    priority: 2,
   },
 
   // Help (3)

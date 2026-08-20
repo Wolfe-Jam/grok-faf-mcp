@@ -386,19 +386,7 @@ Working on REAL filesystem: ${targetDir}
           }
         },
 
-        // AI Enhancement Suite
-        {
-          name: 'faf_enhance',
-          description: 'AI enhancement - Grok-first, Big-3 compatible',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              directory: { type: 'string', description: 'LOCAL filesystem path to project directory (e.g., /Users/username/projects/myapp)' },
-              model: { type: 'string', description: 'AI model to use' },
-              focus: { type: 'string', description: 'Enhancement focus area' }
-            }
-          }
-        },
+        // AI Enhancement Suite — faf_enhance removed (silent DNA clobber)
         {
           name: 'faf_analyze',
           description: 'Multi-model AI intelligence analysis',
@@ -823,9 +811,15 @@ Working on REAL filesystem: ${targetDir}
         case 'faf_share':
           return await this.handleShare(_args);
 
-        // AI Suite
+        // AI Suite — faf_enhance removed (silent DNA clobber)
         case 'faf_enhance':
-          return await this.handleEnhance(_args);
+          return {
+            content: [{
+              type: 'text',
+              text: 'faf_enhance was removed. AI rewrite of a filled project.faf was a silent DNA clobber. Fill stays on faf_auto (sourced) and faf_go (human).',
+            }],
+            isError: true,
+          };
         case 'faf_analyze':
           return await this.handleAnalyze(_args);
         case 'faf_verify':
@@ -1398,38 +1392,6 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
   }
 
   // AI Suite Handlers
-  private async handleEnhance(args: ToolTypes.FafEnhanceArgs): Promise<CallToolResult> {
-    // ⚡ USE THE FAF ENGINE!
-    try {
-      const cwd = process.cwd();
-      this.fafEngine.setWorkingDirectory(cwd);
-
-      const enhanceArgs = [];
-      if (args.model) {
-        enhanceArgs.push('--model');
-        enhanceArgs.push(args.model);
-      }
-      if (args.focus) {
-        enhanceArgs.push('--focus');
-        enhanceArgs.push(args.focus);
-      }
-
-      const result = await this.fafEngine.callEngine('enhance', enhanceArgs);
-
-      if (result.success) {
-        const output = result.data?.output || 'Project enhanced successfully';
-        return await this.formatResult('🚀 FAF Enhance', output);
-      }
-    } catch (engineError) {
-      console.warn('FAF Engine enhance failed, using native:', engineError);
-    }
-
-    // Fallback to simple message
-    const model = args.model || 'grok';
-    const focus = args.focus || 'context';
-    return await this.formatResult('🚀 FAF Enhance', `Enhanced with ${model} focusing on ${focus} (native fallback)`);
-  }
-
   private async handleAnalyze(args: ToolTypes.FafAnalyzeArgs): Promise<CallToolResult> {
     const models = args.models || ['claude'];
     return await this.formatResult('🧠 FAF Analyze', `Analyzed with ${models.join(', ')}`);

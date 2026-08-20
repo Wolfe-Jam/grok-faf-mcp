@@ -19,14 +19,14 @@ import { Tool } from '@modelcontextprotocol/sdk/types.js';
 
 describe('🏎️ Tool Visibility System', () => {
   describe('Tool Registry', () => {
-    it('should have exactly 56 total tools defined (current implementation)', () => {
+    it('should have exactly 55 total tools defined (current implementation)', () => {
       const counts = validateToolCounts();
-      expect(counts.total).toBe(56);
+      expect(counts.total).toBe(55);
     });
 
-    it('should have exactly 21 core tools (current implementation)', () => {
+    it('should have exactly 20 core tools (current implementation)', () => {
       const counts = validateToolCounts();
-      expect(counts.core).toBe(21);
+      expect(counts.core).toBe(20);
     });
 
     it('should have exactly 35 advanced tools (current implementation)', () => {
@@ -52,7 +52,7 @@ describe('🏎️ Tool Visibility System', () => {
 
     it('should have all core tools in TOOL_REGISTRY', () => {
       const coreTools = getCoreTools();
-      expect(coreTools.length).toBe(21);
+      expect(coreTools.length).toBe(20);
 
       const expectedCore = [
         'faf',
@@ -72,7 +72,6 @@ describe('🏎️ Tool Visibility System', () => {
         'faf_update',
         'faf_migrate',
         'faf_chat',
-        'faf_enhance',
         'faf_index',
         'faf_faq',
         'faf_about',
@@ -98,8 +97,7 @@ describe('🏎️ Tool Visibility System', () => {
       const faf_sync = TOOL_REGISTRY['faf_sync'];
       expect(faf_sync.category).toBe('sync');
 
-      const faf_enhance = TOOL_REGISTRY['faf_enhance'];
-      expect(faf_enhance.category).toBe('ai');
+      expect(TOOL_REGISTRY['faf_enhance']).toBeUndefined();
 
       const faf_about = TOOL_REGISTRY['faf_about'];
       expect(faf_about.category).toBe('help');
@@ -251,11 +249,11 @@ describe('🏎️ Tool Visibility System', () => {
 });
 
 describe('🏁 WJTTC Certification Tests', () => {
-  it('Tier 1: Critical - Tool count integrity (current implementation: 21+35=56)', () => {
+  it('Tier 1: Critical - Tool count integrity (current implementation: 20+35=55)', () => {
     const counts = validateToolCounts();
-    expect(counts.core).toBe(21);
+    expect(counts.core).toBe(20);
     expect(counts.advanced).toBe(35);
-    expect(counts.total).toBe(56);
+    expect(counts.total).toBe(55);
   });
 
   it('Tier 1: Critical - No duplicate tools', () => {

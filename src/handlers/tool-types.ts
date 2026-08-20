@@ -73,11 +73,6 @@ export interface FafShareArgs {
   sanitize?: boolean;
 }
 
-export interface FafEnhanceArgs {
-  model?: string;
-  focus?: string;
-}
-
 export interface FafAnalyzeArgs {
   model?: string;
   depth?: string;

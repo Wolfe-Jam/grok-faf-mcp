@@ -12,7 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **RAG default model is `grok-4.6`.** `XAIClient` pinned `grok-3-fast` (retired; xAI redirects grok-3 family to grok-4.3). Flagship API id from docs.x.ai/developers/models, verified 2026-08-20. Override still accepted.
-- **`faf_enhance` default is `grok`.** Grok-named door, Grok default. Claude remains a valid `model` value. Callable leftover (retired from advertised tools/list); default was still `claude`.
+
+### Removed
+- **`faf_enhance`** — dropped from the MCP surface and the bundled rewrite. AI rewrite of a filled `project.faf` was a silent DNA clobber. Fill stays on `faf_auto` (sourced) and `faf_go` (human). Same drop as faf-cli and claude-faf-mcp 5.21.0. Old `callTool('faf_enhance')` returns an error that names the reason; it does not write.
 
 ## [1.9.1] - 2026-07-01
 

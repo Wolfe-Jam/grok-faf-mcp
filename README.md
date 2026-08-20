@@ -236,7 +236,6 @@ bunx grok-faf-mcp
 | `faf_auto` | Auto-detect stack and populate context |
 | `faf_score` | AI-readiness score (0-100%) with breakdown |
 | `faf_status` | Check current AI-readability |
-| `faf_enhance` | Intelligent enhancement |
 | `refresh_faf` | Re-ground on the live `.faf` — re-read + re-score, report drift, return fresh DNA (drift → refresh → re-grounded). **Requested by Grok.** |
 
 **Drift & Orchestration (1.5 — the prestige release)**

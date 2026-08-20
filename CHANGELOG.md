@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v1.9.1 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v1.10.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -10,11 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
-- **RAG default model is `grok-4.6`.** `XAIClient` pinned `grok-3-fast` (retired; xAI redirects grok-3 family to grok-4.3). Flagship API id from docs.x.ai/developers/models, verified 2026-08-20. Override still accepted.
+## [1.10.0] - 2026-08-20 — The No-Fluff Edition
+
+No fluff in a project.faf. `faf_enhance` is gone. RAG default is `grok-4.6`.
 
 ### Removed
-- **`faf_enhance`** — dropped from the MCP surface and the bundled rewrite. AI rewrite of a filled `project.faf` was a silent DNA clobber. Fill stays on `faf_auto` (sourced) and `faf_go` (human). Same drop as faf-cli and claude-faf-mcp 5.21.0. Old `callTool('faf_enhance')` returns an error that names the reason; it does not write.
+- **`faf_enhance`.** The verb is empty — it is not defined, cannot be defined, and does not belong. A `.faf` is facts: sourced (`faf_auto`) or human (`faf_go`), or empty (honest). There is no third state. Off `tools/list` (default and `FAF_TOOLS=all`). Bundled rewrite deleted. Old `callTool('faf_enhance')` returns `isError` with that reason and does **not** write. Same drop as faf-cli and claude-faf-mcp 5.21.0.
+
+### Changed
+- **RAG default model is `grok-4.6`.** `XAIClient` pinned retired `grok-3-fast`. Flagship API id from docs.x.ai/developers/models, verified 2026-08-20. Override still accepted.
 
 ### Fixed
 - **`grok.faf.one/.well-known/agent-card.json`** — still 404 (this origin is not an A2A agent). Empty body replaced with plain text that says so. Not a card. No discovery URLs. Same for the legacy `agent.json` probe.

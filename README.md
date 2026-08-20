@@ -36,6 +36,12 @@
 
 **FAF defines. MD instructs. AI codes.**
 
+## v1.10.0 — The No-Fluff Edition
+
+No fluff in a project.faf. `faf_enhance` is gone. RAG default is `grok-4.6`.
+
+A `.faf` is facts. Two writers only: the repo (`faf_auto`) and the human (`faf_go`). Empty is honest. There is no enhance.
+
 ⭐ Bookmarks it for you, helps other devs find it too.
 
 **First v0.2-conformant reader** of the [FAF Context Ingestion Contract](https://github.com/Wolfe-Jam/faf/blob/main/CONTEXT-INGESTION.md) — the open standard co-authored in public with @grok.
@@ -353,9 +359,11 @@ sh scripts/run-tests.sh
 
 ---
 
-## Status & known limitations (v1.9)
+## Status & known limitations (v1.10)
 
-v1.9.0 — **The ZEPH Default Edition** — the proven-fast Zig→WASM scoring path behind `refresh_faf` is now **default-ON** (same score, cheaper to compute; parity proven byte-identical — CI gate + 91/91 live). Kill switch `USE_ZEPH=0` forces the canonical scorer. No tool-surface change; FRC tools stay opt-in behind `USE_FRC`. Everything below still applies; operating it honestly means surfacing what's NOT in here alongside what is.
+v1.10.0 — **The No-Fluff Edition** — no fluff in a project.faf. `faf_enhance` is gone. RAG default is `grok-4.6`. Fill stays on `faf_auto` / `faf_go`. Everything below still applies; operating it honestly means surfacing what's NOT in here alongside what is.
+
+> Earlier: v1.9.0 — **The ZEPH Default Edition** — the proven-fast Zig→WASM scoring path behind `refresh_faf` is now **default-ON** (same score, cheaper to compute; parity proven byte-identical — CI gate + 91/91 live). Kill switch `USE_ZEPH=0` forces the canonical scorer. FRC tools stay opt-in behind `USE_FRC`.
 
 > Earlier: v1.8.0 — **The Closed-Loop Edition** — observability writes, token math is honest, FRC contract locked. The drift→refresh→re-ground loop can finally be measured.
 > Earlier: v1.7.0 — **The Grounded Memory Edition** — ZEPH + the FRC layer over Grok Collections (`faf_gate`/`faf_section`/`faf_memory`), opt-in via `USE_FRC`/`USE_ZEPH`; 12-tool core unchanged.

@@ -389,7 +389,7 @@ Working on REAL filesystem: ${targetDir}
         // AI Enhancement Suite
         {
           name: 'faf_enhance',
-          description: 'AI enhancement - Claude-first, Big-3 compatible',
+          description: 'AI enhancement - Grok-first, Big-3 compatible',
           inputSchema: {
             type: 'object',
             properties: {
@@ -1425,7 +1425,7 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
     }
 
     // Fallback to simple message
-    const model = args.model || 'claude';
+    const model = args.model || 'grok';
     const focus = args.focus || 'context';
     return await this.formatResult('🚀 FAF Enhance', `Enhanced with ${model} focusing on ${focus} (native fallback)`);
   }

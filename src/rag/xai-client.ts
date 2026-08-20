@@ -2,7 +2,7 @@
  * xAI REST API Client
  *
  * Wrapper for xAI chat completions API.
- * Uses grok-3-fast model for fast responses.
+ * Default model is the current flagship API id (`grok-4.6` — docs.x.ai/developers/models).
  */
 
 export interface ChatMessage {
@@ -26,7 +26,8 @@ export interface XAIClientConfig {
   maxTokens?: number;
 }
 
-const DEFAULT_MODEL = 'grok-3-fast';
+/** Current xAI text flagship (docs.x.ai/developers/models, verified 2026-08-20). */
+export const DEFAULT_MODEL = 'grok-4.6';
 const DEFAULT_MAX_TOKENS = 500;
 const XAI_API_URL = 'https://api.x.ai/v1/chat/completions';
 
@@ -126,5 +127,10 @@ Answer questions accurately based on this context. Be concise.`;
    */
   isConfigured(): boolean {
     return !!this.apiKey && this.apiKey.length > 0;
+  }
+
+  /** Resolved chat model (constructor override or DEFAULT_MODEL). */
+  getModel(): string {
+    return this.model;
   }
 }

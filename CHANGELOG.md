@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **RAG default model is `grok-4.6`.** `XAIClient` pinned `grok-3-fast` (retired; xAI redirects grok-3 family to grok-4.3). Flagship API id from docs.x.ai/developers/models, verified 2026-08-20. Override still accepted.
+- **`faf_enhance` default is `grok`.** Grok-named door, Grok default. Claude remains a valid `model` value. Callable leftover (retired from advertised tools/list); default was still `claude`.
+
 ## [1.9.1] - 2026-07-01
 
 Patch — grok's registry display name is now **Grok FAF**, sourced from `project.title` through faf-cli's `faf server-card` emitter (compose-not-fork), replacing the long description GitHub's registry was showing as the title.

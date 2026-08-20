@@ -274,7 +274,7 @@ export class FafToolHandler {
           inputSchema: {
             type: 'object',
             properties: {
-              model: { type: 'string', description: 'Target AI model: claude|chatgpt|gemini|universal (default: claude)' },
+              model: { type: 'string', description: 'Target AI model: grok|claude|chatgpt|gemini|universal (default: grok)' },
               focus: { type: 'string', description: 'Enhancement focus: claude-optimal|human-context|ai-instructions|completeness' },
               consensus: { type: 'boolean', description: 'Build consensus from multiple AI models' },
               dryRun: { type: 'boolean', description: 'Preview enhancement without applying changes' }
@@ -1851,8 +1851,8 @@ package_manager: ${projectData.package_manager}` : ''}
   private async handleFafEnhance(args: any): Promise<CallToolResult> {
     const enhanceArgs: string[] = [];
 
-    // Default to Claude optimization if no model specified
-    const model = args?.model || 'claude';
+    // Default to Grok optimization if no model specified
+    const model = args?.model || 'grok';
     enhanceArgs.push('--model', model);
 
     if (args?.focus) {
@@ -1871,7 +1871,7 @@ package_manager: ${projectData.package_manager}` : ''}
       return {
         content: [{
           type: 'text',
-          text: `🚀 Claude FAF Enhancement:\n\nFailed to enhance: ${result.error}`
+          text: `🚀 Grok FAF Enhancement:\n\nFailed to enhance: ${result.error}`
         }],
         isError: true
       };
@@ -1884,7 +1884,7 @@ package_manager: ${projectData.package_manager}` : ''}
     return {
       content: [{
         type: 'text',
-        text: `🚀 Claude FAF Enhancement:\n\n${output}`
+        text: `🚀 Grok FAF Enhancement:\n\n${output}`
       }]
     };
   }
@@ -2116,7 +2116,7 @@ ${debugInfo.permissions.fafError ? `   FAF Error: ${debugInfo.permissions.fafErr
 💡 Quick Start:
    1. If FAF CLI not found: npm install -g faf-cli
    2. If .faf file missing: use faf_init tool
-   3. For optimization: use faf_enhance tool with model="claude"
+   3. For optimization: use faf_enhance tool with model="grok"
 `;
       
       return {

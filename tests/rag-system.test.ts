@@ -8,7 +8,7 @@
 
 import { describe, it, expect, beforeEach } from 'bun:test';
 import { LazyRAGCache } from '../src/rag/cache';
-import { XAIClient } from '../src/rag/xai-client';
+import { XAIClient, DEFAULT_MODEL } from '../src/rag/xai-client';
 import { RAGIntegrator } from '../src/rag/index';
 
 // ============================================================================
@@ -200,9 +200,16 @@ describe('XAIClient', () => {
       expect(client.isConfigured()).toBe(false);
     });
 
+    it('should default to the current xAI flagship API id', () => {
+      expect(DEFAULT_MODEL).toBe('grok-4.6');
+      const client = new XAIClient({ apiKey: 'test' });
+      expect(client.getModel()).toBe('grok-4.6');
+    });
+
     it('should accept custom model', () => {
-      const client = new XAIClient({ apiKey: 'test', model: 'grok-3' });
+      const client = new XAIClient({ apiKey: 'test', model: 'grok-4.5' });
       expect(client.isConfigured()).toBe(true);
+      expect(client.getModel()).toBe('grok-4.5');
     });
 
     it('should accept custom maxTokens', () => {

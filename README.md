@@ -97,7 +97,7 @@ Built **for** Grok and shaped by direct Grok feedback.
 Open for native Grok Build integration, .fafm memory layer, refresh_faf primitives, or any other context features the team needs.  
 Live and dogfooded at https://grok.faf.one and https://mcpaas.live/grok/mcp/v1.
 
-**Context for Grok agents:** faf-cli authors what Grok agents read from real project detection — `bunx faf export --agents`. The existing `src/interop/grok.ts` wires FAF MCP into `.grok/config.toml`. See [FAF-CLI for Grok & xAI agents 👀](https://github.com/Wolfe-Jam/faf-cli/blob/main/docs/faf-cli-for-agents.md).
+**Context for Grok agents:** faf-cli authors what Grok agents read from real project detection — `bunx faf export --agents`. faf-cli's `src/interop/grok.ts` wires this MCP into `.grok/config.toml` (that file lives in the faf-cli repo, not here). See [FAF-CLI for Grok & xAI agents](https://github.com/Wolfe-Jam/faf-cli/blob/main/docs/faf-cli-for-agents.md).
 
 ---
 
@@ -159,7 +159,7 @@ Every AI agent reads this once and knows exactly what you're building.
 ```
 URL:     https://mcpaas.live/grok/mcp/v1
 Format:  IANA-registered .faf (application/vnd.faf+yaml)
-Tools:   12 core by default (bunx) — re-grounding (refresh_faf/fafm/blend), LAZY-RAG, orchestration substrate, FAF essentials · extended utilities via FAF_TOOLS=all · 14 hosted (WASM-pure) on the URL
+Tools:   12 core by default (bunx) — re-grounding (refresh_faf/fafm/blend), LAZY-RAG, orchestration substrate, FAF essentials · extended utilities via FAF_TOOLS=all · 19 hosted (WASM-pure, served by mcpaas-cf) on the URL
 Engine:  Mk4 WASM scoring (faf-scoring-kernel)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
 Tests: 27 .ts files (~518 test declarations) — WJTTC parity (heavy local ↔ light hosted) + full suites. Runner: sh scripts/run-tests.sh (bun + flake retry)

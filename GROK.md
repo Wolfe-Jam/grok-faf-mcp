@@ -22,10 +22,10 @@ Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP on
 - **Who:** Developers using xAI Grok with MCP
 - **What:** First MCP for Grok — also first FAF MCP online. Persistent AI context via IANA-registered .faf + .fafm.
 - **Why:** Every AI session starts from zero. grok-faf-mcp gives Grok persistent project DNA.
-- **Where:** npm registry, Cloudflare Workers (mcpaas.live/grok/mcp/v1), MCP Registry
-- **When:** Shipped 2026 — current v1.5.2 (MCP capability completeness — stdio server now answers resources/templates/list with an empty list and drops the unbacked resources.subscribe; the stdio-lane twin of the hosted-edge capability fix. No tool changes.)
-- **How:** bunx grok-faf-mcp (local stdio) or hosted on Cloudflare Workers (mcpaas.live/grok/mcp/v1) — 14 hosted (WASM-pure) + 59 local (bunx), Streamable HTTP transport, Mk4 WASM scoring kernel
+- **Where:** npm registry, Cloudflare Workers (mcpaas.live/grok/mcp/v1), MCP Registry (one.faf/grok-faf-mcp)
+- **When:** Shipped 2026 — current v1.9.1 (registry display title Grok FAF, emitter-sourced via faf server-card). v1.9.0 The ZEPH Default Edition (ZEPH default-ON — the Zig→WASM fast scoring path behind refresh_faf is now the default; same score, cheaper to compute; kill switch USE_ZEPH=0). v1.8.1 patch: symmetric .fafm refresh receipts (refresh_fafm writes .fafm-refresh-receipts.json). v1.8.0 The Closed-Loop Edition (observability write-paths + canonical token engine + FRC flag-gate contract); v1.7.0 The Grounded Memory Edition (ZEPH + FRC over Grok Collections); v1.6.0 ZEPH Edition; v1.5.5 Glama Core-tier.
+- **How:** bunx grok-faf-mcp (local stdio) — 12 core tools by default (extended set behind FAF_TOOLS=all). Hosted URL (mcpaas.live/grok/mcp/v1) — 19 tools (WASM-pure edge, served by mcpaas-cf). Streamable HTTP, Mk4 WASM scoring kernel.
 
 ---
 
-*STATUS: BI-SYNC ACTIVE — 2026-06-01T10:51:04.000Z*
+*STATUS: BI-SYNC ACTIVE — 2026-08-20T15:50:27.492Z*

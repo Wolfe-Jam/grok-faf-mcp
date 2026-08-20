@@ -16,6 +16,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 - **`faf_enhance`** — dropped from the MCP surface and the bundled rewrite. AI rewrite of a filled `project.faf` was a silent DNA clobber. Fill stays on `faf_auto` (sourced) and `faf_go` (human). Same drop as faf-cli and claude-faf-mcp 5.21.0. Old `callTool('faf_enhance')` returns an error that names the reason; it does not write.
 
+### Fixed
+- **`grok.faf.one/.well-known/agent-card.json`** — still 404 (this origin is not an A2A agent). Empty body replaced with plain text that says so. Not a card. No discovery URLs. Same for the legacy `agent.json` probe.
+
 ## [1.9.1] - 2026-07-01
 
 Patch — grok's registry display name is now **Grok FAF**, sourced from `project.title` through faf-cli's `faf server-card` emitter (compose-not-fork), replacing the long description GitHub's registry was showing as the title.

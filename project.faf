@@ -2,6 +2,7 @@ faf_version: "3.0"
 project:
   name: grok-faf-mcp
   title: Grok FAF
+  version: 1.9.1
   goal: Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP online • MCPaaS pattern origin. IANA-registered .faf + .fafm. Grok asked for MCP on a URL — this is it.
   main_language: TypeScript
   type: mcp

@@ -29,6 +29,9 @@ export default {
     if (isAgentCardProbe(pathname)) {
       return agentCardAbsence();
     }
+    if (pathname === "/mcp/server-card") {
+      return Response.redirect("https://mcpaas.live/mcp/server-card", 308);
+    }
     if (pathname === "/sse" || pathname === "/mcp" || pathname.startsWith("/mcp/")) {
       return Response.redirect("https://mcpaas.live/grok/mcp/v1", 308);
     }

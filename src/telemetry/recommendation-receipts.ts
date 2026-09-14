@@ -150,7 +150,8 @@ export function filterRecommendations(
   }
 
   // Newest-first by recommended_at (lexicographic ISO compare works for valid ISO).
-  result.sort((a, b) => b.recommended_at.localeCompare(a.recommended_at));
+  // Reversed first so the stable sort breaks same-ms ties newest-written-first.
+  result.reverse().sort((a, b) => b.recommended_at.localeCompare(a.recommended_at));
 
   if (typeof options.limit === 'number' && options.limit >= 0) {
     result = result.slice(0, Math.floor(options.limit));

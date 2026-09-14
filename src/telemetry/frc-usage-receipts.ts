@@ -85,7 +85,8 @@ export function filterFrcUsage(
     }
   }
 
-  result.sort((a, b) => b.fired_at.localeCompare(a.fired_at));
+  // Reversed first so the stable sort breaks same-ms ties newest-written-first.
+  result.reverse().sort((a, b) => b.fired_at.localeCompare(a.fired_at));
 
   if (typeof options.limit === 'number' && options.limit >= 0) {
     result = result.slice(0, Math.floor(options.limit));

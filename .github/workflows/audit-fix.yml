@@ -11,6 +11,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  actions: write  # dispatch CI after pushing (see the last step)
 
 jobs:
   audit-fix:
@@ -53,3 +54,12 @@ jobs:
           git add package-lock.json package.json
           git commit -m "fix: automated npm audit fix (weekly)"
           git push
+
+      # A push made with GITHUB_TOKEN never starts other workflows, so CI (and
+      # its TAF receipt) would skip this commit. workflow_dispatch is the one
+      # trigger GITHUB_TOKEN is allowed to fire, so start CI explicitly.
+      - name: Run CI on the pushed commit
+        if: steps.changes.outputs.changed == 'true'
+        run: gh workflow run ci.yml --ref "$GITHUB_REF_NAME"
+        env:
+          GH_TOKEN: ${{ github.token }}

@@ -268,7 +268,7 @@ export function generateFafContent(projectData: {
       generated: new Date().toISOString(),
       mission: '🚀 Make Your AI Happy! 🧡 Trust-Driven 🤖',
       revolution: '30 seconds replaces 20 minutes of questions',
-      brand: 'F1-Inspired Software Engineering - Championship AI Context'
+      brand: '3 x IANA registrant Context · Memory · Agents'
     },
     
     // 🧠 AI OPERATING INSTRUCTIONS

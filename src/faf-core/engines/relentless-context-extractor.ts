@@ -577,7 +577,6 @@ export class RelentlessContextExtractor {
         examples: [
           'Test-driven development',
           'Agile sprints',
-          'F1-inspired engineering',
           'Open source collaboration'
         ],
         scoreboost: 3

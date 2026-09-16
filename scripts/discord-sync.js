@@ -38,7 +38,7 @@ const DOCS_TO_SYNC = [
   {
     file: 'PODIUM-SYSTEM.md',
     title: '🏆 Podium Scoring System',
-    description: 'F1-inspired scoring tiers',
+    description: 'Scoring tiers',
     order: 4
   }
 ];

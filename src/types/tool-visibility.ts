@@ -167,7 +167,7 @@ export const TOOL_REGISTRY: Record<string, ToolMetadata> = {
     name: 'faf_score',
     visibility: 'core',
     category: 'quality',
-    description: 'Calculate AI-readability from .faf file - F1-inspired metrics!',
+    description: 'Calculate AI-readability from .faf file',
     priority: 1,
   },
   faf_validate: {

@@ -201,6 +201,6 @@ export class PlatformDetector {
       return `⚡️ FAF VIBE on ${platform.platform}! No-code builder special: $9/month FOREVER! 😽`;
     }
     
-    return '🏎️ FAF Professional - F1-Inspired Software Engineering';
+    return '🏎️ FAF Professional - 3 x IANA registrant Context · Memory · Agents';
   }
 }

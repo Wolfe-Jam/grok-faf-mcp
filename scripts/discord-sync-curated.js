@@ -18,7 +18,7 @@ const MESSAGES = [
 **What is FAF?**
 🧡 IANA-registered AI context format (\`application/vnd.faf+yaml\`)
 📦 Universal project DNA that works with any AI tool
-🏆 F1-inspired scoring system for project quality
+🏆 Scoring system for project quality
 
 **Two Tools Available:**
 • **MCP Server** (1,231/week downloads) - For Claude Desktop integration

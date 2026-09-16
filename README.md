@@ -459,7 +459,7 @@ Real software only. Just say the word.
 PR conventions, code style, CI doctrine, MCP-tool contribution path,
 npm publish discipline, architecture decisions: **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
-xAI / Grok devs welcome — TL;DR setup at the top, F1-inspired tone throughout.
+xAI / Grok devs welcome — TL;DR setup at the top.
 
 ---
 

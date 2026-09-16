@@ -1647,7 +1647,7 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
           `• Award credit, not track debt\n` +
           `• Championship performance only\n\n` +
 
-          `F1-Inspired Engineering:\n` +
+          `Engineering:\n` +
           `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
           `• Best engineering\n` +
           `• Built for speed\n` +

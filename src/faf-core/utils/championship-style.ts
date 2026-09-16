@@ -118,7 +118,7 @@ export const BRAND_MESSAGES = {
   // CLI Headers
   primary: "AI needed a format, it got one— .faf",
   technical: "Foundational AI-context Format",
-  performance: "F1-Inspired Software Engineering",
+  performance: "3 x IANA registrant Context · Memory · Agents",
   
   // Success Messages
   achievement: "Technical Credit 💎 +1",

@@ -691,7 +691,7 @@ export class FafToolHandler {
     let output =
       `FAF SCORE: ${score}/100 (${score}%)  ${tierDisplay}\n` +
       `${progressBar} ${score}%\n` +
-      `${result.populated}/${result.total} slots populated` +
+      `${result.populated}/${result.active} slots populated` +
       (nextTierDisplay ? `  ·  next: ${nextTierDisplay}` : '  ·  top tier') +
       `\n\n` +
       `Scored by faf-cli — the same context your AI reads.`;
@@ -1059,7 +1059,7 @@ export class FafToolHandler {
       throw err;
     }
 
-    const { findFafFile: cliFindFafFile, readFafRaw, scoreFafYaml, getNextTier } = await fafCli;
+    const { findFafFile: cliFindFafFile, readFafRaw, scoreFafYaml, getNextTier, getTier } = await fafCli;
 
     const fafPath = cliFindFafFile(cwd);
     if (!fafPath) {
@@ -1127,7 +1127,8 @@ export class FafToolHandler {
       // eslint-disable-next-line no-console
       console.error(`[ZEPH] engine=${engineUsed} score=${score} ${fafPath}`);
     }
-    const tierDisplay = strip(result.tier.indicator);
+    // The tier follows the number shown: under ZEPH (opt-in) that is ZEPH's score.
+    const tierDisplay = strip((engineUsed === 'zeph' ? getTier(score) : result.tier).indicator);
     const next = getNextTier(score);
     const nextLine = next ? `  next: ${strip(next.indicator)} (${next.threshold}%)\n` : '';
 

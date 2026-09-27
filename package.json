@@ -1,6 +1,6 @@
 {
   "name": "grok-faf-mcp",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "mcpName": "one.faf/grok-faf-mcp",
   "description": "Persistent Project Context for xAI Grok. IANA-registered .faf format, MCP server on a URL.",
   "icon": "./assets/icons/faf-icon-256.png",
@@ -11,7 +11,7 @@
     "grok-faf-mcp": "dist/src/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && tsc",
     "start": "node dist/src/index.js",
     "dev": "ts-node src/cli.ts",
     "dev:stdio": "ts-node src/cli.ts",

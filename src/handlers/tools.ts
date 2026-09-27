@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import YAML from 'yaml';
-import { FuzzyDetector, applyIntelFriday } from '../utils/fuzzy-detector';
+import { FuzzyDetector } from '../utils/fuzzy-detector';
 import { findFafFile } from '../utils/faf-file-finder.js';
 import { confinePath, PathConfinementError } from '../utils/safe-path';
 import { zephScore, zephEnabled } from '../zeph/zeph-score.js';
@@ -255,10 +255,12 @@ export class FafToolHandler {
         },
         {
           name: 'faf_trust',
-          description: 'Validate a project.faf\'s structure and integrity — confirm the context file is well-formed and parses cleanly before an agent grounds on it. The pre-flight trust check: never build on a broken context layer.',
+          description: 'Validate a project.faf with faf-cli — confirm the context file is well-formed and parses cleanly before an agent grounds on it, and report its always-33 score. The pre-flight trust check: never build on a broken context layer.',
           inputSchema: {
             type: 'object',
-            properties: {},
+            properties: {
+              path: { type: 'string', description: 'Project directory to check. Defaults to the current working directory.' },
+            },
           }
         },
         {
@@ -1102,11 +1104,10 @@ export class FafToolHandler {
       };
     }
 
-    // ZEPH fast path (default-ON since v1.9.0; kill switch USE_ZEPH=0). ZEPH returns THE score,
-    // faster; faf-cli's scoreFafYaml (above) stays the canonical truth — the
-    // tier/breakdown source AND the fallback. Score is score: any ZEPH miss
-    // (null) keeps the canonical number; under FAF_DEBUG a divergence is logged
-    // (it would be a ZEPH bug — parity is proven byte-identical 5→100).
+    // ZEPH (opt-in since 2.0.0, USE_ZEPH=1): the Zig engine's score. faf-cli's
+    // scoreFafYaml (above) is the always-33 score and the fallback; the Zig
+    // score is not yet always-33, so ZEPH stays off unless asked for. Under
+    // FAF_DEBUG any divergence from the canonical score is logged.
     let score = result.score;
     let engineUsed: 'zeph' | 'canonical' = 'canonical';
     if (zephEnabled()) {
@@ -1659,7 +1660,6 @@ export class FafToolHandler {
     try {
       // Determine project path using Projects convention or explicit path
       let targetDir: string;
-      let projectName: string;
 
       // Accept both 'directory' (legacy) and 'path' (new)
       const explicitPath = args?.path || args?.directory;
@@ -1671,8 +1671,6 @@ export class FafToolHandler {
           ? path.join(os.homedir(), explicitPath.slice(1))
           : explicitPath;
         targetDir = path.resolve(expandedPath);
-        projectName = path.basename(targetDir);
-
         // Ensure directory exists
         if (!fs.existsSync(targetDir)) {
           fs.mkdirSync(targetDir, { recursive: true });
@@ -1682,7 +1680,6 @@ export class FafToolHandler {
         ensureProjectsDirectory();
         const resolution = resolveProjectPath(args.projectName);
         targetDir = resolution.projectPath;
-        projectName = resolution.projectName;
 
         // Ensure project directory exists
         if (!fs.existsSync(targetDir)) {
@@ -1695,7 +1692,6 @@ export class FafToolHandler {
         // dir findBestWorkingDirectory() resolved at server-construction time.
         // Init writing to the wrong dir is high-blast-radius silent drift.
         targetDir = process.cwd();
-        projectName = path.basename(targetDir);
       }
 
       const fafPath = path.join(targetDir, 'project.faf');
@@ -1706,110 +1702,101 @@ export class FafToolHandler {
         return {
           content: [{
             type: 'text',
-            text: `🚀 Claude FAF Initialization:\n\n⚠️ ${existingFaf.filename} already exists in ${targetDir}\n💡 Use force: true to overwrite`
+            text: `🚀 Grok FAF Initialization:\n\n⚠️ ${existingFaf.filename} already exists in ${targetDir}\n💡 Use force: true to overwrite`
           }]
         };
       }
 
-      // Check project type with fuzzy detection (Friday Feature!)
-      const projectDescription = args?.description || '';
-
-      // Detect Chrome Extension with fuzzy matching
-      const chromeDetection = FuzzyDetector.detectChromeExtension(projectDescription);
-      const projectType = FuzzyDetector.detectProjectType(projectDescription);
-
-      // Build project data with Intel-Friday auto-fill!
-      let projectData: any = {
-        project: projectName,
-        project_type: projectType,
-        description: projectDescription,
-        generated: new Date().toISOString(),
-        version: VERSION
-      };
-
-      // Apply Intel-Friday: Auto-fill Chrome Extension slots for 90%+ score!
-      if (chromeDetection.detected) {
-        projectData = applyIntelFriday(projectData);
+      // 2.0.0: faf_init writes project.faf the way `faf init` does — faf-cli's
+      // assembleFreshFaf detects the folder, writeFaf writes it (21 slots + the
+      // 12 enterprise slotignored markers), scoreFafYaml gives the real
+      // always-33 score. The legacy template (no faf_version, `project:` as a
+      // string) scored ~0% whatever it claimed.
+      const { assembleFreshFaf, writeFaf, readFafRaw, scoreFafYaml, scoreText } = await fafCli;
+      const fresh = assembleFreshFaf(targetDir) as Record<string, any>;
+      const description = typeof args?.description === 'string' ? args.description.trim() : '';
+      if (description && fresh.project && typeof fresh.project === 'object' && !fresh.project.goal) {
+        fresh.project.goal = description;
       }
-
-      // Create enhanced .faf content
-      const fafContent = `# USE>FAF - call FAF-MCP (or faf/cli)
-# FAF - Foundational AI Context
-project: ${projectData.project}
-type: ${projectData.project_type}${chromeDetection.detected ? ' 🎯' : ''}
-context: I⚡🍊
-generated: ${projectData.generated}
-version: ${projectData.version}
-${chromeDetection.corrected ? `# Auto-corrected: "${args?.description}" → "${chromeDetection.corrected}"` : ''}
-
-# The Formula
-human_input: Your project files
-multiplier: FAF Context
-output: Championship Performance
-
-# Quick Context
-working_directory: ${targetDir}
-initialized_by: grok-faf-mcp${projectData._friday_feature ? `\nfriday_feature: ${projectData._friday_feature}` : ''}
-vitamin_context: true
-faffless: true
-
-${chromeDetection.detected ? `# Chrome Extension Auto-Fill (90%+ Score!)
-runtime: ${projectData.runtime}
-hosting: ${projectData.hosting}
-api_type: ${projectData.api_type}
-backend: ${projectData.backend}
-database: ${projectData.database}
-build: ${projectData.build}
-package_manager: ${projectData.package_manager}` : ''}
-`;
-
-      fs.writeFileSync(fafPath, fafContent);
+      writeFaf(fafPath, fresh as any, { replace: args?.force === true });
+      const scored = scoreFafYaml(readFafRaw(fafPath));
+      const type = fresh.project?.type ? ` (type: ${fresh.project.type})` : '';
 
       return {
         content: [{
           type: 'text',
-          text: `🚀 Claude FAF Initialization:\n\n✅ Created project.faf in ${targetDir}\n🍊 Vitamin Context activated!\n⚡ FAFFLESS AI ready!${
-            chromeDetection.detected ? '\n\n🎯 Friday Feature: Chrome Extension detected!\n📈 Auto-filled 7 slots for 90%+ score!' : ''
-          }${
-            chromeDetection.corrected ? `\n📝 Auto-corrected: "${args?.description}" → "${chromeDetection.corrected}"` : ''
-          }`
+          text: `🚀 Grok FAF Initialization:\n\n✅ Created project.faf in ${targetDir}${type}\nScore: ${scoreText(scored)} (always-33)\n💡 faf_score shows every slot; fill the empty ones to reach ✪ 100%.`
         }]
       };
     } catch (error: any) {
       return {
         content: [{
           type: 'text',
-          text: `🚀 Claude FAF Initialization:\n\n❌ Error: ${error.message}`
+          text: `🚀 Grok FAF Initialization:\n\n❌ Error: ${error.message}`
         }],
         isError: true
       };
     }
   }
 
-  private async handleFafTrust(_args: any): Promise<CallToolResult> {  // ✅ FIXED: Prefixed unused args
-    const result = await this.engineAdapter.callEngine('trust');
-
-    if (!result.success) {
+  private async handleFafTrust(args: any): Promise<CallToolResult> {
+    // 2.0.0: composed from faf-cli in-process — its reader, validateFaf (the
+    // checks `faf check` runs) and scoreFafYaml (the always-33 score). It no
+    // longer shells out to whatever `faf` is on the PATH, so the answer is the
+    // same on every machine.
+    let cwd: string;
+    try {
+      ({ cwd } = this.resolveConfinedTarget(args?.path));
+    } catch (err) {
+      if (err instanceof PathConfinementError) return this.pathDeniedResult(err);
+      throw err;
+    }
+    const { findFafFile: cliFindFafFile, readFaf, readFafRaw, validateFaf, scoreFafYaml, scoreText } = await fafCli;
+    const fafPath = cliFindFafFile(cwd);
+    if (!fafPath) {
+      return {
+        content: [{ type: 'text', text: `🔒 FAF Trust: no .faf found in ${cwd}.\nRun faf_init first, then faf_trust checks it.` }],
+        isError: true,
+      };
+    }
+    let raw: string;
+    let data: Record<string, unknown>;
+    try {
+      raw = readFafRaw(fafPath);
+      data = readFaf(fafPath) as Record<string, unknown>;
+    } catch (error: any) {
+      return {
+        content: [{ type: 'text', text: `🔒 FAF Trust: faf-cli could not read ${fafPath} as a .faf: ${error?.message ?? String(error)}` }],
+        isError: true,
+      };
+    }
+    const validation = validateFaf(data);
+    if (!validation.valid) {
       return {
         content: [{
           type: 'text',
-          text: `🔒 Claude FAF Trust Validation:\n\nFailed to check trust: ${result.error}`
+          text: `🔒 FAF Trust: ${fafPath} does not pass faf-cli's checks:\n${validation.errors.map((e: string) => `  • ${e}`).join('\n')}\nfaf_init writes a valid project.faf; faf_score shows the slots.`,
         }],
-        isError: true
+        isError: true,
       };
     }
-
-    const output = typeof result.data === 'string'
-      ? result.data
-      : result.data?.output || JSON.stringify(result.data, null, 2);
-
+    let result: ReturnType<Awaited<typeof fafCli>['scoreFafYaml']>;
+    try {
+      result = scoreFafYaml(raw);
+    } catch (error: any) {
+      return {
+        content: [{ type: 'text', text: `🔒 FAF Trust: faf-cli's scorer could not read ${fafPath}: ${error?.message ?? String(error)}` }],
+        isError: true,
+      };
+    }
     return {
       content: [{
         type: 'text',
-        text: `🔒 Claude FAF Trust Validation:\n\n${output}`
-      }]
+        text: `🔒 FAF Trust: ${fafPath}\n✅ Well-formed — passes faf-cli's checks.\nScore: ${scoreText(result)} (always-33, faf-cli's scorer)`,
+      }],
     };
   }
+
 
   private async handleFafSync(_args: any): Promise<CallToolResult> {  // ✅ FIXED: Prefixed unused args
     const result = await this.engineAdapter.callEngine('sync');

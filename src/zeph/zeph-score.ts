@@ -1,21 +1,17 @@
 /**
- * ZEPH scoring path — the fast Zig→WASM engine (cascade.wasm) as a flag-gated,
- * parallel high-performance scorer for grok-faf-mcp (Phase II).
+ * ZEPH scoring path — the fast Zig→WASM engine (cascade.wasm), the delivery
+ * system for the Zig score.
  *
- * Hybrid by design: ZEPH returns the score; faf-cli's scoreFafYaml stays the
- * canonical fallback + structure (tier / breakdown). Score parity with faf-cli
- * is proven byte-identical 5→100 (xai-faf-zeph/benchmarks/parity_vs_cli.mjs) —
- * so routing the score through ZEPH changes nothing about the number, only the
- * cost of computing it. The invariant: score is score — same everywhere, or it
- * isn't a score.
+ * OFF by default since 2.0.0. Every FAF app scores always-33 (faf-cli 8's
+ * kernel). ZEPH delivers the Zig score exactly (the embedded blob is
+ * byte-identical to cascade's build), but that Zig `score` is the older
+ * 21-slot model: it matched always-33 on 47 of 80 FAF repos (2026-09-26).
+ * Until the Zig engine is proven to give the always-33 number on every file,
+ * faf-cli's scoreFafYaml is the score, and ZEPH is opt-in: USE_ZEPH=1
+ * (or FAF_ZEPH=1 / ZEPH=1).
  *
- * Fail-safe: any engine/runtime error returns null and the caller falls back to
- * the canonical scorer. ZEPH never breaks scoring; it only accelerates it.
- *
- * Default-ON since v1.9.0 — parity is proven byte-identical to faf-cli (the CI
- * gate + a 91/91 sweep of real `.faf` across the full 0–100 curve), so routing
- * the score through ZEPH changes the cost, never the number. Kill switch:
- * USE_ZEPH=0 (or FAF_ZEPH=0 / ZEPH=0) forces the canonical scorer.
+ * Fail-safe: any engine/runtime error returns null and the caller keeps the
+ * canonical score.
  */
 import { CASCADE_WASM_B64 } from './cascade-wasm.js';
 
@@ -68,15 +64,10 @@ export async function zephScore(yaml: string): Promise<number | null> {
 }
 
 /**
- * ZEPH scoring is default-ON since v1.9.0 (Phase II rollout complete:
- * flag-gated → prod-validated → default). Parity is proven byte-identical to
- * faf-cli (CI gate + 91/91 real `.faf`, full 0–100 curve) and the path is
- * fail-safe — any miss returns null and the caller keeps the canonical score —
- * so default-ON only accelerates scoring, it can't change a number.
- * Kill switch: USE_ZEPH=0 / FAF_ZEPH=0 / ZEPH=0 forces the canonical scorer.
+ * ZEPH is opt-in (OFF by default since 2.0.0): the Zig score is not yet the
+ * always-33 number. USE_ZEPH=1 / FAF_ZEPH=1 / ZEPH=1 turns it on.
  */
 export function zephEnabled(): boolean {
-  const off = (v: string | undefined): boolean => v === '0' || v === 'false' || v === 'off';
-  if (off(process.env.USE_ZEPH) || off(process.env.FAF_ZEPH) || off(process.env.ZEPH)) return false;
-  return true;
+  const on = (v: string | undefined): boolean => v === '1' || v === 'true' || v === 'on';
+  return on(process.env.USE_ZEPH) || on(process.env.FAF_ZEPH) || on(process.env.ZEPH);
 }

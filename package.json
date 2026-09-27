@@ -112,8 +112,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@upstash/redis": "^1.37.0",
-    "faf-cli": "^7.0.1",
-    "faf-scoring-kernel": "^2.0.3",
+    "faf-cli": "^8.0.0",
     "slash-tokens": "^1.4.1",
     "yaml": "^2.4.1"
   },

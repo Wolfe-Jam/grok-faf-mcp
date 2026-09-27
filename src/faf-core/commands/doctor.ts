@@ -3,11 +3,11 @@
  * Health check for your project.faf setup
  */
 
+import { scoreFafFile } from './score.js';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { parse as parseYAML } from '../fix-once/yaml';
 import { findFafFile, fileExists } from '../utils/file-utils';
-import { FafCompiler } from '../compiler/faf-compiler';
 
 interface DiagnosticResult {
   status: 'ok' | 'warning' | 'error';
@@ -73,8 +73,7 @@ export async function doctorCommand(projectPath?: string): Promise<DoctorResult>
           }
 
           // Check 3: Score
-          const compiler = new FafCompiler();
-          const scoreResult = await compiler.compile(fafPath);
+          const scoreResult = await scoreFafFile(fafPath); // always-33 (faf-cli)
 
           if (scoreResult.score < 30) {
             results.push({

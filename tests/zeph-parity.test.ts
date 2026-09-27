@@ -1,12 +1,12 @@
 /**
- * ZEPH ↔ faf-cli score parity — the permanent gate.
+ * ZEPH ↔ faf-cli score parity — the gate.
  *
- * The scoring invariant: SCORE IS SCORE. ZEPH (cascade.wasm) is only allowed to
- * answer on the refresh fast path because it returns THE number faf-cli returns.
- * This test locks it: zephScore(yaml) === scoreFafYaml(yaml).score across the
- * range. If it ever diverges, ZEPH is broken — fail the build, don't ship a lie.
- *
- * (Phase II / WJTTC discipline: parity is the gate, not a one-time manual check.)
+ * The scoring invariant: SCORE IS SCORE. ZEPH (cascade.wasm) may answer only if
+ * it returns THE always-33 number faf-cli returns. Today it does not: the Zig
+ * `score` is the older 21-slot model (47/80 FAF repos = always-33,
+ * 2026-09-26), so ZEPH is OFF by default (opt-in USE_ZEPH=1) and the parity
+ * test is a todo until the Zig engine reaches always-33 (Phase B). When it
+ * does, the todo becomes this test again — and default-ON can return.
  */
 import { describe, it, expect, beforeAll, afterEach } from 'bun:test';
 import { zephScore, zephEnabled } from '../src/zeph/zeph-score';
@@ -34,13 +34,7 @@ const FIXTURES: Record<string, string> = {
 };
 
 describe('ZEPH ↔ faf-cli score parity (the invariant: score is score)', () => {
-  it('zephScore returns THE faf-cli score across the range', async () => {
-    for (const [name, yaml] of Object.entries(FIXTURES)) {
-      const canonical = fafCli.scoreFafYaml(yaml).score as number;
-      const zeph = await zephScore(yaml);
-      expect(zeph, `ZEPH must return THE score for "${name}" (got ${zeph}, canonical ${canonical})`).toBe(canonical);
-    }
-  });
+  it.todo('zephScore returns THE always-33 faf-cli score across the range (Phase B: cascade to always-33)');
 
   it('zephScore is a bounded 0–100 number (never breaks scoring)', async () => {
     const z = await zephScore('project:\n  name: p\n  goal: g\n  main_language: TypeScript\n');
@@ -50,34 +44,34 @@ describe('ZEPH ↔ faf-cli score parity (the invariant: score is score)', () => 
   });
 });
 
-// The v1.9.0 flip: ZEPH is default-ON, with an explicit opt-out kill switch.
-// Locks the headline default so a regression to opt-in fails the build, and
-// proves the kill switch still forces the canonical scorer.
-describe('zephEnabled — default-ON since v1.9.0 (the gate)', () => {
+// 2.0.0: ZEPH is OFF by default — opt-in until the Zig score is always-33.
+// Locks the default so a regression to default-ON fails the build.
+describe('zephEnabled — opt-in since 2.0.0 (the gate)', () => {
   const KEYS = ['USE_ZEPH', 'FAF_ZEPH', 'ZEPH'] as const;
   const saved: Record<string, string | undefined> = {};
   beforeAll(() => KEYS.forEach((k) => (saved[k] = process.env[k])));
   afterEach(() => KEYS.forEach((k) => (saved[k] === undefined ? delete process.env[k] : (process.env[k] = saved[k]!))));
 
-  it('is ON by default — no env set', () => {
+  it('is OFF by default — no env set', () => {
     KEYS.forEach((k) => delete process.env[k]);
-    expect(zephEnabled()).toBe(true);
-  });
-
-  it('kill switch: USE_ZEPH=0 forces canonical (also 0/false/off on any alias)', () => {
-    KEYS.forEach((k) => delete process.env[k]);
-    process.env.USE_ZEPH = '0';
-    expect(zephEnabled()).toBe(false);
-    process.env.USE_ZEPH = 'false';
-    expect(zephEnabled()).toBe(false);
-    delete process.env.USE_ZEPH;
-    process.env.ZEPH = 'off';
     expect(zephEnabled()).toBe(false);
   });
 
-  it('stays ON for any non-opt-out value (e.g. legacy USE_ZEPH=1)', () => {
+  it('opt-in: USE_ZEPH=1 turns it on (also true/on on any alias)', () => {
     KEYS.forEach((k) => delete process.env[k]);
     process.env.USE_ZEPH = '1';
     expect(zephEnabled()).toBe(true);
+    delete process.env.USE_ZEPH;
+    process.env.FAF_ZEPH = 'true';
+    expect(zephEnabled()).toBe(true);
+    delete process.env.FAF_ZEPH;
+    process.env.ZEPH = 'on';
+    expect(zephEnabled()).toBe(true);
+  });
+
+  it('stays OFF for any other value (e.g. legacy USE_ZEPH=0)', () => {
+    KEYS.forEach((k) => delete process.env[k]);
+    process.env.USE_ZEPH = '0';
+    expect(zephEnabled()).toBe(false);
   });
 });

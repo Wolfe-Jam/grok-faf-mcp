@@ -1,95 +1,48 @@
 /**
  * faf score - Programmatic API (MCP-ready)
- * No console output, returns structured data
+ * No console output, returns structured data.
+ *
+ * 2.0.0: the score is faf-cli's scoreFafYaml — the always-33 kernel every
+ * FAF app scores with. The bundled Mk3.1 FafCompiler is retired (archive tag
+ * archive/grok-faf-compiler-mk31).
  */
 
-import { FafCompiler, type CompilationResult } from '../compiler/faf-compiler.js';
+import { fafCli } from '../../utils/faf-cli-bridge.js';
 import { findFafFile } from '../utils/file-utils.js';
 
 export interface ScoreOptions {
   json?: boolean;
-  trace?: boolean;
-  verify?: boolean;
-  breakdown?: boolean;
-  checksum?: string;
 }
 
 export interface ScoreResult {
   score: number;
+  /** Populated slots. */
   filled: number;
+  /** Always 33. */
   total: number;
-  breakdown: {
-    project: {
-      filled: number;
-      total: number;
-      percentage: number;
-    };
-    stack: {
-      filled: number;
-      total: number;
-      percentage: number;
-    };
-    human: {
-      filled: number;
-      total: number;
-      percentage: number;
-    };
-    discovery: {
-      filled: number;
-      total: number;
-      percentage: number;
-    };
-  };
-  trace?: CompilationResult['trace'];
-  diagnostics?: CompilationResult['diagnostics'];
-  checksum?: string;
+  /** Slots that count: 33 minus the slotignored ones. */
+  active: number;
+  ignored: number;
+  tier: string;
 }
 
 /**
  * Score a .faf file - programmatic API
  * Returns structured data, no console output
  */
-export async function scoreFafFile(file?: string, options: ScoreOptions = {}): Promise<ScoreResult> {
-  // Find .faf file
+export async function scoreFafFile(file?: string, _options: ScoreOptions = {}): Promise<ScoreResult> {
   const fafPath = file || await findFafFile(process.cwd());
-
   if (!fafPath) {
     throw new Error('No .faf file found');
   }
-
-  // Create compiler
-  const compiler = new FafCompiler();
-
-  // Compile with or without trace
-  const result = options.trace
-    ? await compiler.compileWithTrace(fafPath)
-    : await compiler.compile(fafPath);
-
-  // Verify checksum if provided
-  if (options.checksum && result.checksum !== options.checksum) {
-    throw new Error(`Checksum mismatch: expected ${options.checksum}, got ${result.checksum}`);
-  }
-
-  // Return structured data
-  const scoreResult: ScoreResult = {
-    score: result.score,
-    filled: result.filled,
-    total: result.total,
-    breakdown: result.breakdown,
+  const { readFafRaw, scoreFafYaml } = await fafCli;
+  const r = scoreFafYaml(readFafRaw(fafPath));
+  return {
+    score: r.score,
+    filled: r.populated,
+    total: r.total,
+    active: r.active,
+    ignored: r.ignored,
+    tier: typeof r.tier === 'string' ? r.tier : r.tier?.name ?? '',
   };
-
-  // Add optional fields
-  if (options.trace) {
-    scoreResult.trace = result.trace;
-  }
-
-  if (options.breakdown && result.diagnostics.length > 0) {
-    scoreResult.diagnostics = result.diagnostics;
-  }
-
-  if (options.checksum || options.verify) {
-    scoreResult.checksum = result.checksum;
-  }
-
-  return scoreResult;
 }

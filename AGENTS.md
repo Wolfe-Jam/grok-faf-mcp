@@ -1,30 +1,74 @@
+<!-- faf:start -->
 <!-- faf: grok-faf-mcp | TypeScript | mcp | Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP online • MCPaaS pattern origin. IANA-registered .faf + .fafm. Grok asked for MCP on a URL — this is it. -->
 <!-- faf: claim=project.faf | family=FAF -->
 
 # AGENTS.md — grok-faf-mcp
 
-> Auto-generated from project.faf — do not edit directly
+Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP online • MCPaaS pattern origin. IANA-registered .faf + .fafm. Grok asked for MCP on a URL — this is it. — TypeScript · type: mcp · v2.0.0
 
-## Project Context
+> Authored by faf — do not edit the managed block; refresh with `faf export --agents`. Hand-written content outside the managed block is preserved.
 
-- **Name:** grok-faf-mcp
-- **Goal:** Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP online • MCPaaS pattern origin. IANA-registered .faf + .fafm. Grok asked for MCP on a URL — this is it.
-- **Language:** TypeScript
+## Setup & build
+
+```bash
+npm run build    # build
+npm run dev    # dev
+npm run start    # start
+```
+
+## Run the tests
+
+```bash
+npm run test
+npm run lint
+```
+
+## Where things live
+
+- `package.json`
+- `src/index.ts`
+- `src/index.js`
+- `src/cli.ts`
+- `README.md`
+- `tsconfig.json`
+- `wrangler.toml`
+- `vercel.json`
+
+## Conventions
+
+- TypeScript strict mode (tsconfig.json)
+- Style enforced by ESLint · Prettier — obey the configs
+
+## Guardrails
+
+- **Always OK:** read the tree · run the tests (`npm run test`) · build the project · `npm run lint`.
+- **Ask first:** dependency installs, deletions, migrations, schema changes, publish/release.
+- **Never:** force-push · push straight to `main` (branch and open a PR) · commit secrets.
+
+## Definition of Done
+
+Done when: `npm run lint` exits 0 · `npm run test` passes · changes committed with a conventional message.
+
+## When stuck
+
+Ask a clarifying question, propose a short plan, or open a draft PR with notes — do not push large speculative changes to `main`.
+
+## Security & secrets
+
+- Secrets live in `.env`. Never read or commit them.
+
+## Commit & PR
+
+- Conventional Commits preferred (`feat:`, `fix:`, `chore:`, …).
+- Branch off `main` and open a PR — never commit to `main` directly.
+- If build/test scripts or layout change, refresh this file in the **same PR** (`faf export --agents`).
 
 ## Stack
 
-- **backend:** MCP SDK (TS)
-- **api_type:** MCP (stdio + Streamable HTTP)
-- **runtime:** Node.js
-- **hosting:** Cloudflare Workers
-- **build:** TypeScript (tsc)
-- **cicd:** GitHub Actions
-
-## Human Context
-
-- **who:** Developers using xAI Grok with MCP
-- **what:** First MCP for Grok — also first FAF MCP online. Persistent AI context via IANA-registered .faf + .fafm.
-- **why:** Every AI session starts from zero. grok-faf-mcp gives Grok persistent project DNA.
-- **where:** npm registry, Cloudflare Workers (mcpaas.live/grok/mcp/v1), MCP Registry (one.faf/grok-faf-mcp)
-- **when:** Shipped 2026-08-20 — current v1.10.0 The No-Fluff Edition (no fluff in a project.faf; faf_enhance gone; RAG default grok-4.6). v1.9.1 registry display title Grok FAF, emitter-sourced via faf server-card. v1.9.0 The ZEPH Default Edition (ZEPH default-ON). v1.8.1 patch: symmetric .fafm refresh receipts. v1.8.0 The Closed-Loop Edition; v1.7.0 The Grounded Memory Edition; v1.6.0 ZEPH Edition; v1.5.5 Glama Core-tier.
-- **how:** bunx grok-faf-mcp (local stdio) or hosted on Cloudflare Workers (mcpaas.live/grok/mcp/v1) — 12 core tools by default (extended set behind FAF_TOOLS=all), Streamable HTTP transport, Mk4 WASM scoring kernel
+- **Backend:** MCP SDK (TS)
+- **API:** MCP (stdio + Streamable HTTP)
+- **Runtime:** Node.js
+- **Hosting:** Cloudflare Workers
+- **Build:** TypeScript (tsc)
+- **CI/CD:** GitHub Actions
+<!-- faf:end -->

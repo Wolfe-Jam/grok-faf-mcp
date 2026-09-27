@@ -36,11 +36,15 @@
 
 **FAF defines. MD instructs. AI codes.**
 
-## v1.10.0 — The No-Fluff Edition
+## v2.0.0 — The Always33 Edition
 
-No fluff in a project.faf. `faf_enhance` is gone. RAG default is `grok-4.6`.
+**One engine, one number: grok-faf-mcp 2 scores all 33 slots with faf-cli 8's always-33 kernel — the same score faf-cli, claude-faf-mcp 7 and faf-mcp 4 give, on npm and on mcpaas.live.**
 
-A `.faf` is facts. Two writers only: the repo (`faf_auto`) and the human (`faf_go`). Empty is honest. There is no enhance.
+- **Always-33, everywhere you install it.** Every score — `faf_score`, `refresh_faf`, `faf_trust`, the resources — is faf-cli 8's `scoreFafYaml`: all 33 slots, one Rust kernel. The hosted endpoint below scores with the same kernel.
+- **Your 21 slots, and the 12 enterprise slots in view.** faf-cli fills the 21 base slots; the 12 enterprise slots (infra, app, ops) are marked `slotignored` unless your app-type uses them. Scored against all 33; `slotignored` slots drop out of the denominator.
+- **ZEPH is opt-in** (`USE_ZEPH=1`) until the Zig engine gives the always-33 number on every file — fast never means a different score.
+- **No `faf` from your PATH** — `faf_trust` and the resources run faf-cli in-process. `faf_init` writes a real project.faf and reports its real score.
+- **Upgrading from 1.x:** a `.faf` without the 12 markers now scores against 33. `faf auto` writes them and your score returns.
 
 ⭐ Bookmarks it for you, helps other devs find it too.
 
@@ -57,7 +61,7 @@ Add to `~/.grok/config.toml`:
 url = "https://mcpaas.live/grok/mcp/v1"
 ```
 
-Restart Grok TUI (or `/mcps r`) to refresh. Tools: `faf_score`, `faf_validate`, `faf_get_tier`, `faf_estimate_tokens`, `faf_analyze` (plus soul/memory ops).
+Restart Grok TUI (or `/mcps r`) to refresh. The hosted endpoint scores always-33 — the same number as the npm package. Tools: `faf_score`, `faf_validate`, `faf_get_tier`, `faf_estimate_tokens`, `faf_analyze` (plus soul/memory ops).
 
 **Smithery:** [wolfe-jam/grok-faf-mcp](https://smithery.ai/servers/wolfe-jam/grok-faf-mcp) — gateway at `https://grok-faf-mcp--wolfe-jam.run.tools`
 
@@ -359,9 +363,11 @@ sh scripts/run-tests.sh
 
 ---
 
-## Status & known limitations (v1.10)
+## Status & known limitations (v2.0)
 
-v1.10.0 — **The No-Fluff Edition** — no fluff in a project.faf. `faf_enhance` is gone. RAG default is `grok-4.6`. Fill stays on `faf_auto` / `faf_go`. Everything below still applies; operating it honestly means surfacing what's NOT in here alongside what is.
+v2.0.0 — **The Always33 Edition** — one engine, one number: faf-cli 8's always-33 kernel on npm and on mcpaas.live. ZEPH is opt-in until the Zig engine is always-33. `FafCompiler` retired.
+
+> Earlier: v1.10.0 — **The No-Fluff Edition** — no fluff in a project.faf. `faf_enhance` is gone. RAG default is `grok-4.6`. Fill stays on `faf_auto` / `faf_go`. Everything below still applies; operating it honestly means surfacing what's NOT in here alongside what is.
 
 > Earlier: v1.9.0 — **The ZEPH Default Edition** — the proven-fast Zig→WASM scoring path behind `refresh_faf` is now **default-ON** (same score, cheaper to compute; parity proven byte-identical — CI gate + 91/91 live). Kill switch `USE_ZEPH=0` forces the canonical scorer. FRC tools stay opt-in behind `USE_FRC`.
 

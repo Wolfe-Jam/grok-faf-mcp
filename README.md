@@ -377,7 +377,7 @@ Everything below still applies; operating it honestly means surfacing what's NOT
 > Earlier: v1.6.0 — **The ZEPH Edition** — the ZEPH fast path for re-grounding (`refresh_faf`/`refresh_blend` via Zig→WASM `cascade.wasm`, ~12µs, `USE_ZEPH=1`; `faf-cli` stays canonical, parity locked in CI).
 
 **What is fully supported:**
-- WASM-pure tools on the hosted endpoint (`https://mcpaas.live/grok/mcp/v1` and client-specific routes) — scoring · validation · `refresh_faf`.
+- 19 tools on the hosted endpoint (`https://mcpaas.live/grok/mcp/v1` and client-specific routes) — scoring · validation · `refresh_faf` · a content-in `faf_orchestrate_recommendation` · the FRC trio · souls and search. The live list is at `…/grok/mcp/v1/info`.
 - `refresh_faf` and `refresh_fafm` as explicit, callable re-grounding primitives.
 - `refresh_blend` as the baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R analog).
 - `faf_orchestrate_recommendation` — the heavy orchestrator that composes drift signals, recurrence, receipts, and take-a-hint into an advisory recommendation.
@@ -386,7 +386,7 @@ Everything below still applies; operating it honestly means surfacing what's NOT
 
 **Current limitations:**
 
-- **`faf_orchestrate_recommendation`, `faf_get_orchestration_policy`, `refresh_fafm`, and `refresh_blend` require filesystem access** and are only available via the local stdio path (`bunx grok-faf-mcp` / `npx grok-faf-mcp`). They are not exposed on the hosted WASM-pure endpoint. The hosted path serves the existing WASM-pure subset only (`refresh_faf` + scoring + validation).
+- **`faf_get_orchestration_policy`, `refresh_fafm`, `refresh_blend`, `faf_init` and `faf_sync` need filesystem access** and run only on the local stdio path (`bunx grok-faf-mcp` / `npx grok-faf-mcp`). The hosted `faf_orchestrate_recommendation` takes file contents instead of reading your repo, and has no receipts or recurrence history (it reports those under `partial[]`).
 - **Receipt storage — cwd-relative JSON, pull-discoverable.** Three append-only JSON files live at the repo root with stable schemas:
   ```
   .faf-drift-index.json              ← RepeatOffenderTracker — per-slot recurrence counts

@@ -364,7 +364,7 @@ sh scripts/run-tests.sh
 
 ## Status & known limitations (v2.0)
 
-v2.0.0 — **The Always33 Edition** — one engine, one number: faf-cli 8's always-33 kernel on npm and on mcpaas.live. ZEPH is opt-in until the Zig engine is always-33. `FafCompiler` retired.
+v2.0.0 — **The Always33 Edition** — one engine, one number: faf-cli 8's always-33 kernel on npm and on mcpaas.live. ZEPH is opt-in until the Zig engine is always-33. FafCompiler upgraded to the Always33 fafb model — parity across frontier models, Enterprise/Teams ready.
 
 Everything below still applies; operating it honestly means surfacing what's NOT in here alongside what is.
 

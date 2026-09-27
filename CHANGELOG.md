@@ -22,15 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **ZEPH is opt-in.** ZEPH delivers the Zig score exactly, but that score is the older 21-slot model (47 of 80 FAF repos = always-33), so `refresh_faf` no longer lets it replace the always-33 score by default. `USE_ZEPH=1` (or `FAF_ZEPH=1` / `ZEPH=1`) turns it on. The "parity proven byte-identical" claims are corrected. ZEPH returns when the Zig engine gives the always-33 number on every file.
 - **Scoring never uses a `faf` from your PATH.** `faf_trust` and the resources used to shell out to whatever `faf` was installed; they now compose faf-cli in-process, so the answer is the same on every machine. The startup message no longer says a global faf-cli is required.
 - **`faf_init` writes a real project.faf** with faf-cli (`assembleFreshFaf` + `writeFaf`) — `faf_version`, the 21 slots and the 12 enterprise markers — and reports its real score. The legacy template (`project:` as a plain string, no `faf_version`) and its "Auto-filled 7 slots for 90%+ score!" message are gone.
+- **FafCompiler upgraded to the Always33 fafb model.** The bundled score/init/audit/doctor commands now score with the same always-33 model as fafb and faf-cli (was a per-type 21-slot Mk3.1 model): parity across frontier models, and ready for Enterprise/Teams — the 12 enterprise slots are part of every score. The Mk3.1 code is kept at tag `archive/grok-faf-compiler-mk31`.
 - **One kernel copy.** The direct `faf-scoring-kernel ^2.0.3` dependency is dropped; the only kernel in an install is faf-cli's.
 
 ### Fixed
 - **`faf_score` counts slots the way faf-cli does:** `populated/active` (e.g. 11/15), not `populated/33`.
 - **With ZEPH on, the tier matches the number shown** (it came from faf-cli's score while printing ZEPH's).
-- **The package ships only what is built:** `build` cleans `dist` first, so removed source (the retired FafCompiler) can't ship from a stale build.
-
-### Removed
-- **FafCompiler** — the bundled Mk3.1 scorer (per-type 21-slot model, its own Bouncer, kernel call and silent Mk3.1 fallback) and its 33 tests. Archived at tag `archive/grok-faf-compiler-mk31`. The bundled score/init/audit/doctor commands score with faf-cli.
+- **The package ships only what is built:** `build` cleans `dist` first, so files from an older build can't ship.
 
 ### Tests
 - ZEPH parity is a todo until the Zig engine is always-33; the default gate locks ZEPH OFF.

@@ -72,19 +72,10 @@ export class FafEngineAdapter {
 
       console.error(`✅ FAF CLI detected: ${this.detectedCliPath} (v${this.cliVersion || 'unknown'}) via ${detection.method}`);
     } else {
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.error('⚠️  FAF CLI NOT DETECTED');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-      console.error('');
-      console.error('INSTALLATION ORDER REQUIRED:');
-      console.error('  1️⃣  npm install -g faf-cli        (REQUIRED FIRST)');
-      console.error('  2️⃣  npm install -g grok-faf-mcp  (THEN THIS)');
-      console.error('');
-      console.error('Most MCP tools require faf-cli to be installed.');
-      console.error('Only basic file operations will work without it.');
-      console.error('');
-      console.error('After installing faf-cli, restart your MCP host.');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      // 2.0.0: faf-cli is a dependency — scoring, faf_trust, faf_init and the
+      // resources run it in-process. A global `faf` is only used by the legacy
+      // shell fallbacks (e.g. faf_clear), so its absence is not an error.
+      console.error('ℹ️  No global `faf` on PATH — not needed: grok-faf-mcp runs its bundled faf-cli for scoring.');
     }
   }
   
@@ -167,7 +158,7 @@ export class FafEngineAdapter {
     // MK3 BUNDLED ENGINE - Direct function calls (no CLI dependency!)
     // ============================================================================
 
-    // SCORE command - use bundled FafCompiler
+    // SCORE command - faf-cli's scoreFafYaml (always-33), via commands/score.ts
     if (command === 'score') {
       try {
         const filePath = args[0] || this.workingDirectory;

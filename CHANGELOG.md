@@ -12,17 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2026-09-27 — The Always33 Edition
 
-**One engine, one number: grok-faf-mcp 2 scores all 33 slots with faf-cli 8's always-33 kernel — the same score faf-cli, claude-faf-mcp 7 and faf-mcp 4 give, on npm and on mcpaas.live.** 590 tests.
+**One engine, one number: grok-faf-mcp 2 scores all 33 slots with faf-cli 8's always-33 kernel — the same score faf-cli, claude-faf-mcp 7 and faf-mcp 4 give, on npm and on mcpaas.live.**
 
-**2.0.0 is a major release because scores can move.** A `.faf` without the 12 enterprise `slotignored` markers now counts them as empty (21 filled = 64%). `faf_init` writes the markers; for an existing file, `faf auto` (faf-cli) writes them and the score returns. Anything that gates on `faf_score` should re-check its threshold.
+**2.0.0 is a major release because scores can move.** A `.faf` without the 12 enterprise `slotignored` markers now counts them as empty (21 filled = 64%). `faf_init` writes the markers; for an existing file, `faf auto` (faf-cli) writes them and re-scores. Anything that gates on `faf_score` should re-check its threshold.
 
 ### Changed
 - **One scorer: faf-cli 8's always-33 kernel.** grok-faf-mcp composes **faf-cli ^8.0.0** (was ^7.0.1). `faf_score`, `refresh_faf`, `faf_trust` and the `claude-faf://context` / `status` resources all score with faf-cli's `scoreFafYaml` — all 33 Mk4 slots. Verified live: faf-python-sdk 56, mcp-context-card 56, faf-cli ✪ 100; `refresh_faf` agents-md-facts 52, FAF-Voice 71.
 - **The hosted endpoint matches.** `mcpaas.live/grok/mcp/v1` scores with the same kernel since mcpaas-cf 1.8.0 (agents-md-facts 52 · FAF-Voice 71 · faf-python-sdk 56).
-- **ZEPH is opt-in.** ZEPH delivers the Zig score exactly, but that score is the older 21-slot model (47 of 80 FAF repos = always-33), so `refresh_faf` no longer lets it replace the always-33 score by default. `USE_ZEPH=1` turns it on. The "parity proven byte-identical" claims are corrected. ZEPH returns when the Zig engine gives the always-33 number on every file.
-- **No `faf` from your PATH.** `faf_trust` and the resources used to shell out to whatever `faf` was installed; they now compose faf-cli in-process, so the answer is the same on every machine.
+- **ZEPH is opt-in.** ZEPH delivers the Zig score exactly, but that score is the older 21-slot model (47 of 80 FAF repos = always-33), so `refresh_faf` no longer lets it replace the always-33 score by default. `USE_ZEPH=1` (or `FAF_ZEPH=1` / `ZEPH=1`) turns it on. The "parity proven byte-identical" claims are corrected. ZEPH returns when the Zig engine gives the always-33 number on every file.
+- **Scoring never uses a `faf` from your PATH.** `faf_trust` and the resources used to shell out to whatever `faf` was installed; they now compose faf-cli in-process, so the answer is the same on every machine. The startup message no longer says a global faf-cli is required.
 - **`faf_init` writes a real project.faf** with faf-cli (`assembleFreshFaf` + `writeFaf`) — `faf_version`, the 21 slots and the 12 enterprise markers — and reports its real score. The legacy template (`project:` as a plain string, no `faf_version`) and its "Auto-filled 7 slots for 90%+ score!" message are gone.
 - **One kernel copy.** The direct `faf-scoring-kernel ^2.0.3` dependency is dropped; the only kernel in an install is faf-cli's.
+
+### Fixed
+- **`faf_score` counts slots the way faf-cli does:** `populated/active` (e.g. 11/15), not `populated/33`.
+- **With ZEPH on, the tier matches the number shown** (it came from faf-cli's score while printing ZEPH's).
+- **The package ships only what is built:** `build` cleans `dist` first, so removed source (the retired FafCompiler) can't ship from a stale build.
 
 ### Removed
 - **FafCompiler** — the bundled Mk3.1 scorer (per-type 21-slot model, its own Bouncer, kernel call and silent Mk3.1 fallback) and its 33 tests. Archived at tag `archive/grok-faf-compiler-mk31`. The bundled score/init/audit/doctor commands score with faf-cli.

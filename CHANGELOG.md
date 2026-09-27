@@ -32,6 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Tests
 - ZEPH parity is a todo until the Zig engine is always-33; the default gate locks ZEPH OFF.
+- **WJTTC-200 (`tests/wjttc-200-always33.test.ts`)** locks the 2.0.0 contract: 21 filled with no markers = 64% and with the 12 markers = 100%; `faf_score`, `scoreFafFile`, `faf_trust` and both resources give faf-cli 8's own `faf score --json` number; `faf_init` writes `faf_version` and the 12 markers, reports faf-cli's score and refuses without `force`; none of them shells out to a `faf` binary; the package has one kernel and a clean build. `WJTTC_LIVE=1` adds hosted `mcpaas.live/grok` = local `faf_score` on public project.faf files.
 
 ## [1.10.0] - 2026-08-20 — The No-Fluff Edition
 

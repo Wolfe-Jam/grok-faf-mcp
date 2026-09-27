@@ -3,13 +3,13 @@
  * No console output, returns structured data
  */
 
+import { scoreFafFile } from './score.js';
 import { promises as fs } from 'fs';
 import * as os from 'os';
 import * as path from 'path';
 import { detectProjectType, fileExists } from '../utils/file-utils.js';
 import { generateFafFromProject } from '../generators/faf-generator-championship.js';
 import { createDefaultFafIgnore } from '../utils/fafignore-parser.js';
-import { FafCompiler } from '../compiler/faf-compiler.js';
 
 export interface InitOptions {
   force?: boolean;
@@ -88,8 +88,7 @@ export async function initFafFile(
     await fs.writeFile(outputPath, fafContent, 'utf-8');
 
     // Score the newly created file
-    const compiler = new FafCompiler();
-    const scoreResult = await compiler.compile(outputPath);
+    const scoreResult = await scoreFafFile(outputPath); // always-33 (faf-cli)
 
     const duration = Date.now() - startTime;
 

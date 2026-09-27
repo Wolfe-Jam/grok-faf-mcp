@@ -1,5 +1,6 @@
 import type { Resource } from '@modelcontextprotocol/sdk/types.js';
 import { FafEngineAdapter } from './engine-adapter';
+import { fafCli } from '../utils/faf-cli-bridge.js';
 
 export class FafResourceHandler {
   constructor(private engineAdapter: FafEngineAdapter) {}
@@ -55,27 +56,46 @@ export class FafResourceHandler {
     }
   }
 
+  // 2.0.0: both resources compose faf-cli in-process (reader + always-33
+  // scoreFafYaml) instead of shelling out to whatever `faf` is on the PATH.
+  private async readProject(): Promise<{ fafPath: string | null; data?: unknown; score?: ReturnType<Awaited<typeof fafCli>['scoreFafYaml']>; error?: string }> {
+    const { findFafFile, readFaf, readFafRaw, scoreFafYaml } = await fafCli;
+    const fafPath = findFafFile(this.engineAdapter.getWorkingDirectory());
+    if (!fafPath) return { fafPath: null, error: 'no .faf found' };
+    try {
+      return { fafPath, data: readFaf(fafPath), score: scoreFafYaml(readFafRaw(fafPath)) };
+    } catch (e: any) {
+      return { fafPath, error: e?.message ?? String(e) };
+    }
+  }
+
   private async getFafContext() {
-    const result = await this.engineAdapter.callEngine('status', ['--json']);
-    
+    const p = await this.readProject();
+    const body = p.error
+      ? { error: p.error, path: p.fafPath }
+      : { path: p.fafPath, score: p.score?.score, populated: p.score?.populated, active: p.score?.active, total: p.score?.total, faf: p.data };
     return {
       contents: [{
         uri: 'claude-faf://context',
         mimeType: 'application/json',
-        text: JSON.stringify(result.success ? result.data : { error: result.error }, null, 2)
+        text: JSON.stringify(body, null, 2)
       }]
     };
   }
 
   private async getFafStatus() {
-    const result = await this.engineAdapter.callEngine('status');
-    
+    const p = await this.readProject();
+    const { scoreText } = await fafCli;
+    const text = p.error
+      ? `Error: ${p.error}${p.fafPath ? ` (${p.fafPath})` : ''}`
+      : `${p.fafPath}\nScore: ${scoreText(p.score!)} (always-33) — ${p.score!.populated}/${p.score!.active} slots`;
     return {
       contents: [{
         uri: 'claude-faf://status',
         mimeType: 'text/plain',
-        text: result.success ? (result.data?.output ?? String(result.data)) : `Error: ${result.error ?? 'Unknown error'}`
+        text
       }]
     };
   }
+
 }

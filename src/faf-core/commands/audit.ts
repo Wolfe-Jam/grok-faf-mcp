@@ -3,10 +3,10 @@
  * Audit project.faf quality and completeness
  */
 
+import { scoreFafFile } from './score.js';
 import { promises as fs } from 'fs';
 import { parse as parseYAML } from '../fix-once/yaml';
 import { findFafFile, fileExists } from '../utils/file-utils';
-import { FafCompiler } from '../compiler/faf-compiler';
 
 export interface AuditOptions {
   json?: boolean;
@@ -46,8 +46,7 @@ export async function auditFafFile(projectPath?: string, _options: AuditOptions 
     const fafData = parseYAML(content);
 
     // Run compiler scoring
-    const compiler = new FafCompiler();
-    const scoreResult = await compiler.compile(fafPath);
+    const scoreResult = await scoreFafFile(fafPath); // always-33 (faf-cli)
 
     const issues: AuditResult['issues'] = [];
     const strengths: string[] = [];

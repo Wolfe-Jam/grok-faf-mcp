@@ -71,7 +71,7 @@ Restart Grok TUI (or `/mcps r`) to refresh. The hosted endpoint scores always-33
 brew install wolfe-jam/faf/grok-faf-mcp
 ```
 
-**Hosted on Cloudflare Workers** — sub-ms cold start, no subprocess, edge-served. Scores with the faf-kernel WASM (always-33, the same engine as the npm package) since mcpaas-cf 1.8.0; a Zig WASM engine handles tokens and validation. Externally validated by Grok S1 + S2 on 2026-05-27.
+**Hosted on Cloudflare Workers** — sub-ms cold start, no subprocess, edge-served. Scores and validates with the faf-kernel WASM (always-33, the same engine as the npm package) since mcpaas-cf 1.8.1; a Zig WASM engine handles token estimates and tier. Externally validated by Grok S1 + S2 on 2026-05-27.
 
 **Verify the live contract:**
 

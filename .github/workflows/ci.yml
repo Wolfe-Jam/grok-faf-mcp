@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 env:
-  NODE_VERSION: '20.x'
+  NODE_VERSION: '22.x'
 
 jobs:
   # 🔒 Security Check
@@ -123,7 +123,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node: [18.x, 20.x]
+        node: [22.x, 24.x]
 
     steps:
       - uses: actions/checkout@v7
@@ -164,6 +164,9 @@ jobs:
       - name: Lint
         run: npm run lint
         continue-on-error: true
+
+      - name: Engine floor gate
+        run: npm run check:engines  # engines.node floor == the lowest Node in the smoke matrix
 
       - name: Type Check
         run: npm run type-check

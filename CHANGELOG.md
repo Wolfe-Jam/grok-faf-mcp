@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.0.0] - 2026-09-27 — The Always33 Edition
 
-**One engine, one number: grok-faf-mcp 2 scores all 33 slots with faf-cli 8's always-33 kernel — the same score faf-cli, claude-faf-mcp 7 and faf-mcp 4 give, on npm and on mcpaas.live.**
+**One engine, one number: grok-faf-mcp 2 scores with faf-cli 8's always-33 kernel — the same score faf-cli, claude-faf-mcp 7 and faf-mcp 4 give, on npm and on mcpaas.live.**
 
 **2.0.0 is a major release because scores can move.** A `.faf` without the 12 enterprise `slotignored` markers now counts them as empty (21 filled = 64%). `faf_init` writes the markers; for an existing file, `faf auto` (faf-cli) writes them and re-scores. Anything that gates on `faf_score` should re-check its threshold.
 

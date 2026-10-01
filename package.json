@@ -21,6 +21,7 @@
     "test:mcp": "mcp-inspector stdio ts-node src/cli.ts",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
+    "check:engines": "node scripts/check-engines.mjs",
     "type-check": "tsc --noEmit",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "format": "prettier --write \"src/**/*.ts\"",
@@ -86,7 +87,7 @@
   },
   "homepage": "https://grok.faf.one",
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "files": [
     "dist/**/*",
@@ -129,8 +130,8 @@
   "overrides": {
     "@hono/node-server": ">=2.0.5",
     "hono": ">=4.12.34",
-    "fast-uri": ">=4.1.2",
-    "brace-expansion": ">=5.0.8",
-    "ip-address": ">=10.3.1"
+    "fast-uri": ">=4.1.5",
+    "brace-expansion": ">=5.0.12",
+    "ip-address": ">=10.7.1"
   }
 }

@@ -12,9 +12,9 @@
  *      `../../node_modules/...` written in `src/utils/` resolves to the
  *      wrong place when the compiled file lands at `dist/src/utils/` (one
  *      level deeper, so the relative escape comes up short).
- *   3. faf-cli's dist is ESM (`"type": "module"`). Node 18 rejects sync
- *      `require()` of ESM (`ERR_REQUIRE_ESM`); Node 20 allows it. faf-mcp
- *      supports Node 18+ per `engines`, so we must use dynamic `import()`.
+ *   3. faf-cli's dist is ESM (`"type": "module"`). Dynamic `import()` loads
+ *      it from this CJS build on every supported Node (22+ per `engines`)
+ *      and in bun, without relying on sync `require()` of ESM.
  *
  * How this bridge works:
  *   At runtime, walk upward from `__dirname` (which is `src/utils/` when

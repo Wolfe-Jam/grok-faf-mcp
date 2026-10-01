@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **Node 22 or later**, to match faf-cli 8 (which this package composes) and the rest of the FAF family. `engines.node` is `>=22`, the Node smoke matrix runs 22 and 24 (was 18 and 20), and a new `check:engines` gate keeps the floor equal to the lowest Node CI runs.
+
 ## [2.0.0] - 2026-09-27 — The Always33 Edition
 
 **One engine, one number: grok-faf-mcp 2 scores all 33 slots with faf-cli 8's always-33 kernel — the same score faf-cli, claude-faf-mcp 7 and faf-mcp 4 give, on npm and on mcpaas.live.**

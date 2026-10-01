@@ -190,7 +190,7 @@ Use FAF to sync project context
 
 **Deployment Stack:**
 - **Platform:** Cloudflare Workers
-- **Runtime:** Node.js 18+
+- **Runtime:** Node.js 22+
 - **Transport:** HTTP Server-Sent Events (SSE)
 - **Protocol:** MCP via @modelcontextprotocol/sdk
 - **Format:** IANA-registered application/vnd.faf+yaml
@@ -247,7 +247,7 @@ grok-faf-mcp delivered—first to ship, zero friction, production-ready from day
 
 ---
 
-**Built with:** Node.js 18+ |  Cloudflare Workers | MCP Protocol | IANA Format
+**Built with:** Node.js 22+ |  Cloudflare Workers | MCP Protocol | IANA Format
 **Status:** Production (https://grok.faf.one/)
 **Philosophy:** FAST⚡️AF - First to Ship, Zero Friction
 **Repository:** https://github.com/Wolfe-Jam/grok-faf-mcp

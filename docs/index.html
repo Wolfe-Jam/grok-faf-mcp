@@ -9,7 +9,7 @@
   <meta property="og:description" content="The first MCP server for Grok. Persistent project context from project.faf, scored always-33. One line in ~/.grok/config.toml.">
   <meta property="og:image" content="https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/thumbnail.png">
   <meta name="theme-color" content="#0a0a0a">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>">
+  <link rel="icon" type="image/png" href="/images/wolfe-james-orange.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;450;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -54,7 +54,7 @@
     }
     nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
     .brand { display: flex; align-items: center; gap: 10px; white-space: nowrap; font-weight: 500; letter-spacing: -0.01em; }
-    .brand .mark { font-size: 22px; line-height: 1; }
+    .brand .mark { display: block; width: 26px; height: 26px; }
     .version-badge {
       font-family: var(--mono); font-size: 12px; color: var(--muted);
       border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 8px;
@@ -192,6 +192,7 @@
     .foot-grid .col { display: flex; flex-direction: column; gap: 8px; }
     .foot-grid .col a:hover { color: var(--text); }
     .foot-title { color: var(--text); font-weight: 500; margin-bottom: 4px; }
+    .foot-brand { display: flex; align-items: center; gap: 8px; }
     .foot-note { margin-top: 36px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--dim); font-size: 13px; }
     .big-orange { color: var(--text); }
 
@@ -238,7 +239,7 @@
   <nav>
     <div class="wrap">
       <a class="brand" href="/">
-        <span class="mark">🍊</span>
+        <img class="mark" src="/images/wolfe-james-orange.png" alt="" width="26" height="26">
         <span>grok-faf-mcp</span>
         <span id="versionBadge" class="version-badge" title="Latest on npm">v2.0.0</span>
       </a>
@@ -388,7 +389,7 @@ url = <span class="t-green">"https://mcpaas.live/grok/mcp/v1"</span>
     <div class="wrap">
       <div class="foot-grid">
         <div class="col">
-          <span class="foot-title">🍊 grok-faf-mcp</span>
+          <span class="foot-title foot-brand"><img src="/images/wolfe-james-orange.png" alt="" width="20" height="20"> grok-faf-mcp</span>
           <span>Dedicated to @elonmusk</span>
           <span class="big-orange">We needed a Big-Orange, we got one! 🍊</span>
         </div>

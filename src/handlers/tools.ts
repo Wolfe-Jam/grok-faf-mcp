@@ -109,6 +109,7 @@ export class FafToolHandler {
         {
           name: 'faf_score',
           description: 'Score a project\'s AI-readiness 0–100% against the fixed 33-slot context model — how much project DNA an agent has before it has to guess. Deterministic: the same .faf always scores the same. Returns the score, tier, and per-slot breakdown.',
+          annotations: { readOnlyHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -119,6 +120,7 @@ export class FafToolHandler {
         {
           name: 'faf_gate',
           description: `Phase III — the pre-promotion quality gate. Scores + sizes a .faf candidate and returns a deterministic promote/hold verdict BEFORE it goes to a Grok Collection — "better candidates for Collections, not better search." Built from faf_score + a token estimate; makes no Collections call. Promote IFF faf_score >= min_score AND tokens <= max_tokens (defaults ${GATE_DEFAULTS.minScore}/${GATE_DEFAULTS.maxTokens}); on hold it returns the actionable gaps.`,
+          annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -131,6 +133,7 @@ export class FafToolHandler {
         {
           name: 'faf_section',
           description: `Phase III — structure-aware retrieval. Returns an EXACT, WHOLE .faf section by dotted path (e.g. "stack", "stack.backend", "human_context"), structure and relationships preserved — the deterministic complement to Collections' blind ~1024-token chunking (which flattens a .faf). Omit "section" to list every available path. No LLM, no Collections call: parse → resolve path → return the whole subtree as YAML.`,
+          annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -142,6 +145,7 @@ export class FafToolHandler {
         {
           name: 'faf_memory',
           description: `Phase III — structured portable memory. Query the durable .fafm model (decisions/invariants/conventions/WHY) by type/tag/priority/text instead of scrolling a flat GROK.md. Omit all filters for a structured summary (counts by type/priority + tag vocabulary + index). NOTE: .fafm is NOT scored — this SELECTS and returns facts (provenance preserved), it never grades them. Read-only; complements refresh_fafm/recall.`,
+          annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -157,6 +161,7 @@ export class FafToolHandler {
         {
           name: 'refresh_faf',
           description: 'Re-ground on the live .faf — re-read + re-score the current project DNA, report drift vs your last-known score, and return the fresh context. The explicit re-grounding primitive for long sessions: drift → refresh → re-grounded. Built for Grok, by request.',
+          annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -167,7 +172,8 @@ export class FafToolHandler {
         },
         {
           name: 'refresh_fafm',
-          description: 'Reload the latest structured memory (`.fafm`) for one or more souls into the current session. Returns a stamped delta by default (added/updated facts since last refresh or a given timestamp). Use `verbatim: true` to receive the full current `.fafm` content instead. Read-only. Always returns a content hash + timestamp stamp. Complements `recall`, `load_soul`, and `etch` — does not replace them.',
+          description: 'Reload the latest structured memory (`.fafm`) for one or more souls into the current session. Returns a stamped delta by default (added/updated facts since last refresh or a given timestamp). Use `verbatim: true` to receive the full current `.fafm` content instead. Reads your files and writes a refresh receipt (.fafm-refresh-receipts.json) to the project folder. Always returns a content hash + timestamp stamp. Complements `recall`, `load_soul`, and `etch` — does not replace them.',
+          annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -193,6 +199,7 @@ export class FafToolHandler {
         {
           name: 'faf_orchestrate_recommendation',
           description: 'Heavy orchestrator — given current substrate state, returns a structured recommendation about drift: which refresh to call (or `no_action`), why, how severe, and the underlying signals. ADVISORY ONLY — never auto-fires. Composes the full 1.5 substrate (drift detection · contradiction check · repeat-offender · take-a-hint · refresh history). Writes a recommendation receipt on every call (auditable trail, no silent decisions). Read-only WRT substrate state.',
+          annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {},
@@ -202,6 +209,7 @@ export class FafToolHandler {
         {
           name: 'faf_get_orchestration_policy',
           description: 'Introspect the effective orchestration policy WITHOUT running the orchestrator. Returns `{ tier, thresholds, source, overrides_applied }` — what aggressiveness tier the next `faf_orchestrate_recommendation` call would use, and whether it came from defaults or a `.faf:orchestration:` override. No drift detection, no signals, no receipt — pure introspection. Read-only.',
+          annotations: { readOnlyHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -216,6 +224,7 @@ export class FafToolHandler {
         {
           name: 'refresh_blend',
           description: 'Baked-in two-intensity refresh (Cmd+R / Cmd+Shift+R analog). Fires BOTH `refresh_faf` + `refresh_fafm` in one call. `mode: "blend"` (default) = light `.faf` + delta `.fafm` — the everyday re-ground. `mode: "nuke"` = light `.faf` + verbatim `.fafm` — the hard reload for polluted session memory. Intensity matches drift rate per layer.',
+          annotations: { readOnlyHint: false, destructiveHint: false, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -256,6 +265,7 @@ export class FafToolHandler {
         {
           name: 'faf_trust',
           description: 'Validate a project.faf with faf-cli — confirm the context file is well-formed and parses cleanly before an agent grounds on it, and report its always-33 score. The pre-flight trust check: never build on a broken context layer.',
+          annotations: { readOnlyHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -266,6 +276,7 @@ export class FafToolHandler {
         {
           name: 'faf_sync',
           description: 'Sync project.faf into your AI context files (CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md). Non-destructive: injects a structured .faf block at the top for fast machine reading and preserves your prose below. One source of truth, every tool kept current.',
+          annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {},
@@ -291,6 +302,7 @@ export class FafToolHandler {
         {
           name: 'faf_clear',
           description: 'Clear caches, temporary files, and reset FAF state for a fresh start',
+          annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -304,6 +316,7 @@ export class FafToolHandler {
         {
           name: 'faf_debug',
           description: 'Debug grok-faf-mcp environment - show working directory, permissions, and FAF CLI status',
+          annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {},
@@ -312,6 +325,7 @@ export class FafToolHandler {
         {
           name: 'faf_read',
           description: 'Read a file within the project root (cwd / FAF_ALLOWED_ROOTS). Paths that escape the project are refused.',
+          annotations: { readOnlyHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -326,6 +340,7 @@ export class FafToolHandler {
         {
           name: 'faf_write',
           description: 'Write a file within the project root (cwd / FAF_ALLOWED_ROOTS). Paths that escape the project are refused.',
+          annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -344,6 +359,7 @@ export class FafToolHandler {
         {
           name: 'faf_list',
           description: 'List directories and discover projects with project.faf files - Essential for FAF discovery workflow',
+          annotations: { readOnlyHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {
@@ -397,6 +413,7 @@ export class FafToolHandler {
         {
           name: 'rag_query',
           description: 'Ask a question with RAG-enhanced context from xAI Collections. Uses LAZY-RAG cache for 100,000x speedup on repeated queries.',
+          annotations: { readOnlyHint: true, openWorldHint: true },
           inputSchema: {
             type: 'object',
             properties: {
@@ -408,6 +425,7 @@ export class FafToolHandler {
         {
           name: 'rag_cache_stats',
           description: 'Get LAZY-RAG cache statistics - hits, misses, hit rate, cache size',
+          annotations: { readOnlyHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {}
@@ -416,6 +434,7 @@ export class FafToolHandler {
         {
           name: 'rag_cache_clear',
           description: 'Clear the LAZY-RAG cache — drop all cached retrievals so the next rag_query rebuilds from source. Use when the underlying context has changed and you want fresh results instead of cached ones.',
+          annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
             properties: {}

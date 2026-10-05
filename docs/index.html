@@ -196,6 +196,8 @@
     .foot-note { margin-top: 36px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--dim); font-size: 13px; }
     .big-orange { color: var(--text); }
 
+    .bookmark { color: var(--muted); white-space: nowrap; }
+    .bookmark kbd { font-family: var(--mono); font-size: 12px; border: 1px solid var(--line-2); border-radius: 6px; padding: 1px 6px; color: var(--text); }
     /* share */
     .share {
       position: fixed; bottom: 20px; right: 20px; z-index: 60;
@@ -415,9 +417,7 @@ url = <span class="t-green">"https://mcpaas.live/grok/mcp/v1"</span>
       </div>
       <div class="foot-note">
         <span>An independent open-source project. Not affiliated with or endorsed by SpaceXAI. Grok is a trademark of its owner.</span>
-        <iframe src="https://ghbtns.com/github-btn.html?user=Wolfe-Jam&repo=grok-faf-mcp&type=star&count=false&size=small"
-                frameborder="0" scrolling="0" width="60" height="20"
-                title="Star Wolfe-Jam/grok-faf-mcp on GitHub"></iframe>
+        <span class="bookmark">☆ Bookmark this page for later · <kbd id="bmKey">⌘D</kbd></span>
       </div>
     </div>
   </footer>
@@ -429,6 +429,12 @@ url = <span class="t-green">"https://mcpaas.live/grok/mcp/v1"</span>
   <div class="toast" id="toast">Copied</div>
 
   <script>
+    // Bookmark hint: Ctrl+D on Windows/Linux, ⌘D on Mac.
+    (function () {
+      var k = document.getElementById('bmKey');
+      if (k && !/Mac|iPhone|iPad/.test(navigator.platform || navigator.userAgent)) { k.textContent = 'Ctrl+D'; }
+    })();
+
     // Copy buttons
     document.querySelectorAll('[data-copy]').forEach(function (el) {
       el.addEventListener('click', function () {

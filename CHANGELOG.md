@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Tool annotations on every advertisable tool (20)**, checked against each handler: read-only `faf_score`, `faf_trust`, `faf_list`, `faf_read`, `faf_get_orchestration_policy`, `rag_cache_stats`, `rag_query`; destructive `faf_init` (with `force`), `faf_clear` (`--all` removes backups and todos), `faf_write`; every other tool is a non-destructive writer. Only `rag_query` is open-world (xAI Collections). New test: `tests/tool-annotations.test.ts`.
+
+### Fixed
+- `refresh_fafm` said "Read-only" but appends a refresh receipt (`.fafm-refresh-receipts.json`); its description now says so. The other receipt-writing tools (`refresh_faf`, `refresh_blend`, `faf_orchestrate_recommendation`, `faf_gate`, `faf_section`, `faf_memory`) are annotated as writers for the same reason.
+
 ### Changed
 - **Node 22 or later**, to match faf-cli 8 (which this package composes) and the rest of the FAF family. `engines.node` is `>=22`, the Node smoke matrix runs 22 and 24 (was 18 and 20), and a new `check:engines` gate keeps the floor equal to the lowest Node CI runs.
 

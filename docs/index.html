@@ -1,395 +1,462 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>grok-faf-mcp | FAST⚡️AF</title>
-  <meta name="description" content="Grok-exclusive FAF MCP — Fast AF Edition. 14 tools. Zero config. IANA-registered .FAF format.">
-  <meta property="og:title" content="grok-faf-mcp | FAST⚡️AF">
-  <meta property="og:description" content="Grok-exclusive FAF MCP — Fast AF Edition. 14 tools, zero config, persistent AI context.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>grok-faf-mcp — project context for Grok</title>
+  <meta name="description" content="The first MCP server for Grok. Persistent project context from your IANA-registered project.faf, scored always-33. Hosted on mcpaas.live or local with npx.">
+  <meta property="og:title" content="grok-faf-mcp — project context for Grok">
+  <meta property="og:description" content="The first MCP server for Grok. Persistent project context from project.faf, scored always-33. One line in ~/.grok/config.toml.">
   <meta property="og:image" content="https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/thumbnail.png">
+  <meta name="theme-color" content="#0a0a0a">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍊</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;450;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0a0a0a;
+      --panel: #141414;
+      --panel-2: #1a1a1a;
+      --line: #1f2228;
+      --line-2: #2a2d33;
+      --text: #ffffff;
+      --muted: #a1a1a1;
+      --dim: #6b6b6b;
+      --orange: #ff6600;
+      --orange-soft: rgba(255, 102, 0, 0.12);
+      --cyan: #00d4d4;
+      --green: #4ade80;
+      --sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { -webkit-text-size-adjust: 100%; }
     body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: #0a0a0a;
-      color: #fff;
-      min-height: 100vh;
-      position: relative;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: radial-gradient(ellipse at 50% 30%, rgba(255, 102, 0, 0.06) 0%, transparent 60%);
-      pointer-events: none;
+    a { color: inherit; text-decoration: none; }
+    code { font-family: var(--mono); }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+    /* ── Nav ─────────────────────────────────────────── */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid transparent;
     }
-    .accent-line {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, transparent 0%, #333 20%, #ff6600 50%, #333 80%, transparent 100%);
-      z-index: 10;
+    nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+    .brand { display: flex; align-items: center; gap: 10px; white-space: nowrap; font-weight: 500; letter-spacing: -0.01em; }
+    .brand .mark { font-size: 22px; line-height: 1; }
+    .version-badge {
+      font-family: var(--mono); font-size: 12px; color: var(--muted);
+      border: 1px solid var(--line-2); border-radius: 999px; padding: 2px 8px;
     }
-    .container {
-      position: relative;
-      z-index: 1;
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 60px 40px 40px;
-      text-align: center;
+    .nav-links { display: flex; align-items: center; gap: 28px; font-size: 14px; color: var(--muted); }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { display: flex; gap: 8px; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      height: 40px; padding: 0 18px; border-radius: 999px;
+      font-size: 15px; font-weight: 500; white-space: nowrap;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      border: 1px solid transparent; cursor: pointer; font-family: var(--sans);
     }
-    .logo {
-      font-size: 100px;
-      margin-bottom: 12px;
-      filter: drop-shadow(0 0 30px rgba(255, 165, 0, 0.3));
-      animation: pulse 2s ease-in-out infinite;
+    .btn-light { background: #fff; color: #0a0a0a; }
+    .btn-light:hover { background: #e6e6e6; }
+    .btn-dark { background: var(--panel-2); color: #fff; }
+    .btn-dark:hover { background: #262626; }
+    .btn-lg { height: 48px; padding: 0 22px; font-size: 16px; }
+
+    /* ── Hero ────────────────────────────────────────── */
+    .hero { text-align: center; padding: 96px 0 64px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 10px;
+      border: 1px solid var(--line-2); border-radius: 999px;
+      padding: 5px 6px 5px 6px; font-size: 14px; color: var(--text);
+      background: rgba(255, 255, 255, 0.02);
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+    .chip:hover { border-color: #3a3d44; }
+    .chip .tag {
+      background: var(--orange-soft); color: var(--orange);
+      border-radius: 999px; padding: 1px 9px; font-size: 12px; font-weight: 500;
+    }
+    .chip .sub { color: var(--muted); }
+    .chip .arrow {
+      width: 22px; height: 22px; border-radius: 999px; background: var(--panel-2);
+      display: inline-flex; align-items: center; justify-content: center; font-size: 12px;
     }
     h1 {
-      font-size: 2.5rem;
-      font-weight: 900;
-      letter-spacing: -1px;
-      margin-bottom: 8px;
-      color: #fff;
+      font-size: clamp(40px, 7vw, 72px);
+      font-weight: 450; letter-spacing: -0.035em; line-height: 1.04;
+      margin: 32px auto 22px; max-width: 900px;
     }
-    .tagline {
-      font-size: 1.3rem;
-      color: #FFD700;
-      font-weight: 600;
-      margin: 0.5rem 0;
-    }
-    .dedication {
-      font-size: 0.95rem;
-      color: #777;
-      margin: 0.5rem 0;
-    }
-    .squeeze {
-      font-size: 1rem;
-      color: #fff;
-      font-weight: 700;
-      margin: 0.5rem 0 2rem 0;
-    }
-    .stats {
-      display: flex;
-      justify-content: center;
-      gap: 48px;
-      margin-bottom: 32px;
-    }
-    .stat-value { font-size: 2rem; font-weight: 800; color: #fff; }
-    .stat-label { font-size: 11px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 1px; }
-    .endpoints {
-      background: rgba(255, 102, 0, 0.04);
-      border: 1px solid rgba(255, 102, 0, 0.2);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 32px;
-      text-align: left;
-    }
-    .endpoints h2 { font-size: 14px; color: #ff6600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
-    .endpoint {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 12px;
-      margin: 6px 0;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 6px;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-    }
-    .endpoint-name { color: #ccc; }
-    .endpoint-path { color: #ff6600; }
-    .deploy { margin-bottom: 32px; }
-    .deploy h2 { font-size: 14px; color: #ff6600; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 16px; }
-    .deploy-grid {
-      display: flex;
-      gap: 16px;
-      justify-content: center;
-    }
-    .deploy-option {
-      background: rgba(255, 102, 0, 0.04);
-      border: 1px solid rgba(255, 102, 0, 0.15);
-      border-radius: 8px;
-      padding: 16px 24px;
-      flex: 1;
-      max-width: 220px;
-    }
-    .deploy-option .label { font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-    .deploy-option .desc { font-size: 12px; color: #666; }
-    .deploy-option code { font-size: 12px; color: #ff6600; font-family: 'Courier New', monospace; }
-    .bottom-bar {
-      border-top: 1px solid rgba(255, 102, 0, 0.1);
-      padding-top: 24px;
-      text-align: center;
-      font-size: 12px;
-      color: #555;
-    }
-    .bottom-bar .links { margin-bottom: 8px; }
-    .bottom-bar .big-orange { color: #777; font-style: italic; }
-    a { color: #ff6600; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    h1 .u { text-decoration: underline; text-decoration-color: #4a4a4a; text-decoration-thickness: 3px; text-underline-offset: 10px; }
+    .lede { font-size: clamp(17px, 2.2vw, 20px); color: #d4d4d4; max-width: 680px; margin: 0 auto; }
+    .hero-cta { display: flex; justify-content: center; gap: 10px; margin-top: 36px; flex-wrap: wrap; }
+    .copy-cmd { font-family: var(--mono); font-size: 15px; }
+    .copy-cmd .prompt { color: #8a8a8a; }
 
-    /* Version badge */
-    .version-badge {
-      display: inline-block;
-      background: #ff6600;
-      color: #000;
-      font-size: 0.85rem;
-      font-weight: 800;
-      padding: 4px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background 0.2s, transform 0.15s;
-      user-select: none;
+    /* ── Bento ───────────────────────────────────────── */
+    .bento { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .card {
+      background: var(--panel); border: 1px solid var(--line);
+      border-radius: 16px; overflow: hidden; position: relative;
+      display: flex; flex-direction: column; min-height: 320px;
     }
-    .version-badge:hover {
-      background: #ff8833;
-      transform: scale(1.05);
+    .card-body { flex: 1; padding: 22px 22px 0; }
+    .card-foot {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 22px; font-size: 15px;
     }
+    .card-foot .name { font-weight: 500; }
+    .card-foot a { color: var(--muted); }
+    .card-foot a:hover { color: var(--text); }
+    .span-2 { grid-column: span 2; }
 
-    /* About overlay */
-    .about-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.7);
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
+    /* terminal */
+    .term {
+      background: #0d0d0d; border: 1px solid var(--line-2); border-radius: 10px;
+      font-family: var(--mono); font-size: 13px; line-height: 1.75; overflow: hidden;
     }
-    .about-overlay.visible {
-      opacity: 1;
-      pointer-events: all;
+    .term-bar {
+      display: flex; align-items: center; gap: 7px; padding: 9px 12px;
+      border-bottom: 1px solid var(--line); color: var(--dim); font-size: 12px;
     }
-    .about-box {
-      background: #141414;
-      border: 1px solid rgba(255, 102, 0, 0.3);
-      border-radius: 16px;
-      padding: 40px;
-      max-width: 480px;
-      width: 90%;
-      text-align: center;
-      position: relative;
-      transform: scale(0.9);
-      transition: transform 0.3s;
+    .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+    .term-bar .title { margin-left: 8px; }
+    .term pre { padding: 12px 14px; white-space: pre-wrap; word-break: break-word; color: #cfcfcf; font-family: var(--mono); }
+    .t-dim { color: var(--dim); }
+    .t-cyan { color: var(--cyan); }
+    .t-green { color: var(--green); }
+    .t-orange { color: var(--orange); }
+    .t-white { color: #fff; }
+
+    /* score card */
+    .score { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
+    .score-num { font-size: 64px; font-weight: 450; letter-spacing: -0.04em; line-height: 1; }
+    .score-num .seal { width: 44px; height: 44px; vertical-align: 14px; margin-left: 8px; }
+    .glyph { font-family: 'Apple Symbols', 'Segoe UI Symbol', 'Noto Sans Symbols 2', sans-serif; }
+    .slots { display: grid; grid-template-columns: repeat(11, 1fr); gap: 5px; width: 100%; max-width: 300px; }
+    .slots i { aspect-ratio: 1; border-radius: 3px; background: var(--orange); opacity: 0.9; }
+    .slots i.ig { background: #3a3a3a; }
+    .muted { color: var(--muted); }
+    .small { font-size: 14px; }
+
+    /* run card */
+    .run-row {
+      display: flex; justify-content: space-between; align-items: center; gap: 12px;
+      padding: 14px 0; border-bottom: 1px solid var(--line);
     }
-    .about-overlay.visible .about-box {
-      transform: scale(1);
+    .run-row:last-child { border-bottom: 0; }
+    .run-row .k { font-weight: 500; }
+    .run-row .v { font-family: var(--mono); font-size: 13px; color: var(--muted); text-align: right; word-break: break-all; }
+
+    /* ── Section heads ───────────────────────────────── */
+    section { padding: 40px 0; }
+    .sec-head { text-align: center; margin: 72px 0 28px; }
+    .sec-head h2 { font-size: clamp(30px, 4.5vw, 48px); font-weight: 500; letter-spacing: -0.03em; line-height: 1.08; }
+    .sec-head p { color: var(--muted); margin-top: 12px; }
+
+    /* tiles (Cursor-style) */
+    .tiles { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .tile {
+      background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+      padding: 18px 16px; min-height: 104px;
+      display: flex; flex-direction: column; justify-content: space-between; gap: 10px;
+      transition: border-color 0.15s, background 0.15s;
     }
-    .about-version {
-      display: inline-block;
-      background: #ff6600;
-      color: #000;
-      font-size: 1.1rem;
-      font-weight: 900;
-      padding: 6px 20px;
-      border-radius: 6px;
-      margin-bottom: 16px;
+    .tile:hover { border-color: #3a3d44; background: #171717; }
+    .tile .k { font-size: 13px; color: var(--muted); }
+    .tile .v { font-family: var(--mono); font-size: 13px; word-break: break-all; }
+
+    /* namepoint strip */
+    .strip {
+      display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap;
+      background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+      padding: 22px 24px; margin-top: 12px;
     }
-    .about-title {
-      font-size: 1.4rem;
-      font-weight: 800;
-      color: #fff;
-      margin-bottom: 8px;
+    .strip p { color: #d4d4d4; }
+
+    /* ── Footer ──────────────────────────────────────── */
+    footer { border-top: 1px solid var(--line); margin-top: 88px; padding: 40px 0 56px; color: var(--muted); font-size: 14px; }
+    .foot-grid { display: flex; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+    .foot-grid .col { display: flex; flex-direction: column; gap: 8px; }
+    .foot-grid .col a:hover { color: var(--text); }
+    .foot-title { color: var(--text); font-weight: 500; margin-bottom: 4px; }
+    .foot-note { margin-top: 36px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; color: var(--dim); font-size: 13px; }
+    .big-orange { color: var(--text); }
+
+    /* share */
+    .share {
+      position: fixed; bottom: 20px; right: 20px; z-index: 60;
+      display: flex; align-items: center; gap: 6px;
+      background: var(--panel-2); color: #fff; border: 1px solid var(--line-2);
+      border-radius: 999px; padding: 8px 14px; font-size: 13px; font-weight: 500;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .about-subtitle {
-      font-size: 0.95rem;
-      color: #ff6600;
-      font-weight: 600;
-      margin-bottom: 20px;
+    .share:hover { background: var(--orange); border-color: var(--orange); }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+      background: #fff; color: #0a0a0a; border-radius: 999px; padding: 8px 16px;
+      font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.2s; pointer-events: none; z-index: 70;
     }
-    .about-items {
-      text-align: left;
-      margin: 0 auto 24px;
-      max-width: 340px;
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 960px) {
+      .bento { grid-template-columns: 1fr 1fr; }
+      .span-2 { grid-column: span 2; }
+      .tiles { grid-template-columns: repeat(2, 1fr); }
+      .nav-links { display: none; }
     }
-    .about-item {
-      padding: 8px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 0.9rem;
-      color: #ccc;
-    }
-    .about-item span {
-      color: #ff6600;
-      font-weight: 700;
-    }
-    .about-close {
-      background: none;
-      border: 1px solid rgba(255, 102, 0, 0.3);
-      color: #888;
-      font-size: 0.8rem;
-      padding: 8px 24px;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .about-close:hover {
-      color: #fff;
-      border-color: #ff6600;
-    }
-    .about-progress {
-      position: absolute;
-      bottom: 0; left: 0;
-      height: 3px;
-      background: #ff6600;
-      border-radius: 0 0 16px 16px;
-      transition: width 0.1s linear;
+    @media (max-width: 640px) {
+      .wrap { padding: 0 16px; }
+      .hero { padding: 64px 0 40px; }
+      .bento { grid-template-columns: 1fr; }
+      .span-2 { grid-column: span 1; }
+      .card { min-height: 0; }
+      .tiles { grid-template-columns: 1fr; }
+      .nav-cta .btn-dark { display: none; }
+      .chip .sub { display: none; }
+      .run-row { flex-direction: column; align-items: flex-start; }
+      .run-row .v { text-align: left; }
     }
   </style>
 </head>
 <body>
-  <a id="versionBadge" class="version-badge" href="https://github.com/Wolfe-Jam/grok-faf-mcp" target="_blank" rel="noopener" style="position:fixed;top:14px;left:14px;z-index:9999;text-decoration:none;" title="grok-faf-mcp on GitHub">v1.5.5</a>
-  <div class="accent-line"></div>
-  <div class="container">
-    <div class="logo">🍊</div>
-    <h1>grok-faf-mcp</h1>
-    <div class="tagline" onclick="showAbout()" style="cursor:pointer;">🏎️⚡️ FAST AF Edition</div>
-    <div class="dedication">Dedicated to @elonmusk</div>
-    <div class="squeeze">I/🍊 enjoy the squeeze!</div>
 
-    <div class="stats">
-      <div><div class="stat-value">14</div><div class="stat-label">MCP Tools</div></div>
-      <div><div class="stat-value">0</div><div class="stat-label">Config Required</div></div>
-      <div><div class="stat-value">0.2ms</div><div class="stat-label">Avg Response</div></div>
-    </div>
-
-    <div style="margin:1.25rem 0;padding:0.9rem 1.15rem;background:rgba(255,102,0,0.08);border:1px solid rgba(255,102,0,0.3);border-radius:10px;text-align:left;">
-      <div style="font-size:0.9rem;color:#ff6600;font-weight:700;">Introducing <code style="color:#fff;">refresh_faf</code> — drift → refresh → re-grounded.</div>
-      <div style="font-size:0.85rem;color:#ccc;margin-top:0.35rem;">Re-read + re-score the live <code style="color:#fff;">.faf</code> mid-session — the explicit re-grounding primitive.</div>
-      <div style="font-size:0.8rem;color:#888;margin-top:0.3rem;">Built for Grok, by request.</div>
-    </div>
-
-    <div class="endpoints">
-      <h2>Endpoints</h2>
-      <div class="endpoint"><span class="endpoint-name">MCP</span><a class="endpoint-path" href="https://mcpaas.live/grok/mcp/v1">mcpaas.live/grok/mcp/v1</a></div>
-      <div class="endpoint"><span class="endpoint-name">Verify the contract</span><a class="endpoint-path" href="https://mcpaas.live/grok/mcp/v1/info">/grok/mcp/v1/info</a></div>
-    </div>
-
-    <div class="deploy">
-      <h2>Two Ways to Run</h2>
-      <div class="deploy-grid">
-        <div class="deploy-option">
-          <div class="label">Hosted</div>
-          <div class="desc">Point your config here</div>
-          <code>mcpaas.live/grok/mcp/v1</code>
-        </div>
-        <div class="deploy-option">
-          <div class="label">Local</div>
-          <div class="desc">Run anywhere</div>
-          <code>npx grok-faf-mcp</code>
-        </div>
+  <nav>
+    <div class="wrap">
+      <a class="brand" href="/">
+        <span class="mark">🍊</span>
+        <span>grok-faf-mcp</span>
+        <span id="versionBadge" class="version-badge" title="Latest on npm">v2.0.0</span>
+      </a>
+      <div class="nav-links">
+        <a href="#run">Install</a>
+        <a href="#endpoints">Endpoints</a>
+        <a href="https://github.com/Wolfe-Jam/grok-faf-mcp/blob/main/CHANGELOG.md">Changelog</a>
+        <a href="https://faf.one">faf.one</a>
+      </div>
+      <div class="nav-cta">
+        <a class="btn btn-dark" href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a>
+        <a class="btn btn-light" href="#run">Get started</a>
       </div>
     </div>
+  </nav>
 
-    <div style="display:flex;justify-content:center;margin:1.5rem 0;">
-      <iframe src="https://ghbtns.com/github-btn.html?user=Wolfe-Jam&repo=grok-faf-mcp&type=star&count=false"
-              frameborder="0" scrolling="0" width="80" height="20"
-              title="Star Wolfe-Jam/grok-faf-mcp on GitHub"></iframe>
-    </div>
-
-    <div style="margin:1.5rem 0;padding:0.75rem 1rem;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
-      <div style="font-size:0.85rem;color:#aaa;">Your <span style="color:#fff;">@handle</span> is your namepoint on MCPaaS™. You're here, you're early — <a href="https://mcpaas.live/claim" style="color:#fff;text-decoration:none;">get yours</a>.</div>
-    </div>
-
-    <div class="bottom-bar">
-      <div class="links"><span class="edition-label" onclick="showAbout()" style="font-size:0.75rem;padding:3px 10px;cursor:pointer;color:#ff6600;font-weight:700;">FAST⚡️AF Edition</span> &bull; <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a> &bull; <a href="https://npmjs.com/package/grok-faf-mcp">npm</a> &bull; <a href="https://faf.one">faf.one</a> &bull; <a href="https://mcpaas.live">mcpaas.live</a></div>
-      <div class="big-orange">We needed a Big-Orange, we got one! 🍊</div>
-      <div style="margin-top:0.5rem;font-size:0.75rem;"><a href="https://mcpaas.live/privacy" style="color:#666;text-decoration:none;">Privacy</a> · <a href="https://mcpaas.live/terms" style="color:#666;text-decoration:none;">Terms</a> · <a href="mailto:team@faf.one" style="color:#666;text-decoration:none;">team@faf.one</a></div>
-      <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.1);font-size:0.8rem;color:#fff;">Part of the <a href="https://faf.one" style="color:#ff6600;text-decoration:none;">FAF.one Family</a> · <a href="https://mcpaas.live" style="color:#888;text-decoration:none;">MCPaaS</a> · <a href="https://radiofaf.com" style="color:#888;text-decoration:none;">RadioFAF</a> · <a href="https://devtools.faf.one" style="color:#888;text-decoration:none;">devtools.faf.one</a></div>
-    </div>
-  </div>
-  <div class="about-overlay" id="aboutOverlay" onclick="if(event.target===this)hideAbout()">
-    <div class="about-box">
-      <div class="about-version">FAST⚡️AF Edition</div>
-      <div class="about-title">FAST⚡️AF Context</div>
-      <div class="about-subtitle">Persistent project DNA for Grok</div>
-      <div class="about-items">
-        <div class="about-item"><span>Engine:</span> WASM via faf-scoring-kernel</div>
-        <div class="about-item"><span>Scoring:</span> 21 slots, type-aware, slotignored</div>
-        <div class="about-item"><span>Tools:</span> 14 hosted (WASM-pure) · 12 core local (bunx; extended via FAF_TOOLS=all)</div>
-        <div class="about-item"><span>Format:</span> IANA-registered .faf (application/vnd.faf+yaml)</div>
+  <main>
+    <header class="hero wrap">
+      <a class="chip" href="https://github.com/Wolfe-Jam/grok-faf-mcp/blob/main/CHANGELOG.md">
+        <span class="tag">New</span>
+        <span>The Always33 Edition</span>
+        <span class="sub">One engine, one number</span>
+        <span class="arrow">↗</span>
+      </a>
+      <h1>Your project, known to Grok.<br><span class="u">Every</span> session.</h1>
+      <p class="lede">The first MCP server for Grok. It reads your IANA-registered <code>project.faf</code> and hands Grok the stack, the goal and the rules — scored always-33, the same number faf-cli gives.</p>
+      <div class="hero-cta">
+        <button class="btn btn-light btn-lg copy-cmd" data-copy="npx grok-faf-mcp"><span class="prompt">$</span> npx grok-faf-mcp <span aria-hidden="true">⧉</span></button>
+        <a class="btn btn-dark btn-lg" href="#run">Use the hosted URL</a>
       </div>
-      <button class="about-close" onclick="hideAbout()">Got it</button>
-      <div class="about-progress" id="aboutProgress"></div>
-    </div>
-  </div>
+    </header>
 
-  <a href="https://twitter.com/intent/tweet?text=%40grok%20%F0%9F%8D%8A%20grok-faf-mcp%20%E2%80%94%20the%20first%20MCP%20server%20built%20for%20Grok.%20Grab%20a%20free%20namepoint%20%E2%86%92&url=https%3A%2F%2Fmcpaas.live%2Fclaim" target="_blank" rel="noopener"
-     style="position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;align-items:center;gap:6px;background:#1a1a1a;color:#fff;border:1px solid #333;border-radius:20px;padding:8px 14px;font-size:0.8rem;font-weight:600;text-decoration:none;transition:all 0.2s;font-family:-apple-system,BlinkMacSystemFont,sans-serif;box-shadow:0 2px 8px rgba(0,0,0,0.3);"
-     onmouseover="this.style.background='#ff6600';this.style.borderColor='#ff6600';"
-     onmouseout="this.style.background='#1a1a1a';this.style.borderColor='#333';">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+    <div class="wrap">
+      <div class="bento">
+
+        <div class="card span-2">
+          <div class="card-body">
+            <div class="term">
+              <div class="term-bar">
+                <span class="dot" style="background:#ff5f57"></span>
+                <span class="dot" style="background:#febc2e"></span>
+                <span class="dot" style="background:#28c840"></span>
+                <span class="title">~/.grok/config.toml</span>
+              </div>
+<pre><span class="t-dim"># one line — then restart Grok (or /mcps r)</span>
+<span class="t-white">[mcp_servers.grok-faf-mcp]</span>
+url = <span class="t-green">"https://mcpaas.live/grok/mcp/v1"</span>
+
+<span class="t-cyan">❯</span> <span class="t-white">faf_score</span> <span class="t-dim">project.faf</span>
+  <span class="t-dim">score</span>  <span class="t-orange">100%</span>  <span class="t-dim">tier</span>  Trophy <span class="glyph">✪</span>
+  <span class="t-dim">slots</span>  33 of 33 filled <span class="t-dim">(populated or slotignored)</span>
+<span class="t-cyan">❯</span> <span class="t-white">refresh_faf</span>
+  <span class="t-dim">re-read + re-scored mid-session —</span> <span class="t-green">re-grounded</span></pre>
+            </div>
+          </div>
+          <div class="card-foot">
+            <span class="name">One line to install</span>
+            <a href="#run">Install →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body score">
+            <div class="score-num">100%<img class="seal" src="https://faf.one/trophy.svg" alt="Trophy" width="44" height="44"></div>
+            <div class="slots" aria-label="33 slots">
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+              <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i class="ig"></i>
+              <i class="ig"></i><i class="ig"></i><i class="ig"></i><i class="ig"></i><i class="ig"></i><i class="ig"></i><i class="ig"></i><i class="ig"></i><i class="ig"></i><i class="ig"></i><i class="ig"></i>
+            </div>
+            <p class="muted small">Always-33: every app is scored on the same 33 slots. Slots that don't apply are marked <code>slotignored</code>, so they still count. Trophy <span class="glyph">✪</span> = 100%: AI is optimized to code.</p>
+          </div>
+          <div class="card-foot">
+            <span class="name">One score, everywhere</span>
+            <a href="https://faf.one">faf.one →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <p class="small muted" style="margin-bottom:10px;">Context drifts in a long session. Ask Grok to re-ground.</p>
+            <div class="term">
+<pre><span class="t-cyan">❯</span> <span class="t-white">refresh_faf</span>
+<span class="t-cyan">❯</span> <span class="t-white">refresh_fafm</span>   <span class="t-dim">memory</span>
+<span class="t-cyan">❯</span> <span class="t-white">refresh_blend</span>  <span class="t-dim">both</span></pre>
+            </div>
+            <p class="small muted" style="margin-top:12px;">Re-reads and re-scores the live file. Built for Grok, by request.</p>
+          </div>
+          <div class="card-foot">
+            <span class="name">Re-grounding</span>
+            <a href="https://github.com/Wolfe-Jam/grok-faf-mcp#readme">Docs →</a>
+          </div>
+        </div>
+
+        <div class="card span-2" id="run">
+          <div class="card-body">
+            <div class="run-row">
+              <div>
+                <div class="k">Hosted</div>
+                <div class="small muted">Point your config here · 19 tools on the edge</div>
+              </div>
+              <button class="btn btn-dark copy-cmd" data-copy="https://mcpaas.live/grok/mcp/v1">mcpaas.live/grok/mcp/v1 <span aria-hidden="true">⧉</span></button>
+            </div>
+            <div class="run-row">
+              <div>
+                <div class="k">Local</div>
+                <div class="small muted">Run anywhere · 12 core tools, the rest with <code>FAF_TOOLS=all</code></div>
+              </div>
+              <button class="btn btn-dark copy-cmd" data-copy="npx grok-faf-mcp">npx grok-faf-mcp <span aria-hidden="true">⧉</span></button>
+            </div>
+            <div class="run-row">
+              <div>
+                <div class="k">Format</div>
+                <div class="small muted">IANA-registered — not a vendor file</div>
+              </div>
+              <span class="v">application/vnd.faf+yaml</span>
+            </div>
+          </div>
+          <div class="card-foot">
+            <span class="name">Two ways to run</span>
+            <a href="https://www.npmjs.com/package/grok-faf-mcp">npm →</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="sec-head" id="endpoints">
+        <h2>Open. Checkable.</h2>
+        <p>Every surface is public. Verify the contract yourself.</p>
+      </div>
+
+      <div class="tiles">
+        <a class="tile" href="https://mcpaas.live/grok/mcp/v1"><span class="k">MCP endpoint</span><span class="v">mcpaas.live/grok/mcp/v1</span></a>
+        <a class="tile" href="https://mcpaas.live/grok/mcp/v1/info"><span class="k">Verify the contract</span><span class="v">/grok/mcp/v1/info</span></a>
+        <a class="tile" href="https://www.npmjs.com/package/grok-faf-mcp"><span class="k">npm</span><span class="v">grok-faf-mcp</span></a>
+        <a class="tile" href="https://registry.modelcontextprotocol.io/v0/servers?search=one.faf/grok-faf-mcp"><span class="k">MCP Registry</span><span class="v">one.faf/grok-faf-mcp</span></a>
+        <a class="tile" href="https://github.com/Wolfe-Jam/grok-faf-mcp"><span class="k">Source · MIT</span><span class="v">Wolfe-Jam/grok-faf-mcp</span></a>
+      </div>
+
+      <div class="strip">
+        <p>Your <strong>@handle</strong> is your namepoint on MCPaaS™. You're here, you're early.</p>
+        <a class="btn btn-light" href="https://mcpaas.live/claim">Get yours</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-grid">
+        <div class="col">
+          <span class="foot-title">🍊 grok-faf-mcp</span>
+          <span>Dedicated to @elonmusk</span>
+          <span class="big-orange">We needed a Big-Orange, we got one! 🍊</span>
+        </div>
+        <div class="col">
+          <span class="foot-title">Project</span>
+          <a href="https://github.com/Wolfe-Jam/grok-faf-mcp">GitHub</a>
+          <a href="https://www.npmjs.com/package/grok-faf-mcp">npm</a>
+          <a href="https://github.com/Wolfe-Jam/grok-faf-mcp/blob/main/CHANGELOG.md">Changelog</a>
+        </div>
+        <div class="col">
+          <span class="foot-title">FAF.one Family</span>
+          <a href="https://faf.one">faf.one</a>
+          <a href="https://mcpaas.live">MCPaaS</a>
+          <a href="https://devtools.faf.one">devtools.faf.one</a>
+          <a href="https://radiofaf.com">RadioFAF</a>
+        </div>
+        <div class="col">
+          <span class="foot-title">Legal</span>
+          <a href="https://mcpaas.live/privacy">Privacy</a>
+          <a href="https://mcpaas.live/terms">Terms</a>
+          <a href="mailto:team@faf.one">team@faf.one</a>
+        </div>
+      </div>
+      <div class="foot-note">
+        <span>An independent open-source project. Not affiliated with or endorsed by SpaceXAI. Grok is a trademark of its owner.</span>
+        <iframe src="https://ghbtns.com/github-btn.html?user=Wolfe-Jam&repo=grok-faf-mcp&type=star&count=false&size=small"
+                frameborder="0" scrolling="0" width="60" height="20"
+                title="Star Wolfe-Jam/grok-faf-mcp on GitHub"></iframe>
+      </div>
+    </div>
+  </footer>
+
+  <a class="share" href="https://twitter.com/intent/tweet?text=%40grok%20%F0%9F%8D%8A%20grok-faf-mcp%20%E2%80%94%20the%20first%20MCP%20server%20built%20for%20Grok.%20Grab%20a%20free%20namepoint%20%E2%86%92&url=https%3A%2F%2Fmcpaas.live%2Fclaim" target="_blank" rel="noopener">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
     Share
   </a>
+  <div class="toast" id="toast">Copied</div>
 
   <script>
-    var aboutTimer, progressInterval;
-    function showAbout(autoLaunch) {
-      clearTimeout(aboutTimer);
-      clearInterval(progressInterval);
-      var el = document.getElementById('aboutOverlay');
-      var bar = document.getElementById('aboutProgress');
-      el.classList.add('visible');
-      if (autoLaunch) {
-        bar.style.width = '100%';
-        bar.style.display = '';
-        var start = Date.now();
-        var duration = 6000;
-        progressInterval = setInterval(function() {
-          var elapsed = Date.now() - start;
-          var pct = Math.max(0, 100 - (elapsed / duration) * 100);
-          bar.style.width = pct + '%';
-          if (pct <= 0) clearInterval(progressInterval);
-        }, 50);
-        aboutTimer = setTimeout(hideAbout, duration);
-      } else {
-        bar.style.display = 'none';
-      }
-    }
-    function hideAbout() {
-      clearTimeout(aboutTimer);
-      clearInterval(progressInterval);
-      document.getElementById('aboutOverlay').classList.remove('visible');
-    }
-    // Auto-launch disabled in v1.5.5 — the About box stays callable (tagline +
-    // edition-label onclick -> showAbout()). Content refresh (engine/slot labels)
-    // deferred to v6. Re-enable the line below when the box is current.
-    // window.addEventListener('load', function() { setTimeout(function() { showAbout(true); }, 500); });
+    // Copy buttons
+    document.querySelectorAll('[data-copy]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        var text = el.getAttribute('data-copy');
+        var toast = document.getElementById('toast');
+        function done() {
+          toast.textContent = 'Copied: ' + text;
+          toast.classList.add('show');
+          setTimeout(function () { toast.classList.remove('show'); }, 1600);
+        }
+        try { navigator.clipboard.writeText(text).then(done, function () {}); } catch (e) {}
+      });
+    });
 
-    // ── Live version sync (auto-correcting, no manual bumps) ────────────────
-    // Static fallback in the HTML is the current-at-build-time value; this
-    // overlays the LIVE npm-published version on every page load. The page
-    // can never drift behind a publish again — npm registry is the source
-    // of truth for "what's actually installable as grok-faf-mcp@latest".
-    // Doctrine receipt: same vROM "one truth, many cheap projections" model
-    // that governs CLAUDE.md / project.faf — runtime variant for static
-    // surfaces. Folded into v1.6 task #20 for build-time templating.
+    // Live version sync: the badge shows the version on npm, so the page
+    // never drifts behind a publish. ONE display spot per surface (the badge);
+    // everywhere else shows the Edition name. Offline: keep the static value.
     (function syncVersionFromNpm() {
       try {
         fetch('https://registry.npmjs.org/grok-faf-mcp/latest')
           .then(function (r) { return r.ok ? r.json() : null; })
           .then(function (data) {
             if (!data || !data.version) return;
-            var live = 'v' + data.version;
-            // Version-placement doctrine: ONE display spot per surface — the
-            // top-left badge. Every other spot shows the Edition-Name instead.
-            // Update that single badge only, so it can never drift behind npm.
             var badge = document.getElementById('versionBadge');
-            if (badge) { badge.textContent = live; }
+            if (badge) { badge.textContent = 'v' + data.version; }
           })
-          .catch(function () { /* offline / npm rate-limit: keep static fallback */ });
-      } catch (e) { /* old browser without fetch: keep static fallback */ }
+          .catch(function () {});
+      } catch (e) {}
     })();
   </script>
-  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
-  

@@ -1,0 +1,17 @@
+{
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Grok FAF",
+    "identifier": "grok.faf.one"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:grok.faf.one:agent:grok-faf-mcp",
+      "displayName": "Grok FAF",
+      "type": "application/vnd.fafa+yaml",
+      "description": "FAF agent passport (.fafa).",
+      "url": "https://grok.faf.one/.well-known/fafa",
+      "updatedAt": "2026-06-29T04:40:22.608Z"
+    }
+  ]
+}

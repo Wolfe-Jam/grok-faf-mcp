@@ -1,11 +1,11 @@
 {
   "name": "grok-faf-mcp",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "mcpName": "one.faf/grok-faf-mcp",
   "description": "Persistent Project Context for xAI Grok. IANA-registered .faf format, MCP server on a URL.",
   "icon": "./assets/icons/faf-icon-256.png",
   "logo": "./assets/icons/faf-icon-256.png",
-  "displayName": ".faf 🐘⚡️ for Grok",
+  "displayName": ".faf \ud83d\udc18\u26a1\ufe0f for Grok",
   "main": "dist/src/index.js",
   "bin": {
     "grok-faf-mcp": "dist/src/index.js"
@@ -32,7 +32,8 @@
     "postinstall": "node scripts/postinstall.js",
     "debug": "node --inspect-brk=0.0.0.0:9229 -r ts-node/register src/cli.ts",
     "audit:prod": "npm audit --omit=dev --audit-level=high",
-    "audit:all": "npm audit --audit-level=high"
+    "audit:all": "npm audit --audit-level=high",
+    "cards": "npx -y faf-cli@8.1.1 cards --target catalog,ard && node scripts/sync-cards.mjs"
   },
   "keywords": [
     "grok",

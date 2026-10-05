@@ -23,14 +23,45 @@ export function agentCardAbsence() {
   });
 }
 
+/** Grok's FAF passport + discovery entries, served from docs/cards/. */
+export const SERVED_CARDS = {
+  "/.well-known/fafa": { asset: "/cards/agent.fafa", type: "application/vnd.fafa+yaml; charset=utf-8" },
+  "/.well-known/ai-catalog.json": { asset: "/cards/ai-catalog.json", type: "application/ai-catalog+json; charset=utf-8" },
+  "/.well-known/ard.json": { asset: "/cards/ard.json", type: "application/json; charset=utf-8" },
+};
+
+/** The live MCP Server Card is the hosted one (it lists the hosted remote). */
+export const SERVER_CARD_URL = "https://mcpaas.live/grok/mcp/v1/server-card";
+
+export function isServerCardPath(pathname) {
+  return pathname === "/mcp/server-card" || pathname === "/.well-known/mcp/server-card.json";
+}
+
+export async function serveCard(card, request, env) {
+  const res = await env.ASSETS.fetch(new Request(new URL(card.asset, request.url)));
+  if (!res.ok) return res;
+  return new Response(res.body, {
+    status: 200,
+    headers: {
+      "content-type": card.type,
+      "cache-control": "public, max-age=300",
+      "access-control-allow-origin": "*",
+    },
+  });
+}
+
 export default {
   async fetch(request, env) {
     const { pathname } = new URL(request.url);
     if (isAgentCardProbe(pathname)) {
       return agentCardAbsence();
     }
-    if (pathname === "/mcp/server-card") {
-      return Response.redirect("https://mcpaas.live/grok/mcp/v1/server-card", 308);
+    if (isServerCardPath(pathname)) {
+      return Response.redirect(SERVER_CARD_URL, 308);
+    }
+    const card = SERVED_CARDS[pathname];
+    if (card) {
+      return serveCard(card, request, env);
     }
     if (pathname === "/sse" || pathname === "/mcp" || pathname.startsWith("/mcp/")) {
       return Response.redirect("https://mcpaas.live/grok/mcp/v1", 308);

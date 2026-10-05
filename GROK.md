@@ -1,21 +1,21 @@
-<!-- faf: grok-faf-mcp | TypeScript | mcp | Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP online • MCPaaS pattern origin. IANA-registered .faf + .fafm. Grok asked for MCP on a URL — this is it. -->
+<!-- faf: grok-faf-mcp | TypeScript | mcp | Persistent project context for xAI Grok. The first MCP for Grok — Grok asked for MCP on a URL. -->
 <!-- faf: claim=project.faf | family=FAF -->
 
 # GROK.md — grok-faf-mcp
 
 ## What This Is
 
-Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP online • MCPaaS pattern origin. IANA-registered .faf + .fafm. Grok asked for MCP on a URL — this is it.
+Persistent project context for xAI Grok. The first MCP for Grok — Grok asked for MCP on a URL.
 
 ## Stack
 
 - **Language:** TypeScript
 - **Backend:** MCP SDK (TS)
-- **Api Type:** MCP (stdio + Streamable HTTP)
+- **API:** MCP (stdio + Streamable HTTP)
 - **Runtime:** Node.js
 - **Hosting:** Cloudflare Workers
 - **Build:** TypeScript (tsc)
-- **Cicd:** GitHub Actions
+- **CI/CD:** GitHub Actions
 
 ## Context
 
@@ -23,9 +23,9 @@ Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP on
 - **What:** First MCP for Grok — also first FAF MCP online. Persistent AI context via IANA-registered .faf + .fafm.
 - **Why:** Every AI session starts from zero. grok-faf-mcp gives Grok persistent project DNA.
 - **Where:** npm registry, Cloudflare Workers (mcpaas.live/grok/mcp/v1), MCP Registry (one.faf/grok-faf-mcp)
-- **When:** Shipped 2026-09-27 — current v2.0.0 The Always33 Edition (one engine, one number: every score is faf-cli 8's always-33 kernel, on npm and on mcpaas.live; ZEPH opt-in until the Zig engine is always-33). v1.10.0 The No-Fluff Edition (2026-08-20).
-- **How:** bunx grok-faf-mcp (local stdio) — 12 core tools by default (extended set behind FAF_TOOLS=all). Hosted URL (mcpaas.live/grok/mcp/v1) — 19 tools (WASM-pure edge, served by mcpaas-cf). Streamable HTTP, Mk4 WASM scoring kernel.
+- **When:** Shipped 2026-10-05 — current v2.1.0 The New Era Edition (glass-box tools: every tool says if it reads, writes or rewrites; its own FAF passport (agent.fafa) at grok.faf.one; a new look at grok.faf.one). v2.0.0 The Always33 Edition (2026-09-27): every score is faf-cli 8's always-33 kernel.
+- **How:** bunx grok-faf-mcp (local stdio) or hosted on Cloudflare Workers (mcpaas.live/grok/mcp/v1) — 12 core tools by default (extended set behind FAF_TOOLS=all), Streamable HTTP transport, Mk4 WASM scoring kernel
 
 ---
 
-*STATUS: BI-SYNC ACTIVE — 2026-08-20T15:50:27.492Z*
+*STATUS: SYNC ACTIVE — 2026-10-05T12:27:28.780Z*

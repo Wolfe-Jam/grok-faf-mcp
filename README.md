@@ -1,7 +1,7 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
 <!-- faf: doc=readme | canonical=project.faf | score=100 | family=FAF -->
 
-# grok-faf-mcp — FAST⚡️AF Edition
+# grok-faf-mcp v2.1 — The New Era Edition
 
 <div align="center">
   <img src="https://www.faf.one/orange-smiley.svg" alt="FAF" width="80" />
@@ -34,19 +34,21 @@
 
 [![Stars](https://img.shields.io/github/stars/Wolfe-Jam/grok-faf-mcp)](https://github.com/Wolfe-Jam/grok-faf-mcp/stargazers) [![Downloads](https://img.shields.io/npm/dt/grok-faf-mcp)](https://www.npmjs.com/package/grok-faf-mcp)
 
-**FAF defines. MD instructs. AI codes.**
+**FAF defines. AGENTS.md instructs. AI codes.**
 
-## v2.0.0 — The Always33 Edition
+## v2.1.0 — The New Era Edition
 
-**One engine, one number: grok-faf-mcp 2 scores with faf-cli 8's always-33 kernel — the same score faf-cli, claude-faf-mcp 7 and faf-mcp 4 give, on npm and on mcpaas.live.**
+**Glass-box tools: every Grok tool now says what it does — reads, writes or rewrites — so your client knows when to ask first. New card, new look at grok.faf.one.**
 
-- **Always-33, everywhere you install it.** Every score — `faf_score`, `refresh_faf`, `faf_trust`, the resources — is faf-cli 8's `scoreFafYaml`: all 33 slots, one Rust kernel. The hosted endpoint below scores with the same kernel.
-- **Your 21 slots, and the 12 enterprise slots in view.** faf-cli fills the 21 base slots; the 12 enterprise slots (infra, app, ops) are marked `slotignored` unless your app-type uses them. Scored against all 33; `slotignored` slots drop out of the denominator.
-- **ZEPH is opt-in** (`USE_ZEPH=1`, or `FAF_ZEPH=1` / `ZEPH=1`) until the Zig engine gives the always-33 number on every file — fast never means a different score.
-- **Scoring never uses a `faf` from your PATH** — `faf_trust` and the resources run faf-cli in-process. `faf_init` writes a real project.faf and reports its real score.
-- **Upgrading from 1.x:** a `.faf` without the 12 markers now scores against 33. `faf auto` writes the markers and re-scores.
+- **Every tool is labelled.** All 20 tools carry MCP tool annotations, checked against what each handler really does: 7 read only, 3 can delete or overwrite (`faf_init` with `force`, `faf_clear`, `faf_write`), the rest write without losing anything. Only `rag_query` reaches the network (xAI Collections).
+- **Honest about receipts.** `refresh_faf`, `refresh_fafm`, `refresh_blend`, `faf_orchestrate_recommendation` and the FRC tools (`faf_gate`, `faf_section`, `faf_memory`) append small receipt files to your project folder, so they are labelled as writers. `refresh_fafm` no longer says "Read-only".
+- **Its own card.** Grok FAF now has a FAF passport (`agent.fafa`) at [grok.faf.one/.well-known/fafa](https://grok.faf.one/.well-known/fafa), with AI Catalog and ARD entries that point to it. The MCP Server Card is the hosted one, also at `grok.faf.one/.well-known/mcp/server-card.json`.
+- **A new look.** [grok.faf.one](https://grok.faf.one) is redesigned, with the current facts: 19 tools hosted, 12 by default locally.
+- **Node 22 or later**, like faf-cli 8 and the rest of the FAF family.
 
-⭐ Bookmarks it for you, helps other devs find it too.
+> Earlier: v2.0.0 — **The Always33 Edition** — one engine, one number: every score is faf-cli 8's always-33 kernel, on npm and on mcpaas.live. ZEPH is opt-in until the Zig engine is always-33.
+
+☆ Bookmark [grok.faf.one](https://grok.faf.one) for later.
 
 **First v0.2-conformant reader** of the [FAF Context Ingestion Contract](https://github.com/Wolfe-Jam/faf/blob/main/CONTEXT-INGESTION.md) — the open standard co-authored in public with @grok.
 
@@ -362,7 +364,9 @@ sh scripts/run-tests.sh
 
 ---
 
-## Status & known limitations (v2.0)
+## Status & known limitations (v2.1)
+
+v2.1.0 — **The New Era Edition** — glass-box tools (every tool labelled read, write or rewrite), its own FAF passport at grok.faf.one, a new look. Scoring is unchanged from v2.0.0.
 
 v2.0.0 — **The Always33 Edition** — one engine, one number: faf-cli 8's always-33 kernel on npm and on mcpaas.live. ZEPH is opt-in until the Zig engine is always-33. FafCompiler upgraded to the Always33 fafb model — parity across frontier models, Enterprise/Teams ready.
 

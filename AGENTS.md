@@ -1,10 +1,10 @@
 <!-- faf:start -->
-<!-- faf: grok-faf-mcp | TypeScript | mcp | Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP online • MCPaaS pattern origin. IANA-registered .faf + .fafm. Grok asked for MCP on a URL — this is it. -->
+<!-- faf: grok-faf-mcp | TypeScript | mcp | Persistent project context for xAI Grok. The first MCP for Grok — Grok asked for MCP on a URL. -->
 <!-- faf: claim=project.faf | family=FAF -->
 
 # AGENTS.md — grok-faf-mcp
 
-Persistent project context for xAI Grok. First MCP for Grok • First FAF MCP online • MCPaaS pattern origin. IANA-registered .faf + .fafm. Grok asked for MCP on a URL — this is it. — TypeScript · type: mcp · v2.0.0
+Persistent project context for xAI Grok. The first MCP for Grok — Grok asked for MCP on a URL. — TypeScript · type: mcp · v2.1.0
 
 > Authored by faf — do not edit the managed block; refresh with `faf export --agents`. Hand-written content outside the managed block is preserved.
 

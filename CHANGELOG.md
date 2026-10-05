@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v2.0.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v2.1.0 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -8,15 +8,21 @@ All notable changes to grok-faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.1.0] - 2026-10-05 — The New Era Edition
+
+**Glass-box tools: every Grok tool now says what it does — reads, writes or rewrites — so your client knows when to ask first. New card, new look at grok.faf.one.**
+
+611 tests pass (5 skipped, 2 todo), 0 fail.
 
 ### Added
+- **Grok FAF's own card.** A FAF passport, `agent.fafa` (written with `faf card init`, faf-cli 8.1.1), served at `grok.faf.one/.well-known/fafa` as `application/vnd.fafa+yaml`, with an AI Catalog (`/.well-known/ai-catalog.json`) and ARD (`/.well-known/ard.json`) entry that point to it. `/.well-known/mcp/server-card.json` and `/mcp/server-card` both redirect to the hosted MCP Server Card. `npm run cards` regenerates the cards and the served copies; `tests/cards-served.test.ts` fails if they drift.
 - **Tool annotations on every advertisable tool (20)**, checked against each handler: read-only `faf_score`, `faf_trust`, `faf_list`, `faf_read`, `faf_get_orchestration_policy`, `rag_cache_stats`, `rag_query`; destructive `faf_init` (with `force`), `faf_clear` (`--all` removes backups and todos), `faf_write`; every other tool is a non-destructive writer. Only `rag_query` is open-world (xAI Collections). New test: `tests/tool-annotations.test.ts`.
 
 ### Fixed
 - `refresh_fafm` said "Read-only" but appends a refresh receipt (`.fafm-refresh-receipts.json`); its description now says so. The other receipt-writing tools (`refresh_faf`, `refresh_blend`, `faf_orchestrate_recommendation`, `faf_gate`, `faf_section`, `faf_memory`) are annotated as writers for the same reason.
 
 ### Changed
+- **A new look for grok.faf.one** (#155–#157): redesigned page with current facts (19 tools hosted, 12 by default locally, always-33), the Wolfe James orange as its mark, and a bookmark line in place of the star button.
 - **Node 22 or later**, to match faf-cli 8 (which this package composes) and the rest of the FAF family. `engines.node` is `>=22`, the Node smoke matrix runs 22 and 24 (was 18 and 20), and a new `check:engines` gate keeps the floor equal to the lowest Node CI runs.
 
 ## [2.0.0] - 2026-09-27 — The Always33 Edition

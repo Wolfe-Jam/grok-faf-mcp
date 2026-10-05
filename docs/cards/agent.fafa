@@ -1,0 +1,86 @@
+version: "1.0"
+agent:
+  name: grok-faf-mcp
+  displayName: Grok FAF
+  id: urn:air:grok.faf.one:agent:grok-faf-mcp
+  version: 2.1.0
+  description: "The first MCP server for Grok: persistent project context from your IANA-registered project.faf, scored always-33."
+  homepage: https://grok.faf.one
+capabilities:
+  - name: faf_score
+    type: tool
+    description: Score a project's AI-readiness 0-100% on the 33-slot context model
+    tags:
+      - faf_score
+  - name: refresh_faf
+    type: tool
+    description: Re-read and re-score the live .faf, report drift
+    tags:
+      - refresh_faf
+  - name: refresh_fafm
+    type: tool
+    description: Reload the latest structured memory (.fafm) into the session
+    tags:
+      - refresh_fafm
+  - name: refresh_blend
+    type: tool
+    description: Refresh the .faf and the .fafm in one call
+    tags:
+      - refresh_blend
+  - name: faf_orchestrate_recommendation
+    type: tool
+    description: Recommend which context to refresh when it drifts
+    tags:
+      - faf_orchestrate_recommendation
+  - name: faf_get_orchestration_policy
+    type: tool
+    description: Show the orchestration policy without running it
+    tags:
+      - faf_get_orchestration_policy
+  - name: faf_init
+    type: tool
+    description: Create a project.faf for this project
+    tags:
+      - faf_init
+  - name: faf_trust
+    type: tool
+    description: Validate a project.faf with faf-cli
+    tags:
+      - faf_trust
+  - name: faf_sync
+    type: tool
+    description: Sync project.faf into CLAUDE.md, AGENTS.md, .cursorrules and GEMINI.md
+    tags:
+      - faf_sync
+  - name: rag_query
+    type: tool
+    description: Ask a question with context from xAI Collections
+    tags:
+      - rag_query
+  - name: rag_cache_stats
+    type: tool
+    description: Show LAZY-RAG cache statistics
+    tags:
+      - rag_cache_stats
+  - name: rag_cache_clear
+    type: tool
+    description: Clear the LAZY-RAG cache
+    tags:
+      - rag_cache_clear
+endpoints:
+  - protocol: mcp
+    transport: http
+    location: https://mcpaas.live/grok/mcp/v1
+  - protocol: mcp
+    transport: stdio
+    location: grok-faf-mcp
+metadata:
+  cards:
+    domain: grok.faf.one
+    examples:
+      - What's my project's AI-readiness score?
+      - Re-ground on my project.faf
+      - Write my project context into AGENTS.md
+    packages:
+      - registryType: npm
+        identifier: grok-faf-mcp

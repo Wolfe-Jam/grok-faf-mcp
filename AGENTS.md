@@ -72,3 +72,9 @@ Ask a clarifying question, propose a short plan, or open a draft PR with notes â
 - **Build:** TypeScript (tsc)
 - **CI/CD:** GitHub Actions
 <!-- faf:end -->
+
+## Cursor Cloud specific instructions
+
+- Node 22 or later matches the engine floor. `npm ci` installs dependencies and builds through the `prepare` script (`npm run build`).
+- `npm test` runs `scripts/run-tests.sh` with Bun 1.3.13, the version CI pins. Link that binary at `/usr/local/bin/bun`. Login shells skip `~/.bashrc`, where the Bun installer appends PATH.
+- The local server speaks MCP over stdio: `node dist/src/index.js`. `--version` and `--help` print and exit before the protocol starts. A working session is initialize, `tools/list`, then `faf_score` against this repo's `project.faf`.

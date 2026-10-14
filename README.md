@@ -33,6 +33,7 @@
 </div>
 
 [![Stars](https://img.shields.io/github/stars/Wolfe-Jam/grok-faf-mcp)](https://github.com/Wolfe-Jam/grok-faf-mcp/stargazers) [![Downloads](https://img.shields.io/npm/dt/grok-faf-mcp)](https://www.npmjs.com/package/grok-faf-mcp)
+[![Business card · Get yours →](https://wolfe-jam.github.io/agent-business-card/badge.svg)](https://wolfe-jam.github.io/agent-business-card/?repo=Wolfe-Jam/grok-faf-mcp)
 
 **FAF defines. AGENTS.md instructs. AI codes.**
 

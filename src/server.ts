@@ -6,6 +6,7 @@ import { FafToolHandler } from './handlers/tools';
 import { FafEngineAdapter } from './handlers/engine-adapter';
 import { isError } from './utils/type-guards.js';
 import { VERSION } from './version';
+import { SERVER_INSTRUCTIONS } from './instructions';
 
 export interface GrokFafMcpServerConfig {
   transport: 'stdio';
@@ -47,6 +48,7 @@ export class GrokFafMcpServer {
             listChanged: true,
           },
         },
+        instructions: SERVER_INSTRUCTIONS,
       }
     );
 

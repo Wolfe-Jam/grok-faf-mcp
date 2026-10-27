@@ -4,7 +4,7 @@
 
 # AGENTS.md — grok-faf-mcp
 
-Persistent project context for xAI Grok. The first MCP for Grok — Grok asked for MCP on a URL. — TypeScript · type: mcp · v2.1.0
+Persistent project context for xAI Grok. The first MCP for Grok — Grok asked for MCP on a URL. — TypeScript · type: mcp · v2.2.0
 
 > Authored by faf — do not edit the managed block; refresh with `faf export --agents`. Hand-written content outside the managed block is preserved.
 

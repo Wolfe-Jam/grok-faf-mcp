@@ -37,16 +37,16 @@
 
 **FAF defines. AGENTS.md instructs. AI codes.**
 
-## v2.1.0 — The New Era Edition
+## v2.2.0 — The Instructions Edition
 
-**Glass-box tools: every Grok tool now says what it does — reads, writes or rewrites — so your client knows when to ask first. New card, new look at grok.faf.one.**
+**grok-faf-mcp now tells Grok how its tools fit together, context and memory: server instructions in initialize (615 characters), plus faf-cli 8.5.0, which knows a skills repo when it sees one.**
 
-- **Every tool is labelled.** All 20 tools carry MCP tool annotations, checked against what each handler really does: 7 read only, 3 can delete or overwrite (`faf_init` with `force`, `faf_clear`, `faf_write`), the rest write without losing anything. Only `rag_query` reaches the network (xAI Collections).
-- **Honest about receipts.** `refresh_faf`, `refresh_fafm`, `refresh_blend`, `faf_orchestrate_recommendation` and the FRC tools (`faf_gate`, `faf_section`, `faf_memory`) append small receipt files to your project folder, so they are labelled as writers. `refresh_fafm` no longer says "Read-only".
-- **Its own card.** Grok FAF now has a FAF passport (`agent.fafa`) at [grok.faf.one/.well-known/fafa](https://grok.faf.one/.well-known/fafa), with AI Catalog and ARD entries that point to it. The MCP Server Card is the hosted one, also at `grok.faf.one/.well-known/mcp/server-card.json`.
-- **A new look.** [grok.faf.one](https://grok.faf.one) is redesigned, with the current facts: 19 tools hosted, 12 by default locally.
-- **Node 22 or later**, like faf-cli 8 and the rest of the FAF family.
+- **Server instructions.** When Grok connects, the server says how its tools fit together: context (project.faf) and memory (.fafm), which tool checks, creates or syncs, the refresh tools, and that `rag_query` needs an xAI Collection.
+- **faf-cli 8.5.0 inside.** `faf_init` detects a skills repo: `SKILL.md` folders make it `skills` (10 slots), and a Claude Code plugin manifest makes it `skills-plugin` (14).
+- **Advisories cleared** in the MCP SDK, proxy-addr and hono.
 
+> Earlier: v2.1.0 — **The New Era Edition** — glass-box tools: every tool says if it reads, writes or rewrites; its own FAF passport at grok.faf.one; a new look.
+>
 > Earlier: v2.0.0 — **The Always33 Edition** — one engine, one number: every score is faf-cli 8's always-33 kernel, on npm and on mcpaas.live. ZEPH is opt-in until the Zig engine is always-33.
 
 ☆ Bookmark [grok.faf.one](https://grok.faf.one) for later.
@@ -365,7 +365,9 @@ sh scripts/run-tests.sh
 
 ---
 
-## Status & known limitations (v2.1)
+## Status & known limitations (v2.2)
+
+v2.2.0 — **The Instructions Edition** — server instructions in initialize (615 characters) and faf-cli 8.5.0, which detects skills repos. Scoring is unchanged from v2.0.0.
 
 v2.1.0 — **The New Era Edition** — glass-box tools (every tool labelled read, write or rewrite), its own FAF passport at grok.faf.one, a new look. Scoring is unchanged from v2.0.0.
 

@@ -1,6 +1,6 @@
 {
   "name": "grok-faf-mcp",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "mcpName": "one.faf/grok-faf-mcp",
   "description": "Persistent Project Context for xAI Grok. IANA-registered .faf format, MCP server on a URL.",
   "icon": "./assets/icons/faf-icon-256.png",
@@ -114,7 +114,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.27.1",
     "@upstash/redis": "^1.37.0",
-    "faf-cli": "^8.4.0",
+    "faf-cli": "^8.5.0",
     "slash-tokens": "^1.4.1",
     "yaml": "^2.4.1"
   },

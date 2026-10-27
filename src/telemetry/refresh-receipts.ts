@@ -3,17 +3,9 @@
  *
  * Append-only event log of every refresh invocation: when fired, what triggered
  * it (auto signal vs manual), what intensity, what drift signal motivated it
- * (if any), what came back. The receipt trail IS the audit per
- * [[grok-drift-requirements]] "receipts as scale-asset" + the closed-loop
- * certainty doctrine ([[faf-telemetry-closed-loop-certainty]]): telemetry
+ * (if any), what came back. The receipt trail IS the audit: telemetry
  * makes the AI/human feedback loop MEASURABLE — did this refresh actually
  * help? The receipts let you prove it.
- *
- * Spec source:
- *   ~/PLANET-FAF/docs/GROK-FAF-MCP-1.5-CODING-SESSION-BREAKDOWN-2026-05-30.md §#7
- *   memory/grok-drift-requirements.md
- *   memory/faf-telemetry-closed-loop-certainty.md
- *   memory/quiet-receipt-doctrine.md (receipts citable, never broadcast)
  *
  * Auto-fire is GATED at the caller (orchestrator decides WHEN; this library
  * decides only HOW the event is recorded). Library never daemons by virtue

@@ -9,8 +9,7 @@
  * field. Moving to canonical so the orchestrator imports the same type
  * directly — no re-import chain that could break if take-a-hint reorganizes.
  *
- * `'block'` is advisory per `[[grok-agent-alignment]]` subordinate-not-
- * daemon — the orchestrator surfaces the level, the agent/user decides
+ * `'block'` is advisory (subordinate, not a daemon) — the orchestrator surfaces the level, the agent/user decides
  * whether to actually block. This function never forces.
  */
 

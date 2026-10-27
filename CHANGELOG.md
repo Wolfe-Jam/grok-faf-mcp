@@ -10,16 +10,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.2.0] - 2026-10-27 — The Instructions Edition
 
-**grok-faf-mcp now tells Grok how its tools fit together, context and memory: server instructions in initialize (615 characters), plus faf-cli 8.5.0, which knows a skills repo when it sees one.** 614 tests pass, 0 fail.
+**grok-faf-mcp now tells Grok how its tools fit together, context and memory: server instructions in initialize (615 characters), plus faf-cli 8.5.0, which knows a skills repo when it sees one.** 617 tests pass, 0 fail.
 
 ### Added
 - **Server instructions** (#166). `initialize` now returns `instructions`: 615 characters on how the tools fit together. Two jobs, context (project.faf) and memory (.fafm); `faf_score`, `faf_trust`, `faf_init` and `faf_sync` for context; `refresh_faf`, `refresh_fafm` and `refresh_blend` for memory; `faf_get_orchestration_policy` before `faf_orchestrate_recommendation`; `rag_query` needs an xAI Collection (`XAI_API_KEY`). `tests/server-instructions.test.ts` checks they are sent, stay under 1,000 characters, and name only listed tools.
 
 ### Changed
-- **faf-cli ^8.5.0** (#167 and this release, was ^8.0.0). `faf_init` now detects a skills repo: `SKILL.md` folders make it `skills` (10 slots); add `.claude-plugin/plugin.json` and it's `skills-plugin` (14 slots). A CLI or library that ships a skill keeps its type.
+- **faf-cli ^8.5.0** (#167 and this release, was ^8.0.0). `faf_init` now detects a skills repo: `SKILL.md` folders make it `skills` (10 slots); add `.claude-plugin/plugin.json` and it's `skills-plugin` (14 slots). A CLI or library that ships a skill keeps its type. faf-cli proves the detection in its own suite (`tests/detect/skills-detect.test.ts`, v8.5.0); `tests/wjttc-skills-compose.test.ts` checks that `faf_init` reaches it over MCP (skills, skills-plugin, and a CLI that ships a skill stays `cli`).
 
 ### Fixed
 - **Advisories cleared** (lockfile only): MCP SDK 1.32.1 (GHSA-6qxp-vccf-f47h) and proxy-addr 2.0.8 (GHSA-jqcg-44mw-7w3h) (#161); hono 4.13.13, serveStatic double-decode (#165).
+- **No internal references ship.** Comments that cited internal documents and notes are gone from `dist`, and `faf_init`'s help examples use `/Users/you/...` instead of a real home folder.
+
+### Not claimed
+- Instructions are offered to the client; the client decides whether the model sees them.
+- Detection reads files only: `SKILL.md` folders and `.claude-plugin/plugin.json`. It does not check that a skill is well written.
 
 ### Docs
 - The README hero is the new grok.faf.one (#159); line-by-line fixes on the Grok page (#160); the bun and stdio hello path for cloud agents (#162); a business card badge (#163).

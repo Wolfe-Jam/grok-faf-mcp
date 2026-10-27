@@ -9,7 +9,7 @@
  * Closes the observability asymmetry: `refresh_faf` wrote receipts (PR #132);
  * `refresh_fafm` did not — now BOTH refresh primitives leave a measurable trail.
  * The Closed-Loop Edition's "observability writes, not just reads," extended to
- * the memory layer. ([[faf-telemetry-closed-loop-certainty]])
+ * the memory layer.
  *
  * Storage: dedicated `.fafm-refresh-receipts.json` at cwd (configurable). Append-
  * only JSON event log with atomic writes. Visible (not gitignored).

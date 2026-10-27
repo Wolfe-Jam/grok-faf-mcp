@@ -19,7 +19,7 @@
 
 /**
  * The orchestrator's recommendation action — what the agent is being
- * advised to do. NEVER auto-fires (advisory-only per `[[grok-agent-alignment]]`).
+ * advised to do. NEVER auto-fires (advisory only).
  */
 export type RecommendationAction =
   | 'refresh_faf'

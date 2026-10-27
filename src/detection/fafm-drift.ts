@@ -4,11 +4,7 @@
  * Detects when `.fafm` content shows REPETITION-RATE drift — the AI re-saying
  * things it already said, signaling stale memory or session-data pollution.
  *
- * Spec source (Grok-defined WHAT, wolfejam HOW):
- *   ~/PLANET-FAF/docs/GROK-FAF-MCP-1.5-CODING-SESSION-BREAKDOWN-2026-05-30.md §#2
- *   memory/grok-drift-requirements.md       (parent drift-management spec)
- *   memory/grok-agent-alignment.md          ("tunable/observable policy")
- *   memory/fafm-not-about-scoring.md        (`score` here is a RATE gauge, not a quality tier)
+ * `score` here is a RATE gauge, not a quality tier.
  *
  * Doctrine: silent on clean state, never noisy — returns `null` when no drift
  * detected. The signal is consumed downstream by detection→refresh telemetry

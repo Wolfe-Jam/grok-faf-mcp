@@ -5,12 +5,6 @@
  * hint escalation) + orchestrator prioritization. The persistent layer that
  * turns one-shot drift signals (#2 / #11) into "this keeps happening" intel.
  *
- * Spec source:
- *   ~/PLANET-FAF/docs/GROK-FAF-MCP-1.5-CODING-SESSION-BREAKDOWN-2026-05-30.md §#12
- *   memory/grok-drift-requirements.md       (drift-management parent spec)
- *   memory/grok-agent-alignment.md          ("tunable/observable policy")
- *   memory/silent-drift-equals-fail-equals-forbidden.md
- *
  * Signal-agnostic design — accepts any string slot identifier. Two bridges
  * make consumption explicit:
  *   - `recordFromDriftSignal()` for #2 (each repeated_anchor = a slot)

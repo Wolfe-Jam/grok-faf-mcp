@@ -13,16 +13,29 @@ on:
     types: [published]
   workflow_dispatch: {}
 
+env:
+  MCP_PUBLISHER_VERSION: v1.8.6
+  # sha256 of mcp-publisher_linux_amd64.tar.gz at v1.8.6 (registry_1.8.6_checksums.txt)
+  MCP_PUBLISHER_SHA256: 1fbe93fc0783c2394d8012c8d6e50a59e98cb2cc2d216264cc69f405d0e21340
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install mcp-publisher
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.x'
+
+      - name: Install mcp-publisher (pinned, checksum verified)
         run: |
-          curl -sL "https://github.com/modelcontextprotocol/registry/releases/latest/download/mcp-publisher_linux_amd64.tar.gz" -o mcp-publisher.tar.gz
-          tar -xzf mcp-publisher.tar.gz && chmod +x ./mcp-publisher
+          set -e
+          curl -sSfL "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz" -o mcp-publisher.tar.gz
+          echo "${MCP_PUBLISHER_SHA256}  mcp-publisher.tar.gz" | sha256sum -c -
+          tar -xzf mcp-publisher.tar.gz mcp-publisher
+          chmod +x ./mcp-publisher
+          ./mcp-publisher --version
 
       - name: Verify server.json version == release tag
         if: github.event_name == 'release'
@@ -42,8 +55,10 @@ jobs:
           done
           echo "::error::mcpb asset never resolved to HTTP 200: $URL"; exit 1
 
-      - name: Login via DNS (one.faf namespace)
-        run: ./mcp-publisher login dns --domain faf.one --private-key "${{ secrets.FAF_ONE_MCP_PRIVATE_KEY }}"
+      - name: Login via DNS (one.faf namespace; the key from the environment)
+        env:
+          MCP_PRIVATE_KEY: ${{ secrets.FAF_ONE_MCP_PRIVATE_KEY }}
+        run: node .github/scripts/registry-login.mjs --domain faf.one
 
       - name: Publish to MCP Registry
         run: ./mcp-publisher publish server.json

@@ -7,12 +7,6 @@
  * `RefreshReceiptsLog` (PR #99) — same pure-core + FS-shim architecture,
  * different event type.
  *
- * Spec source:
- *   `#10` orchestrator code-gate consult (`~/export/grok-1-consult-
- *    orchestrator-code-gate-2026-05-31.md`)
- *   `[[grok-orchestrator-spec]]`
- *   `[[faf-telemetry-closed-loop-certainty]]` — measured, falsifiable
- *
  * Why this exists:
  *   PR 3's `faf_orchestrate_recommendation` tool needs to WRITE to this log
  *   (every analysis emits an auditable receipt — no silent decisions).

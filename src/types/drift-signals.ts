@@ -14,7 +14,7 @@
  *     these as their input shapes directly — no Like duplication, no
  *     silent-drift hazard
  *
- * `[[silent-drift-equals-fail-equals-forbidden]]` applied to the type layer:
+ * Silent drift is a failure, applied to the type layer:
  * one canonical shape, mechanical compile-fail if anyone tries to diverge.
  *
  * Spec source: Grok-1 Round 1 + Round 2 orchestrator consult feedback

@@ -1005,10 +1005,10 @@ Working on REAL filesystem: ${targetDir}
 Claude Desktop needs a target directory:
 
 **Usage**:
-  faf_init directory=/Users/wolfejam/my-project
+  faf_init directory=/Users/you/my-project
 
 **Example**:
-  faf_init directory=/Users/wolfejam/GALLERY-SVELTE
+  faf_init directory=/Users/you/my-svelte-app
 
 📁 Can't determine working directory automatically in Claude Desktop.
 ⚠️  Root filesystem (/) is read-only - specify your project path!`;

@@ -13,10 +13,7 @@
  *
  * Intensity matches drift rate per layer. Cost matches the rot location.
  *
- * Spec source:
- *   ~/PLANET-FAF/docs/GROK-FAF-MCP-1.5-CODING-SESSION-BREAKDOWN-2026-05-30.md §#5
- *   memory/refresh-fafm-cmd-shift-r.md   (LOCK: "blend = light .faf + strong .fafm,
- *                                                BAKED IN, NOT a dial")
+ * Blend = light .faf + strong .fafm, baked in, not a dial.
  *
  * Pure orchestrator — takes refresh callables as inputs, composes them. The
  * MCP handler in tools.ts binds the real `handleFafRefresh` / `handleFafmRefresh`

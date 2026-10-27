@@ -14,11 +14,6 @@
  * ADVISORY — the orchestrator surfaces the level, the agent/user decides
  * whether to actually block. This function never forces.
  *
- * Spec source:
- *   ~/PLANET-FAF/docs/GROK-FAF-MCP-1.5-CODING-SESSION-BREAKDOWN-2026-05-30.md §#13
- *   memory/grok-agent-alignment.md     (subordinate-not-daemon, advisory > automatic)
- *   memory/grok-drift-requirements.md  (instrument not autopilot)
- *
  * Pure function. No FS. No MCP. Deterministic.
  */
 
@@ -92,7 +87,7 @@ export interface EvaluateTakeAHintInput {
   drift_recurrence: number;
   /**
    * Optional threshold overrides — partial; missing levels fall back to
-   * defaults. Per `[[grok-agent-alignment]]` "tunable/observable policy".
+   * defaults: a tunable, observable policy.
    */
   thresholds?: Partial<EscalationThresholds>;
 }

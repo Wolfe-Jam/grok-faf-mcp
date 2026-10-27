@@ -1266,9 +1266,7 @@ export class FafToolHandler {
    * doctrine that .fafm memories are not scored.
    *
    * Spec source: Grok-1 consult 2026-05-30 (Round 1 + Round 2 — full JSON Schema
-   * + 6-tool coexistence; verbatim in ~/.claude/.../memory/grok-refresh-fafm-spec.md
-   * and ~/export/grok-1-response-refresh-fafm-spec-2026-05-30.md). Voice locked
-   * Round 3: "Refresh FAF Memory (.fafm)".
+   * + 6-tool coexistence). Voice locked Round 3: "Refresh FAF Memory (.fafm)".
    *
    * File resolution (cwd-relative, project-context style — extendable later):
    *   - `default` → primary: `soul.fafm`; fallback: first `*.fafm` in cwd
@@ -1535,7 +1533,7 @@ export class FafToolHandler {
    *   - `mode: 'blend'` (default, Cmd+R) → .faf (light) + .fafm (delta)
    *   - `mode: 'nuke'`  (Cmd+Shift+R)    → .faf (light) + .fafm (verbatim)
    *
-   * Per `[[refresh-fafm-cmd-shift-r]]`: blend is BAKED IN, NOT a dial. Both
+   * Blend is BAKED IN, NOT a dial. Both
    * layers ALWAYS fire — drift can land on either, you always want signal
    * from both. The mode only affects fafm intensity.
    *
@@ -2183,7 +2181,7 @@ ${debugInfo.permissions.fafError ? `   FAF Error: ${debugInfo.permissions.fafErr
 - Confirm: "Creating at ~/Projects/heritage-club-dubai/"
 
 ## Real Filesystem Only
-- ✅ \`/Users/wolfejam/Projects/my-app/\`
+- ✅ \`/Users/you/Projects/my-app/\`
 - ❌ \`/mnt/user-data/\` (container paths)
 - ❌ \`/home/claude/\` (container paths)
 

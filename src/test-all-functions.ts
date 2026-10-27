@@ -7,6 +7,7 @@
  * - All CLI features accessible via MCP
  */
 
+import * as path from 'path';
 import { ChampionshipToolHandler } from './handlers/championship-tools';
 
 const PERFORMANCE_TARGET = 50; // ms
@@ -137,7 +138,7 @@ function createTestArgs(toolName: string): any {
     case 'faf_trust':
       return { mode: 'confidence' };
     case 'faf_read':
-      return { path: '/Users/wolfejam/FAF/grok-faf-mcp/package.json' };
+      return { path: path.join(process.cwd(), 'package.json') };
     case 'faf_write':
       return { path: '/tmp/faf-test.txt', content: 'test' };
     case 'faf_list':

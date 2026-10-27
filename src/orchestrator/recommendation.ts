@@ -3,16 +3,12 @@
  *
  * Reads current substrate state, composes the 6 shipped 1.5 components into a
  * structured recommendation, writes an auditable receipt. Advisory only —
- * never auto-fires (subordinate-not-daemon per `[[grok-agent-alignment]]`).
+ * never auto-fires (subordinate, not a daemon).
  *
  * The "heavy orchestration layer" Grok-1 spec'd in FAF-DRIFT-DETECTION-SPEC
  * §9.5 + Appendix C, confirmed via two consult rounds 2026-05-31. Single
  * MCP tool: `faf_orchestrate_recommendation`. The agent calls it when it
  * wants a drift recommendation; the agent decides whether to act.
- *
- * Spec source:
- *   `~/export/grok-1-consult-orchestrator-code-gate-2026-05-31.md` + response
- *   `~/.claude/projects/-Users-wolfejam/memory/grok-orchestrator-spec.md`
  *
  * Architecture (pure-core + FS-shim, same as #5/#7/#12):
  *   analyzeAndRecommend(state)  — pure decision function, testable without FS

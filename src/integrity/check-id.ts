@@ -3,11 +3,10 @@
  *
  * Mechanical cross-check across meta-stamps in `.faf` / `.fafm` / package.json /
  * CHANGELOG / README. Surfaces contradictions between **stamped state** and
- * **live content** — closes the gap that `bi-sync` can't catch
- * ([[faf-sync-must-be-content-aware-not-handshake]]).
+ * **live content** — closes the gap that `bi-sync` can't catch.
  *
- * This is the FAF-substrate analog of Doc Gate 101 (the version-stamp
- * consistency check in pubpro) — mechanical, falsifiable, refuses to skim.
+ * This is the FAF-substrate analog of a release version-stamp consistency
+ * check — mechanical, falsifiable, refuses to skim.
  *
  * Pure function. No FS. No MCP. Deterministic — same inputs → same output
  * (the report shape carries no wall-clock fields).
@@ -16,12 +15,6 @@
  * with an optional `refs` arg to enable the package.json / CHANGELOG / README
  * checks the spec body explicitly describes as examples. 2-arg callers still
  * work; passing `refs` unlocks the full check set.
- *
- * Spec source:
- *   ~/PLANET-FAF/docs/GROK-FAF-MCP-1.5-CODING-SESSION-BREAKDOWN-2026-05-30.md §#11
- *   memory/faf-sync-must-be-content-aware-not-handshake.md
- *   memory/silent-drift-equals-fail-equals-forbidden.md
- *   memory/zig-cant-fake.md   (mechanical-verify beats trust)
  */
 
 import YAML from 'yaml';
@@ -105,8 +98,7 @@ export function checkId(
   const pkgName: string | undefined = (pkgDoc as { name?: unknown })?.name as string | undefined;
 
   // ── C1: .faf.human_context.when version ↔ package.json.version ──────────
-  // Catches the "current v1.3.1 / actually v1.4.9" silent-drift pattern that
-  // motivated [[faf-sync-must-be-content-aware-not-handshake]].
+  // Catches the "current v1.3.1 / actually v1.4.9" silent-drift pattern.
   if (pkgVersion !== undefined) {
     // `checked` means "the check actually ran" — we had its required inputs,
     // we looked, and we reached a conclusion (positive or negative). Absence

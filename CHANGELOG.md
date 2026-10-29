@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v2.2.1 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v2.2.2 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,13 @@ All notable changes to grok-faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.2.2] - 2026-10-29 — The Instructions Edition
+
+**Cleanup: removes leftover two-way sync wording.**
+
+### Fixed
+- **Leftover `bi-sync` wording removed** ([#164](https://github.com/Wolfe-Jam/grok-faf-mcp/issues/164)). Two-way sync was dropped by design long ago: project.faf pushes structured data out to CLAUDE.md and the other context files, and prose doesn't come back. The `faf_bi_sync` description, the README, SKILL.md and the CLAUDE.md footer still said two-way; they now match. `faf_bi_sync` still works as the old name for `faf_sync`.
 
 ## [2.2.1] - 2026-10-28 — The Instructions Edition
 

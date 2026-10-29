@@ -3,7 +3,7 @@ agent:
   name: grok-faf-mcp
   displayName: Grok FAF
   id: urn:air:grok.faf.one:agent:grok-faf-mcp
-  version: 2.2.1
+  version: 2.2.2
   description: "The first MCP server for Grok: persistent project context from your IANA-registered project.faf, scored always-33."
   homepage: https://grok.faf.one
 capabilities:

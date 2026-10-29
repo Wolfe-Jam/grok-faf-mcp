@@ -37,7 +37,11 @@
 
 **FAF defines. AGENTS.md instructs. AI codes.**
 
-## v2.2.1 — The Instructions Edition
+## v2.2.2 — The Instructions Edition
+
+**Cleanup: removes leftover two-way sync wording.** Two-way sync was dropped by design long ago: project.faf pushes structured data out, and prose doesn't come back. The last strings that still said two-way now match. `faf_bi_sync` still works as the old name for `faf_sync`.
+
+### v2.2.1
 
 **One rule for project questions: read project.faf first.** New line 2 of the server instructions: "For questions about the project (stack, goal, commands), read project.faf first and answer from it." The same rule in faf-mcp moved Grok Build from 0 of 3 to 2 of 3 runs reading project.faf first, on a repo where project.faf and package.json disagree (3-run pilot). 715 characters.
 

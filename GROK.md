@@ -23,7 +23,7 @@ Persistent project context for xAI Grok. The first MCP for Grok — Grok asked f
 - **What:** First MCP for Grok — also first FAF MCP online. Persistent AI context via IANA-registered .faf + .fafm.
 - **Why:** Every AI session starts from zero. grok-faf-mcp gives Grok persistent project DNA.
 - **Where:** npm registry, Cloudflare Workers (mcpaas.live/grok/mcp/v1), MCP Registry (one.faf/grok-faf-mcp)
-- **When:** Shipped 2026-10-27 — current v2.2.0 The Instructions Edition (initialize tells Grok how its tools fit together, context and memory; faf-cli 8.5.0 inside, which detects skills repos). v2.1.0 The New Era Edition (2026-10-05): every tool says if it reads, writes or rewrites. v2.0.0 The Always33 Edition (2026-09-27): every score is faf-cli 8's always-33 kernel.
+- **When:** Shipped 2026-10-27 — current v2.2.1 The Instructions Edition (initialize tells Grok how its tools fit together, context and memory; faf-cli 8.5.0 inside, which detects skills repos). v2.1.0 The New Era Edition (2026-10-05): every tool says if it reads, writes or rewrites. v2.0.0 The Always33 Edition (2026-09-27): every score is faf-cli 8's always-33 kernel.
 - **How:** bunx grok-faf-mcp (local stdio) or hosted on Cloudflare Workers (mcpaas.live/grok/mcp/v1) — 12 core tools by default (extended set behind FAF_TOOLS=all), Streamable HTTP transport, Mk4 WASM scoring kernel
 
 ---

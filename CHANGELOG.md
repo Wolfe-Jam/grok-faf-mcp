@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v2.2.0 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v2.2.1 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -8,7 +8,9 @@ All notable changes to grok-faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.2.1] - 2026-10-28 — The Instructions Edition
+
+**One rule for project questions: read project.faf first.**
 
 ### Changed
 - **Server instructions: a rule for project questions.** New line 2: "For questions about the project (stack, goal, commands), read project.faf first and answer from it." The same line in faf-mcp moved Grok Build from 0 of 3 to 2 of 3 runs reading project.faf first, on a repo where project.faf and package.json disagree (3-run pilot). 715 characters.

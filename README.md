@@ -37,7 +37,11 @@
 
 **FAF defines. AGENTS.md instructs. AI codes.**
 
-## v2.2.0 — The Instructions Edition
+## v2.2.1 — The Instructions Edition
+
+**One rule for project questions: read project.faf first.** New line 2 of the server instructions: "For questions about the project (stack, goal, commands), read project.faf first and answer from it." The same rule in faf-mcp moved Grok Build from 0 of 3 to 2 of 3 runs reading project.faf first, on a repo where project.faf and package.json disagree (3-run pilot). 715 characters.
+
+### v2.2.0
 
 **grok-faf-mcp now tells Grok how its tools fit together, context and memory: server instructions in initialize (615 characters), plus faf-cli 8.5.0, which knows a skills repo when it sees one.**
 

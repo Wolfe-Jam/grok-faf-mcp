@@ -106,7 +106,9 @@ jobs:
       - name: Generate TAF Receipt
         # main only: taf-receipts is main's proof over time; a dispatch on another
         # branch still runs CI but writes no receipt.
-        if: matrix.os == 'ubuntu-latest' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+        # macOS, not ubuntu: ubuntu skips the MCP-server suites (Bun-on-Linux epoll
+        # flake, see tests/wjttc-refresh.test.ts), so its receipt counted ~95 fewer tests.
+        if: matrix.os == 'macos-latest' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
         uses: Wolfe-Jam/faf-taf-git@v2.3.1
         with:
           test-output-file: /tmp/test-output.txt

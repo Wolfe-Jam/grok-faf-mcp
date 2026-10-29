@@ -8,6 +8,11 @@ All notable changes to grok-faf-mcp will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **Server instructions: a rule for project questions.** New line 2: "For questions about the project (stack, goal, commands), read project.faf first and answer from it." The same line in faf-mcp moved Grok Build from 0 of 3 to 2 of 3 runs reading project.faf first, on a repo where project.faf and package.json disagree (3-run pilot). 715 characters.
+
 ## [2.2.0] - 2026-10-27 — The Instructions Edition
 
 **grok-faf-mcp now tells Grok how its tools fit together, context and memory: server instructions in initialize (615 characters), plus faf-cli 8.5.0, which knows a skills repo when it sees one.** 617 tests pass, 0 fail.

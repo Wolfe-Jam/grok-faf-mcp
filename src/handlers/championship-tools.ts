@@ -284,7 +284,7 @@ Working on REAL filesystem: ${targetDir}
         },
         {
           name: 'faf_bi_sync',
-          description: '40ms bi-directional sync - Championship speed!',
+          description: 'Old name, kept callable; use faf_sync. One way: writes CLAUDE.md from project.faf. Never writes project.faf.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -1254,8 +1254,8 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
 
       if (result.success) {
         const syncTime = Date.now() - startSync;
-        const output = result.data?.output || `Bi-directional sync complete in ${syncTime}ms`;
-        return await this.formatResult('🔗 FAF Bi-Sync', output + (syncTime < 40 ? ' 🏎️' : ''));
+        const output = result.data?.output || `Synced project.faf → CLAUDE.md in ${syncTime}ms`;
+        return await this.formatResult('🔄 FAF Sync', output + (syncTime < 40 ? ' 🏎️' : ''));
       }
     } catch (engineError) {
       console.warn('FAF Engine bi-sync failed, using native:', engineError);
@@ -1273,7 +1273,7 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
     }
 
     const syncTime = Date.now() - startSync;
-    return await this.formatResult('🔗 FAF Bi-Sync', `Synced in ${syncTime}ms (native) ${syncTime < 40 ? '🏎️' : ''}`);
+    return await this.formatResult('🔄 FAF Sync', `Synced project.faf → CLAUDE.md in ${syncTime}ms (native) ${syncTime < 40 ? '🏎️' : ''}`);
   }
 
   private async handleTrust(args: ToolTypes.FafTrustArgs): Promise<CallToolResult> {
@@ -1491,7 +1491,7 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
           `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
           `1. faf_auto      → 🏆 Complete setup (start here!)\n` +
           `2. faf_score     → 📊 Check your rating (aim for 100%!)\n` +
-          `3. faf_bi_sync   → 🔄 Context-Mirroring (40ms magic)\n` +
+          `3. faf_sync      → 🔄 project.faf → CLAUDE.md (one way)\n` +
           `4. faf_list      → 📁 See your files (1ms fast)\n` +
           `5. faf_trust     → ✅ Validation modes (4 levels)\n\n` +
 
@@ -1552,8 +1552,8 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
 
           `Sync & Mirror:\n` +
           `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-          `• faf_sync      - One-way sync\n` +
-          `• faf_bi_sync   - Two-way Context-Mirror\n\n` +
+          `• faf_sync      - project.faf → CLAUDE.md (one way)\n` +
+          `• faf_bi_sync   - old name for faf_sync\n\n` +
 
           `Trust System (4 Modes):\n` +
           `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +

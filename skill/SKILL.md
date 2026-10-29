@@ -1,6 +1,6 @@
 ---
 name: faf-expert
-description: Expert in .faf (Foundational AI-context Format) files for persistent project context. Use when working with .faf files, project DNA, CLAUDE.md bi-sync, faf-cli commands, MCP server configuration, or AI-readiness scoring (0-100%). Updated for v2.8.0 Tool Visibility System.
+description: Expert in .faf (Foundational AI-context Format) files for persistent project context. Use when working with .faf files, project DNA, syncing project.faf into CLAUDE.md, faf-cli commands, MCP server configuration, or AI-readiness scoring (0-100%). Updated for v2.8.0 Tool Visibility System.
 ---
 
 # FAF Expert - Project DNA Specialist
@@ -21,7 +21,7 @@ description: Expert in .faf (Foundational AI-context Format) files for persisten
 Activate this skill when:
 - Creating or updating `.faf` files
 - Working with `CLAUDE.md` files
-- Running `faf` CLI commands (init, auto, score, formats, bi-sync)
+- Running `faf` CLI commands (init, auto, score, formats, sync)
 - Scoring project AI-readiness
 - Setting up MCP server (claude-faf-mcp)
 - Configuring tool visibility (v2.8.0+)
@@ -31,7 +31,7 @@ Activate this skill when:
 
 - **`.faf`** - YAML format, machine-readable project context
 - **`CLAUDE.md`** - Markdown format, human-readable project guide
-- **Bi-Sync** - `.faf ↔ CLAUDE.md` kept in sync automatically
+- **Sync** - `faf sync` writes CLAUDE.md from `.faf` (one way; `.faf` is the source)
 - **`project.faf`** - v1.2.0 standard naming
 
 ## Common Commands
@@ -42,7 +42,7 @@ faf init              # Create .faf from project
 faf auto              # Auto-detect stack and create .faf
 faf score             # Rate AI-readiness (0-100%)
 faf formats           # List 153+ supported formats
-faf bi-sync           # Sync .faf ↔ CLAUDE.md
+faf sync              # Write CLAUDE.md from .faf (one way)
 faf status            # Check project AI-readiness
 faf validate          # Validate .faf structure
 faf doctor            # Diagnose and fix issues
@@ -74,7 +74,7 @@ faf migrate           # Migrate to latest format
 - Essential Workflow: `faf`, `faf_auto`, `faf_init`, `faf_innit`, `faf_status`
 - Quality: `faf_score`, `faf_validate`, `faf_doctor`, `faf_audit`
 - Intelligence: `faf_formats`, `faf_stacks`, `faf_skills`
-- Sync: `faf_sync`, `faf_bi_sync`, `faf_update`, `faf_migrate`
+- Sync: `faf_sync` (old name `faf_bi_sync` still works), `faf_update`, `faf_migrate`
 - AI: `faf_chat`
 - Help: `faf_index`, `faf_faq`, `faf_about`
 
@@ -131,7 +131,7 @@ ai_readiness_score: 87
 1. **Start with `faf auto`** - Let it detect your stack
 2. **Review and refine** - Auto-detection is 85% accurate, tweak as needed
 3. **Run `faf score`** - Target 85%+ for championship context
-4. **Use `faf bi-sync`** - Keep .faf and CLAUDE.md in sync
+4. **Use `faf sync`** - Write CLAUDE.md from .faf after each change
 5. **Update regularly** - As project evolves, update context
 6. **Use core tools first** - Advanced tools are opt-in for specific needs
 

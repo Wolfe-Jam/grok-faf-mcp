@@ -123,7 +123,7 @@ export function fafToPlatformFormat(fafContent: string, targetPlatform: string):
 
     // Championship Footer
     content += `---\n\n`;
-    content += `**STATUS: BI-SYNC ACTIVE 🔗 - Synchronized with project.faf (.FAF Foundation)**\n\n`;
+    content += `**STATUS: SYNC ACTIVE - written from project.faf (one way)**\n\n`;
     content += `*Last Sync: ${new Date().toISOString()}*\n`;
     content += `*Sync Engine: .FAF Foundation*\n`;
     content += `*Target Platform: ${platformInfo.displayName}*\n`;

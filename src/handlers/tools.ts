@@ -284,7 +284,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_bi_sync',
-          description: 'Bi-directional sync between project.faf and CLAUDE.md. v4.5.0: Also sync to AGENTS.md, .cursorrules, GEMINI.md!',
+          description: 'Old name, kept callable; use faf_sync. One way: writes CLAUDE.md (or, with target, .cursorrules, .windsurfrules, .clinerules) from project.faf. Never writes project.faf.',
           inputSchema: {
             type: 'object',
             properties: {
@@ -1874,7 +1874,7 @@ export class FafToolHandler {
       return {
         content: [{
           type: 'text',
-          text: `🔗 Claude FAF Bi-Sync:\n\nFailed to bi-sync: ${result.error}`
+          text: `🔄 FAF Sync (project.faf → context files):\n\nFailed to sync: ${result.error}`
         }],
         isError: true
       };
@@ -1887,7 +1887,7 @@ export class FafToolHandler {
     return {
       content: [{
         type: 'text',
-        text: `🔗 Claude FAF Bi-Sync:\n\n${output}`
+        text: `🔄 FAF Sync (project.faf → context files):\n\n${output}`
       }]
     };
   }
@@ -1963,7 +1963,7 @@ that survives sessions, tools, and AI systems.
 HOW IT WORKS:
 1. Drop a file or paste the path
 2. Create .faf (Foundational AI-context Format)
-3. Talk to Claude to bi-sync it
+3. Ask Claude to sync it into CLAUDE.md
 4. You're done⚡
 
 🩵 You just made Claude Happy
@@ -2197,7 +2197,7 @@ All work: \`faf init\`, \`faf init new\`, \`faf init --new\`, \`faf init -new\`
 **Extensions:**
 - \`new\` - force overwrite existing
 - \`full\` - detailed output
-- \`bi\` - bi-directional sync
+- \`bi\` - sync project.faf → CLAUDE.md (one way)
 
 ## UX Rules
 1. **Don't offer option menus** - just solve it

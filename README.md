@@ -268,8 +268,7 @@ bunx grok-faf-mcp
 
 | Tool | Purpose |
 |------|---------|
-| `faf_sync` | Sync .faf → CLAUDE.md |
-| `faf_bi_sync` | Bi-directional .faf ↔ platform context |
+| `faf_sync` | Write CLAUDE.md, AGENTS.md, .cursorrules and GEMINI.md from project.faf. One way: it never writes project.faf. (`faf_bi_sync`, the old name, still works.) |
 | `faf_trust` | Validate .faf integrity |
 
 **Read & Write**

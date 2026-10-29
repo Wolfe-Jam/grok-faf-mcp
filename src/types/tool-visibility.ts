@@ -220,14 +220,14 @@ export const TOOL_REGISTRY: Record<string, ToolMetadata> = {
     name: 'faf_sync',
     visibility: 'core',
     category: 'sync',
-    description: 'Sync .faf with CLAUDE.md - Bi-directional context',
+    description: 'Write CLAUDE.md and other context files from project.faf (one way)',
     priority: 1,
   },
   faf_bi_sync: {
     name: 'faf_bi_sync',
     visibility: 'core',
     category: 'sync',
-    description: 'Bi-directional sync between .faf context and CLAUDE.md',
+    description: 'Old name for faf_sync, kept callable (one way: project.faf → CLAUDE.md)',
     priority: 2,
   },
   faf_update: {

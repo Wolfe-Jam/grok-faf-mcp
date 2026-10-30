@@ -90,6 +90,8 @@ jobs:
         run: npm ci
 
       - name: Run tests (bun)
+        id: tests
+        continue-on-error: true    # keep going, so a failed run still gets a receipt
         shell: bash
         run: |
           set -o pipefail
@@ -109,12 +111,17 @@ jobs:
         # macOS, not ubuntu: ubuntu skips the MCP-server suites (Bun-on-Linux epoll
         # flake, see tests/wjttc-refresh.test.ts), so its receipt counted ~95 fewer tests.
         if: matrix.os == 'macos-latest' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
-        uses: Wolfe-Jam/faf-taf-git@v2.3.1
+        uses: Wolfe-Jam/faf-taf-git@v2.4.2
         with:
           test-output-file: /tmp/test-output.txt
           auto-commit: 'true'
           commit-message: 'chore(taf): update .taf receipt [skip ci]'
           target-branch: taf-receipts
+
+      - name: Fail the job if the tests failed
+        # the test step keeps going so a red run still gets a receipt; this keeps the job red
+        if: steps.tests.outcome == 'failure'
+        run: exit 1
 
   # 🟢 Node Smoke — the server SHIPS to Node/npx users, so verify the built
   # artifact loads on the Node versions we support (incl. Windows).

@@ -111,7 +111,7 @@ jobs:
         # macOS, not ubuntu: ubuntu skips the MCP-server suites (Bun-on-Linux epoll
         # flake, see tests/wjttc-refresh.test.ts), so its receipt counted ~95 fewer tests.
         if: matrix.os == 'macos-latest' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
-        uses: Wolfe-Jam/faf-taf-git@v2.4.2
+        uses: Wolfe-Jam/faf-taf-git@v2.4.4
         with:
           test-output-file: /tmp/test-output.txt
           auto-commit: 'true'

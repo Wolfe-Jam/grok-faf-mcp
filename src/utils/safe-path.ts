@@ -97,7 +97,9 @@ function canonicalize(input: string): string {
 }
 
 /**
- * Roots for the general-purpose file tools (`faf_read` / `faf_write`). Unlike
+ * Roots for the general-purpose read tool (`faf_read`). `faf_write` does NOT
+ * use these: it is confined to the real cwd only (see resolveWriteTarget in
+ * handlers/fileHandler.ts). Unlike
  * the `.faf` tools, these legitimately handle any file *type* — but they must
  * still be confined to the project. Default root = the process cwd; override /
  * extend with `FAF_ALLOWED_ROOTS`.

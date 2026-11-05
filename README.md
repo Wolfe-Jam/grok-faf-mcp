@@ -282,7 +282,7 @@ bunx grok-faf-mcp
 | Tool | Purpose |
 |------|---------|
 | `faf_read` | Read any file |
-| `faf_write` | Write any file |
+| `faf_write` | Write a file inside the project. Never writes `.faf-dna`; replacing an existing `*.faf`, `CLAUDE.md` or `AGENTS.md` needs `overwrite: true` |
 | `faf_list` | Discover projects with .faf files |
 
 **RAG & Grok-Exclusive**

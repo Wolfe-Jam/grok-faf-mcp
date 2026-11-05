@@ -12,7 +12,6 @@
 
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import * as crypto from 'crypto';
 import { colors } from '../fix-once/colors';
 
 // ==================== TYPE DEFINITIONS ====================
@@ -103,71 +102,9 @@ export class FafDNAManager {
     this.dnaPath = path.join(projectPath, '.faf-dna');
   }
 
-  /**
-   * Initialize DNA (Birth)
-   */
-  async birth(birthDNA: number, fromClaudeMD: boolean = true): Promise<FafDNA> {
-    // Generate birth certificate
-    const birthCertificate: BirthCertificate = {
-      born: new Date(),
-      birthDNA,
-      birthDNASource: fromClaudeMD ? 'CLAUDE.md' : 'legacy',
-      projectDNA: await this.generateProjectDNA(),
-      authenticated: false,
-      certificate: this.generateCertificate()
-    };
-
-    // Create initial version
-    const initialVersion: VersionEntry = {
-      version: 'v1.0.0',
-      timestamp: new Date(),
-      score: birthDNA,
-      changes: ['Initial context from CLAUDE.md'],
-      approved: false,
-      growth: 0,
-      growthRate: 0
-    };
-
-    // Initialize DNA structure
-    this.dna = {
-      birthCertificate,
-      versions: [initialVersion],
-      current: {
-        version: 'v1.0.0',
-        score: birthDNA,
-        approved: false,
-        lastSync: new Date()
-      },
-      recovery: {
-        claudeMD: path.join(this.projectPath, 'CLAUDE.md'),
-        lastBackup: new Date(),
-        syncStatus: 'active',
-        autoRecover: true
-      },
-      growth: {
-        totalGrowth: 0,
-        daysActive: 0,
-        averageDailyGrowth: 0,
-        bestDay: { date: new Date(), growth: 0 },
-        bestWeek: { start: new Date(), growth: 0 },
-        milestones: [
-          {
-            type: 'birth',
-            score: birthDNA,
-            date: new Date(),
-            version: 'v1.0.0',
-            label: 'Birth',
-            emoji: '🐣'
-          }
-        ]
-      },
-      lastModified: new Date(),
-      format: 'faf-dna-v1'
-    };
-
-    await this.save();
-    return this.dna;
-  }
+  // No birth routine ships here. The `.faf-dna` birth certificate is written
+  // once per project and never reissued, so this package has no code path that
+  // creates one. This manager only operates on a record it has load()ed.
 
   /**
    * Authenticate the DNA (Birth Certificate)
@@ -394,37 +331,6 @@ export class FafDNAManager {
       JSON.stringify(this.dna, null, 2),
       'utf-8'
     );
-  }
-
-  /**
-   * Generate unique project DNA hash
-   */
-  private async generateProjectDNA(): Promise<string> {
-    const projectInfo = [
-      this.projectPath,
-      Date.now().toString(),
-      Math.random().toString(36)
-    ].join(':');
-
-    return crypto
-      .createHash('sha256')
-      .update(projectInfo)
-      .digest('hex')
-      .substring(0, 16);
-  }
-
-  /**
-   * Generate certificate number
-   */
-  private generateCertificate(): string {
-    const year = new Date().getFullYear();
-    const random = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const projectName = path.basename(this.projectPath)
-      .replace(/[^A-Z0-9]/gi, '')  // Remove special characters
-      .toUpperCase()
-      .substring(0, 8)
-      .padEnd(4, 'X');  // Ensure minimum length
-    return `FAF-${year}-${projectName}-${random}`;
   }
 
   /**

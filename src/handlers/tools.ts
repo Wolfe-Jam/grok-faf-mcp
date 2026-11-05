@@ -1,7 +1,7 @@
 import type { CallToolResult, Tool } from '@modelcontextprotocol/sdk/types.js';
 import * as os from 'os';
 import { FafEngineAdapter } from './engine-adapter';
-import { fileHandlers } from './fileHandler';
+import { fileHandlers, FAF_WRITE_DESCRIPTION, FAF_WRITE_INPUT_SCHEMA } from './fileHandler';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
@@ -339,22 +339,9 @@ export class FafToolHandler {
         },
         {
           name: 'faf_write',
-          description: 'Write a file within the project root (cwd / FAF_ALLOWED_ROOTS). Paths that escape the project are refused.',
+          description: FAF_WRITE_DESCRIPTION,
           annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
-          inputSchema: {
-            type: 'object',
-            properties: {
-              path: {
-                type: 'string',
-                description: 'Absolute or relative file path to write'
-              },
-              content: {
-                type: 'string',
-                description: 'Content to write to the file'
-              }
-            },
-            required: ['path', 'content'],
-          }
+          inputSchema: FAF_WRITE_INPUT_SCHEMA
         },
         {
           name: 'faf_list',

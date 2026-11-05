@@ -77,6 +77,9 @@ const FRC_TOOLS = new Set<string>([
   'faf_memory',
 ]);
 
+/** The parts of a sync result the reply reads. */
+interface SyncReply { message?: string; output?: string; refused?: unknown[] }
+
 export class FafToolHandler {
   constructor(private engineAdapter: FafEngineAdapter) {}
 
@@ -275,11 +278,17 @@ export class FafToolHandler {
         },
         {
           name: 'faf_sync',
-          description: 'Sync project.faf into your AI context files (CLAUDE.md, AGENTS.md, .cursorrules, GEMINI.md). Non-destructive: injects a structured .faf block at the top for fast machine reading and preserves your prose below. One source of truth, every tool kept current.',
+          description: 'Sync project.faf into your AI context files: CLAUDE.md, plus .cursorrules, .windsurfrules and .clinerules when they exist (target: all writes every one). Non-destructive: puts a structured .faf block at the top and keeps your own text; a file faf cannot safely write (not UTF-8, a link out of the project) is left unchanged and named in the reply. One way: never writes project.faf.',
           annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
-            properties: {},
+            properties: {
+              target: {
+                type: 'string',
+                enum: ['auto', '.clinerules', '.cursorrules', '.windsurfrules', 'CLAUDE.md', 'all'],
+                description: 'auto (default): CLAUDE.md plus the files that already exist; a single file; or all'
+              }
+            },
           }
         },
         {
@@ -1803,29 +1812,9 @@ export class FafToolHandler {
   }
 
 
-  private async handleFafSync(_args: any): Promise<CallToolResult> {  // ✅ FIXED: Prefixed unused args
-    const result = await this.engineAdapter.callEngine('sync');
-
-    if (!result.success) {
-      return {
-        content: [{
-          type: 'text',
-          text: `🔄 Claude FAF Sync:\n\nFailed to sync: ${result.error}`
-        }],
-        isError: true
-      };
-    }
-
-    const output = typeof result.data === 'string'
-      ? result.data
-      : result.data?.output || JSON.stringify(result.data, null, 2);
-
-    return {
-      content: [{
-        type: 'text',
-        text: `🔄 Claude FAF Sync:\n\n${output}`
-      }]
-    };
+  /** faf_sync and its old name faf_bi_sync: write the faf block from project.faf into the context files. */
+  private async handleFafSync(args: any): Promise<CallToolResult> {
+    return this.handleFafBiSync(args);
   }
 
   /** Dropped: silent AI rewrite of project.faf. Old clients get the reason, not a write. */
@@ -1861,21 +1850,25 @@ export class FafToolHandler {
       return {
         content: [{
           type: 'text',
-          text: `🔄 FAF Sync (project.faf → context files):\n\nFailed to sync: ${result.error}`
+          text: `🔄 FAF Sync (project.faf → context files):\n\nFailed to sync: ${result.error ?? (result.data as SyncReply | undefined)?.message ?? 'unknown reason'}`
         }],
         isError: true
       };
     }
 
-    const output = typeof result.data === 'string'
-      ? result.data
-      : result.data?.output || JSON.stringify(result.data, null, 2);
+    // The message is written for people: files synced, files refused and why, faf's notes.
+    const data = result.data as SyncReply | string | undefined;
+    const output = typeof data === 'string'
+      ? data
+      : data?.message || data?.output || JSON.stringify(data, null, 2);
+    const partial = typeof data === 'object' && Array.isArray(data?.refused) && data.refused.length > 0;
 
     return {
       content: [{
         type: 'text',
         text: `🔄 FAF Sync (project.faf → context files):\n\n${output}`
-      }]
+      }],
+      ...(partial ? { isError: true } : {})
     };
   }
 

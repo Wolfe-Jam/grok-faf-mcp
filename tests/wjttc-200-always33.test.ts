@@ -304,7 +304,7 @@ serverSuite('🏁 WJTTC-200 — the tools give faf-cli\'s number', () => {
     // Negative control — proves the spy would catch a shell-out.
     const before = engineCalls.length;
     await client.callTool({ name: 'faf_sync', arguments: {} });
-    expect(engineCalls.slice(before)).toContain('sync');
+    expect(engineCalls.slice(before)).toContain('bi-sync');
   });
 });
 

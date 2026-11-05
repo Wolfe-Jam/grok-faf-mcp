@@ -180,7 +180,7 @@ describe('🏁 Desktop-Native MCP Championship Tests', () => {
       
       const operations = [
         { name: 'faf_read', args: { path: __filename }},
-        { name: 'faf_write', args: { path: '/tmp/perf.txt', content: 'test' }},
+        { name: 'faf_write', args: { path: 'perf.txt', content: 'test' }},
         { name: 'faf_score', args: {}},
         { name: 'faf_debug', args: {}}
       ];

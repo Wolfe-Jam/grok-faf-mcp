@@ -19,6 +19,7 @@ import { injectFafBlock } from '../faf-core/inject.js';
 import { fafToPlatformFormat } from '../faf-core/commands/bi-sync.js';
 import type * as ToolTypes from './tool-types.js';
 import { VERSION } from '../version.js';
+import { handleFafWrite, FAF_WRITE_DESCRIPTION, FAF_WRITE_INPUT_SCHEMA } from './fileHandler.js';
 import { getVisibilityConfig } from '../config/visibility.js';
 import { filterTools } from './tool-registry.js';
 import { autoDetectPath } from '../utils/auto-path-detection.js';
@@ -721,15 +722,9 @@ Working on REAL filesystem: ${targetDir}
         },
         {
           name: 'faf_write',
-          description: 'Write any file',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              path: { type: 'string', description: 'File path' },
-              content: { type: 'string', description: 'File content' }
-            },
-            required: ['path', 'content']
-          }
+          description: FAF_WRITE_DESCRIPTION,
+          annotations: { readOnlyHint: false, destructiveHint: true, openWorldHint: false },
+          inputSchema: FAF_WRITE_INPUT_SCHEMA
         },
         {
           name: 'faf_skills',
@@ -2118,8 +2113,9 @@ Performance: <50ms per operation
   }
 
   private async handleWrite(args: ToolTypes.FafWriteArgs): Promise<CallToolResult> {
-    await fs.writeFile(args.path, args.content);
-    return await this.formatResult('💾 File Written', `Saved to ${args.path}`);
+    // Same guarded path as the live faf_write: cwd-only, no .faf-dna, no
+    // silent overwrite of context files, atomic temp + rename.
+    return await handleFafWrite(args);
   }
 
   private async handleSkills(args: { directory?: string }): Promise<CallToolResult> {

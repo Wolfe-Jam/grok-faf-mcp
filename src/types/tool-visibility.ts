@@ -384,7 +384,7 @@ export const TOOL_REGISTRY: Record<string, ToolMetadata> = {
     name: 'faf_write',
     visibility: 'advanced',
     category: 'file',
-    description: 'Write content to .faf file',
+    description: 'Write a file inside the project (no .faf-dna; existing context files need overwrite: true)',
   },
   faf_list: {
     name: 'faf_list',

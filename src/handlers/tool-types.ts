@@ -156,6 +156,8 @@ export interface FafReadArgs {
 export interface FafWriteArgs {
   path: string;
   content: string;
+  /** Required to replace an existing *.faf, CLAUDE.md or AGENTS.md. */
+  overwrite?: boolean;
 }
 
 // NEW: 10 HIGH-PRIORITY CLI→MCP Continuity Tool Args

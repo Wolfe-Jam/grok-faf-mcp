@@ -278,7 +278,7 @@ export class FafToolHandler {
         },
         {
           name: 'faf_sync',
-          description: 'Sync project.faf into your AI context files: CLAUDE.md, plus .cursorrules, .windsurfrules and .clinerules when they exist (target: all writes every one). Non-destructive: puts a structured .faf block at the top and keeps your own text; a file faf cannot safely write (not UTF-8, a link out of the project) is left unchanged and named in the reply. One way: never writes project.faf.',
+          description: 'Sync project.faf into your AI context files: the ones that exist (CLAUDE.md, .cursorrules, .windsurfrules, .clinerules), or CLAUDE.md when there are none (target: all writes every one). Non-destructive: puts a structured .faf block at the top and keeps your own text; a file faf cannot safely write (not UTF-8, a link out of the project) is left unchanged and named in the reply. One way: never writes project.faf.',
           annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false },
           inputSchema: {
             type: 'object',
@@ -286,7 +286,7 @@ export class FafToolHandler {
               target: {
                 type: 'string',
                 enum: ['auto', '.clinerules', '.cursorrules', '.windsurfrules', 'CLAUDE.md', 'all'],
-                description: 'auto (default): CLAUDE.md plus the files that already exist; a single file; or all'
+                description: 'auto (default): the context files that already exist, or CLAUDE.md when there are none; a single file; or all'
               }
             },
           }

@@ -24,6 +24,8 @@ export interface BiSyncResult {
   conflicts: string[];
   duration: number;
   message: string;
+  /** faf-cli's notes on files it prefixed instead of replacing (legacy stamp, unpaired marker). */
+  notes?: string[];
 }
 
 /**
@@ -188,7 +190,8 @@ export async function syncBiDirectional(projectPath?: string, options: BiSyncOpt
 
       // Generate platform-specific content — non-destructive: inject/update the faf block, preserve the rest.
       const platformContent = fafToPlatformFormat(fafContent, target);
-      await injectFafBlock(targetPath, platformContent);
+      const note = await injectFafBlock(targetPath, platformContent);
+      if (note) (result.notes ??= []).push(note);
 
       result.filesChanged.push(path.basename(targetPath));
     }
@@ -203,6 +206,9 @@ export async function syncBiDirectional(projectPath?: string, options: BiSyncOpt
     } else {
       const platforms = targetsToSync.map(t => PLATFORM_TARGETS[t].displayName).join(', ');
       result.message = `Synced to ${targetsToSync.length} platforms (${platforms})! FAF Score: ${currentScore}`;
+    }
+    if (result.notes?.length) {
+      result.message += `\n\n${result.notes.join('\n')}`;
     }
 
     return result;

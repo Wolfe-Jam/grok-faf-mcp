@@ -16,7 +16,7 @@ const blocks = (s: string) => (s.match(/faf:start/g) || []).length;
 function tmp(): string { return mkdtempSync(join(tmpdir(), 'grok-nd-')); }
 
 describe('injectFafBlock — non-destructive', () => {
-  test('prefix preserves; markers update in place; legacy reclaimed; idempotent', async () => {
+  test('prefix preserves; markers update in place; idempotent', async () => {
     const p = join(tmp(), 'F.md');
     await fs.writeFile(p, `# Mine\n${MARK}\n`);
     await injectFafBlock(p, 'v1');

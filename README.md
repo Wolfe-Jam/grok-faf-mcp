@@ -19,7 +19,7 @@
 **Home:** [faf.one/grok](https://faf.one/grok)
 **Live demo:** [grok.faf.one](https://grok.faf.one)
 
-⭐ [Star it on GitHub](https://github.com/Wolfe-Jam/grok-faf-mcp): bookmarks it for you, helps other devs find it too.
+⭐ [Star faf-cli on GitHub](https://github.com/Wolfe-Jam/faf-cli), the CLI this server is built on: bookmarks it for you, helps other devs find it too.
 
 ![grok-faf-mcp hero](https://raw.githubusercontent.com/Wolfe-Jam/grok-faf-mcp/main/assets/grok-faf-mcp-hero.png)
 

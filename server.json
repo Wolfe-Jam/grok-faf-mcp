@@ -33,7 +33,7 @@
       ]
     }
   ],
-  "version": "2.2.2",
+  "version": "2.2.3",
   "repository": {
     "url": "https://github.com/Wolfe-Jam/grok-faf-mcp",
     "source": "github"
@@ -43,7 +43,7 @@
     {
       "registryType": "npm",
       "identifier": "grok-faf-mcp",
-      "version": "2.2.2",
+      "version": "2.2.3",
       "transport": {
         "type": "stdio"
       }

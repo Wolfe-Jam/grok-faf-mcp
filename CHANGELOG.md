@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v2.2.2 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v2.2.3 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,17 @@ All notable changes to grok-faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.2.3] - 2026-11-05 — The Instructions Edition
+
+**faf_write can no longer overwrite the birth certificate or your context files.**
+
+### Fixed
+- **`faf_write` refuses `.faf-dna`** in every spelling and route: case, `..` detours, absolute paths, symlinks, symlinked folders, Windows short names (`FAF-DN~1`), stream names (`.faf-dna:x`), trailing dots and spaces, and `overwrite: true` ([#183](https://github.com/Wolfe-Jam/grok-faf-mcp/pull/183)).
+- **Existing `project.faf`, other `*.faf`, `CLAUDE.md` and `AGENTS.md` need `overwrite: true`.** New files write as before.
+- **Writes stay in the project folder:** nothing in `.git/`, nothing in the temp dir, nothing outside cwd. Checked on the resolved real path.
+- **Atomic writes:** a temp file in the same folder, then a rename; file permissions kept; read-only files refused.
+- **Removed** the unused `.faf-dna` writers (`birth()`, `authenticate()`, `recordGrowth()`) that shipped in the package. A second `faf_write` copy now goes through the same guard.
 
 ## [2.2.2] - 2026-10-29 — The Instructions Edition
 

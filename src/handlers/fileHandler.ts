@@ -180,10 +180,18 @@ export async function handleFafRead(args: any): Promise<CallToolResult> {
 /** The birth certificate. Written once per project, never by this tool. */
 const BIRTH_CERTIFICATE = '.faf-dna';
 
+const IS_WINDOWS = process.platform === 'win32';
+
 /** Normalise a path segment for name comparison: case-folded, and with the
- *  trailing dots/spaces Windows silently strips (".faf-dna." === ".faf-dna"). */
+ *  trailing dots/spaces Windows silently strips (".faf-dna." and ".faf-dna "
+ *  both open ".faf-dna"). */
 function segmentKey(segment: string): string {
   return segment.toLowerCase().replace(/[. ]+$/, '');
+}
+
+/** Path segments after the root (drive letter / UNC share / leading slash). */
+function segmentsAfterRoot(p: string): string[] {
+  return p.slice(path.parse(p).root.length).split(/[\\/]+/).filter((seg) => seg.length > 0);
 }
 
 function hasSegment(p: string, name: string): boolean {
@@ -204,13 +212,15 @@ export class WriteGuardError extends Error {
 }
 
 /** Real path of `p`, tolerating a missing tail: resolve the nearest existing
- *  ancestor through symlinks, then re-append the missing segments. */
-function realPathTolerant(p: string): string {
+ *  ancestor through symlinks, then re-append the missing segments. With
+ *  `native`, the OS resolver is used, which on Windows also expands 8.3 short
+ *  names ("FAF-DN~1" -> ".faf-dna"). */
+function realPathTolerant(p: string, native = false): string {
   let cur = p;
   const tail: string[] = [];
   for (;;) {
     try {
-      const real = fsSync.realpathSync(cur);
+      const real = native ? fsSync.realpathSync.native(cur) : fsSync.realpathSync(cur);
       return tail.length ? path.join(real, ...tail.reverse()) : real;
     } catch {
       const parent = path.dirname(cur);
@@ -232,13 +242,18 @@ export interface WriteTarget {
  * Every faf_write check, before anything touches the disk. Throws
  * WriteGuardError on refusal.
  *
- *   1. `.faf-dna` anywhere in the path (any case) — always refused.
+ *   1. `.faf-dna` anywhere in the path (any case, trailing dots/spaces
+ *      ignored) — always refused. On Windows any segment containing `:` (NTFS
+ *      stream names such as `.faf-dna::$DATA`) is refused, and the OS real path
+ *      is checked too, so an 8.3 short name (`FAF-DN~1`) cannot reach it.
  *   2. Confined to the real cwd. No OS temp dir, no FAF_ALLOWED_ROOTS widening.
  *      Directory symlinks are resolved first, so a link out of cwd is caught.
  *   3. Nothing inside `.git/` (hooks, config, refs).
  *   4. The final component must not be a symlink (covers a link to `.faf-dna`
  *      or to a file outside cwd).
- *   5. An existing *.faf / CLAUDE.md / AGENTS.md needs overwrite: true.
+ *   5. An existing target must be writable: a read-only file is refused, not
+ *      renamed over.
+ *   6. An existing *.faf / CLAUDE.md / AGENTS.md needs overwrite: true.
  */
 export function resolveWriteTarget(rawPath: unknown, overwrite: boolean): WriteTarget {
   if (typeof rawPath !== 'string' || rawPath.length === 0) {
@@ -263,6 +278,15 @@ export function resolveWriteTarget(rawPath: unknown, overwrite: boolean): WriteT
       ? path.join(os.homedir(), rawPath.slice(2))
       : rawPath;
   const lexical = path.resolve(root, expanded);
+  if (IS_WINDOWS) {
+    // NTFS alternate data streams: ".faf-dna::$DATA" and ".faf-dna:x" open the
+    // birth certificate's own file. No legitimate project path needs ':' here.
+    for (const seg of segmentsAfterRoot(lexical)) {
+      if (!seg.includes(':')) continue;
+      if (segmentKey(seg.slice(0, seg.indexOf(':'))) === BIRTH_CERTIFICATE) throw refuseDna();
+      throw new WriteGuardError(`refusing to write "${rawPath}": ':' is not allowed in a file or folder name.`);
+    }
+  }
   if (hasSegment(lexical, BIRTH_CERTIFICATE)) throw refuseDna();
 
   // Final component: never write through a symlink. Inspect where it points so
@@ -290,6 +314,10 @@ export function resolveWriteTarget(rawPath: unknown, overwrite: boolean): WriteT
 
   const target = path.join(realPathTolerant(path.dirname(lexical)), path.basename(lexical));
   if (hasSegment(target, BIRTH_CERTIFICATE)) throw refuseDna();
+  // Name aliases: the OS resolver maps an 8.3 short name (FAF-DN~1) to the
+  // long name. Checked on the target when it exists, else on its nearest
+  // existing ancestor.
+  if (hasSegment(realPathTolerant(lexical, true), BIRTH_CERTIFICATE)) throw refuseDna();
 
   const rel = path.relative(root, target);
   if (rel === '' || rel === '..' || rel.startsWith('..' + path.sep) || path.isAbsolute(rel)) {
@@ -309,6 +337,21 @@ export function resolveWriteTarget(rawPath: unknown, overwrite: boolean): WriteT
       throw new WriteGuardError(`refusing to write "${rawPath}": it exists and is not a regular file.`);
     }
     exists = true;
+    // Read-only stays read-only: the rename would otherwise replace it.
+    let writable = (st.mode & 0o200) !== 0;
+    if (writable) {
+      try {
+        fsSync.accessSync(target, fsSync.constants.W_OK);
+      } catch {
+        writable = false;
+      }
+    }
+    if (!writable) {
+      throw new WriteGuardError(
+        `refusing to write "${rawPath}": the existing file is read-only. ` +
+          'Make it writable first if it should change.',
+      );
+    }
   } catch (err) {
     if (err instanceof WriteGuardError) throw err;
     exists = false;
@@ -333,10 +376,9 @@ export function resolveWriteTarget(rawPath: unknown, overwrite: boolean): WriteT
  */
 async function atomicWrite(target: string, content: string, exclusive: boolean): Promise<void> {
   const dir = path.dirname(target);
-  const tmp = path.join(
-    dir,
-    `.${path.basename(target)}.faf-write-${process.pid}-${crypto.randomBytes(6).toString('hex')}.tmp`,
-  );
+  // Short fixed-length name: a long but legal target name must not push the
+  // temp name past the filesystem's name limit (ENAMETOOLONG).
+  const tmp = path.join(dir, `.faf-tmp-${crypto.randomBytes(6).toString('base64url')}`);
   let mode: number | undefined;
   try {
     mode = (await fs.stat(target)).mode & 0o777;

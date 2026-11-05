@@ -84,8 +84,10 @@ async function write(args: Record<string, unknown>): Promise<any> {
 }
 
 function leftovers(dir: string): string[] {
-  return fs.readdirSync(dir).filter((n) => n.includes('.faf-write-'));
+  return fs.readdirSync(dir).filter((n) => n.startsWith('.faf-tmp-') || n.includes('.faf-write-'));
 }
+
+const IS_WINDOWS = process.platform === 'win32';
 
 beforeAll(async () => {
   process.env.FAF_TOOLS = 'all'; // faf_write is in the extended set
@@ -157,6 +159,53 @@ describe('TRUST SEAL — faf_write behaviour: .faf-dna is never written', () => 
     expect(fs.readFileSync(path.join(proj, '.faf-dna')).equals(before)).toBe(true);
     expect(fs.existsSync(path.join(proj, 'nested'))).toBe(false);
     expect(fs.existsSync(path.join(proj, 'sub'))).toBe(false);
+  });
+
+  test('trailing dot and trailing space spellings are refused (Windows strips both)', async () => {
+    const before = fs.readFileSync(path.join(proj, '.faf-dna'));
+    for (const p of ['.faf-dna.', '.faf-dna ', '.faf-dna. .', '.FAF-DNA ', 'sub/.faf-dna ']) {
+      const res = await write({ path: p, content: REISSUE, overwrite: true });
+      expect(res.isError, JSON.stringify(p)).toBe(true);
+      expect(textOf(res), JSON.stringify(p)).toContain('birth certificate');
+    }
+    expect(fs.readFileSync(path.join(proj, '.faf-dna')).equals(before)).toBe(true);
+    expect(fs.readdirSync(proj).filter((n) => n.toLowerCase().startsWith('.faf-dna') && n !== '.faf-dna')).toEqual([]);
+    expect(fs.existsSync(path.join(proj, 'sub'))).toBe(false);
+  });
+
+  test.skipIf(!IS_WINDOWS)('Windows: NTFS stream names (.faf-dna:x, .faf-dna::$DATA) are refused', async () => {
+    const before = fs.readFileSync(path.join(proj, '.faf-dna'));
+    for (const p of ['.faf-dna:x', '.faf-dna::$DATA', '.FAF-DNA:$DATA', '.faf-dna.:x', 'sub\\.faf-dna:x']) {
+      const res = await write({ path: p, content: REISSUE, overwrite: true });
+      expect(res.isError, p).toBe(true);
+      expect(textOf(res), p).toContain('birth certificate');
+    }
+    // any other ':' in a name is refused on Windows too (no stream writes at all)
+    const other = await write({ path: 'notes.txt:hidden', content: 'x' });
+    expect(other.isError).toBe(true);
+    expect(textOf(other)).toContain("':'");
+    expect(fs.readFileSync(path.join(proj, '.faf-dna')).equals(before)).toBe(true);
+    expect(fs.existsSync(path.join(proj, 'notes.txt'))).toBe(false);
+  });
+
+  test.skipIf(!IS_WINDOWS)('Windows: the 8.3 short name of .faf-dna is refused', async () => {
+    const before = fs.readFileSync(path.join(proj, '.faf-dna'));
+    // `dir /x` lists the short name NTFS generated, if 8.3 generation is on for this volume.
+    const { spawnSync } = await import('child_process');
+    const out = spawnSync('cmd.exe', ['/d', '/c', 'dir', '/x', '/a', proj], { encoding: 'utf8' }).stdout ?? '';
+    const line = out.split(/\r?\n/).find((l) => /\s\.faf-dna\s*$/i.test(l)) ?? '';
+    const m = line.match(/\s(\S+~\d+)\s+\.faf-dna\s*$/i);
+    if (!m) {
+      console.log('[8.3 alias] UNVERIFIED: this volume generated no short name for .faf-dna');
+      return;
+    }
+    const short = m[1];
+    console.log(`[8.3 alias] VERIFIED: short name ${short} -> .faf-dna is refused`);
+    expect(fs.readFileSync(path.join(proj, short)).equals(before)).toBe(true); // the alias really opens it
+    const res = await write({ path: short, content: REISSUE, overwrite: true });
+    expect(res.isError).toBe(true);
+    expect(textOf(res)).toContain('birth certificate');
+    expect(fs.readFileSync(path.join(proj, '.faf-dna')).equals(before)).toBe(true);
   });
 
   test('a missing .faf-dna is not created (no birth through faf_write)', async () => {
@@ -258,11 +307,69 @@ describe('TRUST SEAL — faf_write behaviour: existing context files need overwr
   test('an ordinary existing file is replaced atomically (no temp file left) and keeps its mode', async () => {
     const f = path.join(proj, 'notes.txt');
     fs.writeFileSync(f, 'old');
+    // 0o600 on POSIX; Windows has no owner-only bits and reports 0o666. The
+    // guarantee is "mode unchanged by the write", compared on every OS.
     fs.chmodSync(f, 0o600);
+    const modeBefore = fs.statSync(f).mode & 0o777;
     const res = await write({ path: 'notes.txt', content: 'new' });
     expect(res.isError).toBeFalsy();
     expect(fs.readFileSync(f, 'utf-8')).toBe('new');
-    expect(fs.statSync(f).mode & 0o777).toBe(0o600);
+    expect(fs.statSync(f).mode & 0o777).toBe(modeBefore);
+    expect(leftovers(proj)).toEqual([]);
+  });
+
+  test('mode is unchanged across an overwrite of a protected file (overwrite: true)', async () => {
+    const f = path.join(proj, 'CLAUDE.md');
+    fs.chmodSync(f, 0o640);
+    const modeBefore = fs.statSync(f).mode & 0o777;
+    const res = await write({ path: 'CLAUDE.md', content: '# replaced\n', overwrite: true });
+    expect(res.isError).toBeFalsy();
+    expect(fs.readFileSync(f, 'utf-8')).toBe('# replaced\n');
+    expect(fs.statSync(f).mode & 0o777).toBe(modeBefore);
+    expect(leftovers(proj)).toEqual([]);
+  });
+
+  test('a read-only existing file is refused and stays byte-identical and read-only', async () => {
+    const f = path.join(proj, 'locked.txt');
+    fs.writeFileSync(f, 'locked');
+    fs.chmodSync(f, 0o444);
+    try {
+      const modeBefore = fs.statSync(f).mode & 0o777;
+      const res = await write({ path: 'locked.txt', content: 'changed' });
+      expect(res.isError).toBe(true);
+      expect(textOf(res)).toContain('read-only');
+      expect(fs.readFileSync(f, 'utf-8')).toBe('locked');
+      expect(fs.statSync(f).mode & 0o777).toBe(modeBefore);
+      expect(leftovers(proj)).toEqual([]);
+    } finally {
+      fs.chmodSync(f, 0o644); // let afterEach remove it on Windows
+    }
+  });
+
+  test('a read-only protected file is refused even with overwrite: true', async () => {
+    const f = path.join(proj, 'project.faf');
+    const before = fs.readFileSync(f);
+    fs.chmodSync(f, 0o444);
+    try {
+      const res = await write({ path: 'project.faf', content: 'x', overwrite: true });
+      expect(res.isError).toBe(true);
+      expect(textOf(res)).toContain('read-only');
+      expect(fs.readFileSync(f).equals(before)).toBe(true);
+    } finally {
+      fs.chmodSync(f, 0o644);
+    }
+  });
+
+  test('a 250-character file name writes (temp name stays short)', async () => {
+    const name = 'n'.repeat(246) + '.txt';
+    expect(name.length).toBe(250);
+    const res = await write({ path: name, content: 'long' });
+    expect(res.isError).toBeFalsy();
+    expect(fs.readFileSync(path.join(proj, name), 'utf-8')).toBe('long');
+    // and replacing it goes through the same short temp name
+    const again = await write({ path: name, content: 'longer' });
+    expect(again.isError).toBeFalsy();
+    expect(fs.readFileSync(path.join(proj, name), 'utf-8')).toBe('longer');
     expect(leftovers(proj)).toEqual([]);
   });
 });

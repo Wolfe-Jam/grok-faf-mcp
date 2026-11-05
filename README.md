@@ -39,7 +39,11 @@
 
 **FAF defines. AGENTS.md instructs. AI codes.**
 
-## v2.2.2 — The Instructions Edition
+## v2.2.3 — The Instructions Edition
+
+**faf_write can no longer overwrite the birth certificate or your context files.** `.faf-dna` is refused in every spelling and route, existing `project.faf`, `CLAUDE.md` and `AGENTS.md` need `overwrite: true`, and writes stay inside the project folder.
+
+### v2.2.2
 
 **Cleanup: removes leftover two-way sync wording.** Two-way sync was dropped by design long ago: project.faf pushes structured data out, and prose doesn't come back. The last strings that still said two-way now match. `faf_bi_sync` still works as the old name for `faf_sync`.
 

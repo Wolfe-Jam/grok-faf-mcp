@@ -276,6 +276,8 @@ export class FafEngineAdapter {
         return {
           success: result.success,
           data: result,
+          // A failed sync carries its reason in message; surface it as the error too.
+          ...(result.success ? {} : { error: result.message || 'Sync failed' }),
           duration
         };
       } catch (error: unknown) {

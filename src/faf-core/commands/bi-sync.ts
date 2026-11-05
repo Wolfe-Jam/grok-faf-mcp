@@ -26,6 +26,8 @@ export interface BiSyncResult {
   message: string;
   /** faf-cli's notes on files it prefixed instead of replacing (legacy stamp, unpaired marker). */
   notes?: string[];
+  /** Files faf left unchanged, with the reason (not UTF-8, a link out of the project, inside .git, no permission). */
+  refused?: Array<{ file: string; reason: string }>;
 }
 
 /**
@@ -180,36 +182,49 @@ export async function syncBiDirectional(projectPath?: string, options: BiSyncOpt
       const platformInfo = PLATFORM_TARGETS[target];
       let targetPath = path.join(projectDir, platformInfo.filename);
 
-      // Special handling for CLAUDE.md - detect case-insensitive
+      // CLAUDE.md: write the file the user already has, under its real name (claude.md,
+      // Claude.md …). Read the folder listing: on a case-insensitive disk (macOS),
+      // fileExists('claude.md') is true for CLAUDE.md and would rename it in the reply.
       if (target === 'CLAUDE.md') {
-        const lowercasePath = path.join(projectDir, 'claude.md');
-        if (await fileExists(lowercasePath)) {
-          targetPath = lowercasePath; // Update existing lowercase file
-        }
+        const entries = await fs.readdir(projectDir).catch(() => [] as string[]);
+        const existing = entries.includes('CLAUDE.md')
+          ? 'CLAUDE.md'
+          : entries.find((e) => e.toLowerCase() === 'claude.md');
+        if (existing) targetPath = path.join(projectDir, existing);
       }
 
       // Generate platform-specific content — non-destructive: inject/update the faf block, preserve the rest.
+      // Each file on its own: a file faf refuses is reported and the others still sync.
       const platformContent = fafToPlatformFormat(fafContent, target);
-      const note = await injectFafBlock(targetPath, platformContent);
-      if (note) (result.notes ??= []).push(note);
-
-      result.filesChanged.push(path.basename(targetPath));
+      try {
+        const note = await injectFafBlock(targetPath, platformContent);
+        if (note) (result.notes ??= []).push(note);
+        result.filesChanged.push(path.basename(targetPath));
+      } catch (error) {
+        (result.refused ??= []).push({
+          file: path.basename(targetPath),
+          reason: error instanceof Error ? error.message : String(error),
+        });
+      }
     }
 
-    result.success = true;
-    result.direction = 'faf-to-claude'; // Keep for backward compat
+    const refused = result.refused ?? [];
+    // Failed only when nothing could be written; a partial sync says exactly what happened.
+    result.success = result.filesChanged.length > 0 || refused.length === 0;
+    result.direction = result.filesChanged.length > 0 ? 'faf-to-claude' : 'none'; // Keep for backward compat
     result.duration = Date.now() - startTime;
 
-    if (targetsToSync.length === 1) {
-      const platformName = PLATFORM_TARGETS[targetsToSync[0]].displayName;
-      result.message = `Synced to ${platformName}! FAF Score: ${currentScore}`;
-    } else {
-      const platforms = targetsToSync.map(t => PLATFORM_TARGETS[t].displayName).join(', ');
-      result.message = `Synced to ${targetsToSync.length} platforms (${platforms})! FAF Score: ${currentScore}`;
+    const lines: string[] = [];
+    if (result.filesChanged.length > 0) {
+      lines.push(`Synced ${result.filesChanged.join(', ')} from project.faf. FAF Score: ${currentScore}`);
+    }
+    for (const r of refused) {
+      lines.push(`Not written: ${r.file}: ${r.reason}`);
     }
     if (result.notes?.length) {
-      result.message += `\n\n${result.notes.join('\n')}`;
+      lines.push('', ...result.notes);
     }
+    result.message = lines.join('\n');
 
     return result;
 

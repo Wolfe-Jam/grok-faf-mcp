@@ -90,7 +90,7 @@ describe('🏁 WJTTC — injector Master (B3)', () => {
     const d = tmp();
     await fs.writeFile(join(d, 'project.faf'), 'faf_version: 2.5.0\nproject:\n  name: Demo\n  goal: ship\n  main_language: TypeScript\n');
     await fs.writeFile(join(d, 'CLAUDE.md'), '<!-- faf: my own note -->\n# Rules\nKeep me.\n');
-    const r = await syncBiDirectional(d, { target: 'claude' } as any);
+    const r = await syncBiDirectional(d, { target: 'CLAUDE.md' } as any);
     expect(r.success).toBe(true);
     expect(readFileSync(join(d, 'CLAUDE.md'), 'utf-8')).toContain('Keep me.');
     expect(r.notes?.length ?? 0).toBeGreaterThan(0);

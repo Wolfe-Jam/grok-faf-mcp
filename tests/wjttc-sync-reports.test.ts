@@ -9,7 +9,7 @@
  *       written, and the reply says what was written and what was refused, and why
  */
 import { describe, test, expect } from 'bun:test';
-import { mkdtempSync, promises as fs, readFileSync, writeFileSync } from 'fs';
+import { mkdtempSync, promises as fs, readFileSync, writeFileSync, existsSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
 import { GrokFafMcpServer } from '../src/server.js';
@@ -81,5 +81,45 @@ describe('🏁 WJTTC — faf_sync reports', () => {
     expect(text).toMatch(/CLAUDE\.md: /);          // faf-cli's note, as text
     expect(text).not.toMatch(/^\s*\{/m);           // not a JSON dump
     expect(readFileSync(join(d, 'project.faf'), 'utf-8')).toBe(FAF);
+  });
+
+  test('N4: claude.md in lower case is found next to .cursorrules, on every OS', async () => {
+    const d = mkdtempSync(join(tmpdir(), 'grok-sr-'));
+    await fs.writeFile(join(d, 'project.faf'), FAF);
+    await fs.writeFile(join(d, 'claude.md'), '# lower\n');
+    await fs.writeFile(join(d, '.cursorrules'), '# rules\n');
+    const r = await syncBiDirectional(d, {} as any);
+    expect(r.filesChanged).toEqual(expect.arrayContaining(['claude.md', '.cursorrules']));
+    expect(readFileSync(join(d, 'claude.md'), 'utf-8')).toContain('<!-- faf:start -->');
+  });
+
+  test('N5: an unknown target is refused by name, nothing written', async () => {
+    const d = mkdtempSync(join(tmpdir(), 'grok-sr-'));
+    await fs.writeFile(join(d, 'project.faf'), FAF);
+    const res = await callIn(d, 'faf_sync', { target: 'AGENTS.md' });
+    expect(res.isError).toBe(true);
+    expect(res.content[0].text).toContain('Unknown target "AGENTS.md"');
+    expect(existsSync(join(d, 'CLAUDE.md'))).toBe(false);
+  });
+
+  test('N6: two syncs in a row leave the file identical', async () => {
+    const d = mkdtempSync(join(tmpdir(), 'grok-sr-'));
+    await fs.writeFile(join(d, 'project.faf'), FAF);
+    await syncBiDirectional(d, {} as any);
+    const first = readFileSync(join(d, 'CLAUDE.md'), 'utf-8');
+    await new Promise((r) => setTimeout(r, 1100));
+    await syncBiDirectional(d, {} as any);
+    expect(readFileSync(join(d, 'CLAUDE.md'), 'utf-8')).toBe(first);
+  });
+
+  test('N3 + N7: the reply has no unmeasured score and no absolute path', async () => {
+    const d = mkdtempSync(join(tmpdir(), 'grok-sr-'));
+    await fs.writeFile(join(d, 'project.faf'), FAF);
+    writeFileSync(join(d, '.cursorrules'), CP1252);
+    await fs.writeFile(join(d, 'CLAUDE.md'), '# Mine\n');
+    const r = await syncBiDirectional(d, { target: 'all' } as any);
+    expect(r.message).not.toContain('FAF Score');
+    expect(r.message).not.toContain(d);
+    expect(r.message).toContain('Not written: .cursorrules is not UTF-8');
   });
 });

@@ -48,11 +48,15 @@ const PLATFORM_TARGETS: Record<string, PlatformTarget> = {
 async function detectPlatformTargets(projectDir: string): Promise<string[]> {
   const existingTargets: string[] = [];
 
+  // Read the folder once. CLAUDE.md matches in any case (claude.md, Claude.md),
+  // the same on every OS; the other files match exactly.
+  const entries = await fs.readdir(projectDir).catch(() => [] as string[]);
   for (const targetKey of Object.keys(PLATFORM_TARGETS)) {
-    const targetPath = path.join(projectDir, PLATFORM_TARGETS[targetKey].filename);
-    if (await fileExists(targetPath)) {
-      existingTargets.push(targetKey);
-    }
+    const name = PLATFORM_TARGETS[targetKey].filename;
+    const found = targetKey === 'CLAUDE.md'
+      ? entries.some((e) => e.toLowerCase() === 'claude.md')
+      : entries.includes(name);
+    if (found) existingTargets.push(targetKey);
   }
 
   return existingTargets;
@@ -122,13 +126,12 @@ export function fafToPlatformFormat(fafContent: string, targetPlatform: string):
     if (fafData.context_quality) {
       content += `### 📊 Context Quality Status\n`;
       content += `- **Overall Assessment:** ${fafData.context_quality.overall_assessment || 'Good'}\n`;
-      content += `- **Last Updated:** ${new Date().toISOString().split('T')[0]}\n\n`;
+      content += `\n`;
     }
 
     // Championship Footer
     content += `---\n\n`;
     content += `**STATUS: SYNC ACTIVE - written from project.faf (one way)**\n\n`;
-    content += `*Last Sync: ${new Date().toISOString()}*\n`;
     content += `*Sync Engine: .FAF Foundation*\n`;
     content += `*Target Platform: ${platformInfo.displayName}*\n`;
     content += `*🏎️⚡️_championship_sync*\n`;
@@ -166,16 +169,23 @@ export async function syncBiDirectional(projectPath?: string, options: BiSyncOpt
 
     const projectDir = path.dirname(fafPath);
 
+    // An unknown target is an error, not a silent "auto".
+    const known = ['auto', 'all', ...Object.keys(PLATFORM_TARGETS)];
+    if (options.target !== undefined && !known.includes(options.target)) {
+      result.message = `Unknown target "${String(options.target)}". Use one of: ${known.join(', ')}.`;
+      result.duration = Date.now() - startTime;
+      return result;
+    }
+
     // Detect existing platform files
     const existingTargets = await detectPlatformTargets(projectDir);
 
     // Resolve which targets to sync
     const targetsToSync = resolveTargets(options.target, existingTargets);
 
-    // Read .faf content
+    // Read .faf content; a project.faf that isn't valid YAML stops here, before any file is written.
     const fafContent = await fs.readFile(fafPath, 'utf-8');
-    const fafData = parseYAML(fafContent);
-    const currentScore = fafData.faf_score || '0%';
+    parseYAML(fafContent);
 
     // Sync to all resolved targets
     for (const target of targetsToSync) {
@@ -201,9 +211,12 @@ export async function syncBiDirectional(projectPath?: string, options: BiSyncOpt
         if (note) (result.notes ??= []).push(note);
         result.filesChanged.push(path.basename(targetPath));
       } catch (error) {
+        // faf-cli names the file by its absolute path; say it by its name in the project.
+        const raw = error instanceof Error ? error.message : String(error);
         (result.refused ??= []).push({
           file: path.basename(targetPath),
-          reason: error instanceof Error ? error.message : String(error),
+          // Drop any absolute folder prefix (faf-cli may report the real path, e.g. /private/var/…).
+          reason: raw.replace(/(?:[A-Za-z]:)?[\\/][^\s'"]*[\\/]/g, ''),
         });
       }
     }
@@ -216,10 +229,10 @@ export async function syncBiDirectional(projectPath?: string, options: BiSyncOpt
 
     const lines: string[] = [];
     if (result.filesChanged.length > 0) {
-      lines.push(`Synced ${result.filesChanged.join(', ')} from project.faf. FAF Score: ${currentScore}`);
+      lines.push(`Synced ${result.filesChanged.join(', ')} from project.faf.`);
     }
     for (const r of refused) {
-      lines.push(`Not written: ${r.file}: ${r.reason}`);
+      lines.push(r.reason.startsWith(r.file) ? `Not written: ${r.reason}` : `Not written: ${r.file}: ${r.reason}`);
     }
     if (result.notes?.length) {
       lines.push('', ...result.notes);

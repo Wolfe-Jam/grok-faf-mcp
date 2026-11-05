@@ -278,7 +278,7 @@ bunx grok-faf-mcp
 
 | Tool | Purpose |
 |------|---------|
-| `faf_sync` | Write CLAUDE.md, AGENTS.md, .cursorrules and GEMINI.md from project.faf. One way: it never writes project.faf. (`faf_bi_sync`, the old name, still works.) |
+| `faf_sync` | Write the context files from project.faf: the ones that exist (CLAUDE.md, .cursorrules, .windsurfrules, .clinerules), or CLAUDE.md when there are none; `target: all` writes every one. One way: it never writes project.faf. A file faf can't safely write is left unchanged and named in the reply. (`faf_bi_sync`, the old name, still works.) |
 | `faf_trust` | Validate .faf integrity |
 
 **Read & Write**

@@ -1,5 +1,5 @@
 <!-- faf: grok-faf-mcp | TypeScript | mcp-server | First MCP server for Grok — URL-based AI context, FAST⚡️AF -->
-<!-- faf: doc=changelog | latest=v2.2.3 | canonical=project.faf | family=FAF -->
+<!-- faf: doc=changelog | latest=v2.2.4 | canonical=project.faf | family=FAF -->
 
 # Changelog
 
@@ -7,6 +7,16 @@ All notable changes to grok-faf-mcp will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [2.2.4] - 2026-11-05 — The Instructions Edition
+
+**faf_sync keeps your hand-written files, writes the context files it names, and tells you what it couldn't write.**
+
+### Fixed
+- **Managed blocks go through faf-cli's injector** ([#186](https://github.com/Wolfe-Jam/grok-faf-mcp/pull/186)), the same one faf-cli, faf-mcp and claude-faf-mcp use. A file whose first line looks like a faf stamp is never reclaimed; a START with no END cuts nothing; markers count only as whole lines; a file that isn't UTF-8, a link out of the project or into `.git` is refused and left as it was. When the block goes on top instead of updating in place, the reply says why.
+- **`faf_sync` writes the context files** ([#187](https://github.com/Wolfe-Jam/grok-faf-mcp/pull/187)): the files that exist (CLAUDE.md, .cursorrules, .windsurfrules, .clinerules), or CLAUDE.md when there are none; `target: all` writes every one. Before, it wrote none of them. In a project with no context files, it now creates CLAUDE.md.
+- **Each file on its own** ([#187](https://github.com/Wolfe-Jam/grok-faf-mcp/pull/187)): one refused file no longer stops the sync. The reply lists files synced and files not written, with the reason; `isError` is set when any file was refused. A refusal used to read `Failed to sync: undefined`.
+- **Plain, stable output** ([#188](https://github.com/Wolfe-Jam/grok-faf-mcp/pull/188)): an unknown `target` is refused with the allowed values; a repeat sync leaves the file identical (no timestamps in the block); reasons name the file, not your home path; no unmeasured score in the reply; a lower-case `claude.md` is found on every OS; the server instructions and README name the files `faf_sync` really writes.
 
 ## [2.2.3] - 2026-11-05 — The Instructions Edition
 

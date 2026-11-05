@@ -39,7 +39,11 @@
 
 **FAF defines. AGENTS.md instructs. AI codes.**
 
-## v2.2.3 — The Instructions Edition
+## v2.2.4 — The Instructions Edition
+
+**faf_sync keeps your hand-written files, writes the context files it names, and tells you what it couldn't write.** Managed blocks now go through faf-cli's injector, so a hand-written AGENTS.md or CLAUDE.md is never reclaimed; `faf_sync` writes the context files it names, one file at a time, and the reply says what it couldn't write and why.
+
+### v2.2.3
 
 **faf_write can no longer overwrite the birth certificate or your context files.** `.faf-dna` is refused in every spelling and route, existing `project.faf`, `CLAUDE.md` and `AGENTS.md` need `overwrite: true`, and writes stay inside the project folder.
 

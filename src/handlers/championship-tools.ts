@@ -1224,8 +1224,8 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
         return await this.formatResult('🔄 FAF Sync', 'No FAF file found to sync from');
       }
       const fafContent = await fs.readFile(fafResult.path, 'utf-8');
-      await injectFafBlock(path.join(cwd, 'CLAUDE.md'), fafContent + `\n\n# Synced from ${fafResult.filename}`);
-      return await this.formatResult('🔄 FAF Sync', `Synced ${fafResult.filename} → CLAUDE.md (native fallback)`);
+      const note = await injectFafBlock(path.join(cwd, 'CLAUDE.md'), fafContent + `\n\n# Synced from ${fafResult.filename}`);
+      return await this.formatResult('🔄 FAF Sync', `Synced ${fafResult.filename} → CLAUDE.md (native fallback)${note ? `\n\n${note}` : ''}`);
     } else {
       // Write to project.faf (new standard)
       const claudeContent = await fs.readFile(path.join(cwd, 'CLAUDE.md'), 'utf-8');
@@ -1262,13 +1262,14 @@ ${s.populated}/${s.total} slots populated${s.nextTier ? ` · next: ${s.nextTier}
     // concatenating CLAUDE.md back into project.faf). Inject the faf-derived
     // block into CLAUDE.md and preserve everything the user wrote.
     const fafResult = await findFafFile(cwd);
+    let note: string | null = null;
     if (fafResult) {
       const fafContent = await fs.readFile(fafResult.path, 'utf-8').catch(() => '');
-      await injectFafBlock(path.join(cwd, 'CLAUDE.md'), fafToPlatformFormat(fafContent, 'CLAUDE.md'));
+      note = await injectFafBlock(path.join(cwd, 'CLAUDE.md'), fafToPlatformFormat(fafContent, 'CLAUDE.md'));
     }
 
     const syncTime = Date.now() - startSync;
-    return await this.formatResult('🔄 FAF Sync', `Synced project.faf → CLAUDE.md in ${syncTime}ms (native) ${syncTime < 40 ? '🏎️' : ''}`);
+    return await this.formatResult('🔄 FAF Sync', `Synced project.faf → CLAUDE.md in ${syncTime}ms (native) ${syncTime < 40 ? '🏎️' : ''}${note ? `\n\n${note}` : ''}`);
   }
 
   private async handleTrust(args: ToolTypes.FafTrustArgs): Promise<CallToolResult> {

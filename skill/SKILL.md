@@ -1,385 +1,97 @@
 ---
 name: faf-expert
-description: Expert in .faf (Foundational AI-context Format) files for persistent project context. Use when working with .faf files, project DNA, syncing project.faf into CLAUDE.md, faf-cli commands, MCP server configuration, or AI-readiness scoring (0-100%). Updated for v2.8.0 Tool Visibility System.
+description: Expert in .faf (Foundational AI-context Format), the IANA-registered YAML file (application/vnd.faf+yaml) that holds a project's facts, and in grok-faf-mcp, the MCP server for xAI Grok. Use when creating, scoring or re-grounding on project.faf, writing CLAUDE.md and other context files from it, or choosing between the hosted and local grok-faf-mcp servers.
 ---
 
-# FAF Expert - Project DNA Specialist
+# FAF Expert for Grok
 
-## What is .faf?
+## What .faf is
 
-`.faf` is the universal format for persistent AI project context - "Project DNA ✨ for ANY AI".
-
-**Core Concepts:**
-- **Foundational AI-context Format** - YAML-based project context file
-- **Persistent Context** - Survives across sessions, tools, and AI assistants
-- **Universal** - Works with Claude, ChatGPT, Gemini, Cursor, any AI
-- **Measurable** - Championship scoring system (0-100% AI-readiness)
-- **Official Anthropic MCP Steward** - PR #2759 MERGED
-
-## When to Use This Skill
-
-Activate this skill when:
-- Creating or updating `.faf` files
-- Working with `CLAUDE.md` files
-- Running `faf` CLI commands (init, auto, score, formats, sync)
-- Scoring project AI-readiness
-- Setting up MCP server (claude-faf-mcp)
-- Configuring tool visibility (v2.8.0+)
-- Discussing project context or documentation
-
-## Key Files
-
-- **`.faf`** - YAML format, machine-readable project context
-- **`CLAUDE.md`** - Markdown format, human-readable project guide
-- **Sync** - `faf sync` writes CLAUDE.md from `.faf` (one way; `.faf` is the source)
-- **`project.faf`** - v1.2.0 standard naming
-
-## Common Commands
-
-### faf-cli Commands
-```bash
-faf init              # Create .faf from project
-faf auto              # Auto-detect stack and create .faf
-faf score             # Rate AI-readiness (0-100%)
-faf formats           # List 153+ supported formats
-faf sync              # Write CLAUDE.md from .faf (one way)
-faf status            # Check project AI-readiness
-faf validate          # Validate .faf structure
-faf doctor            # Diagnose and fix issues
-faf migrate           # Migrate to latest format
-```
-
-### MCP Tools (claude-faf-mcp v2.8.0+)
-
-**v2.8.0 introduces Tool Visibility System:**
-- **21 Core Tools** (default) - Essential workflow
-- **51 Total Tools** (opt-in) - All features
-
-**Configuration:**
-```json
-{
-  "mcpServers": {
-    "faf": {
-      "command": "npx",
-      "args": ["-y", "claude-faf-mcp@2.8.0"],
-      "env": {
-        "FAF_MCP_SHOW_ADVANCED": "false"
-      }
-    }
-  }
-}
-```
-
-**Core Tools (21):**
-- Essential Workflow: `faf`, `faf_auto`, `faf_init`, `faf_innit`, `faf_status`
-- Quality: `faf_score`, `faf_validate`, `faf_doctor`, `faf_audit`
-- Intelligence: `faf_formats`, `faf_stacks`, `faf_skills`
-- Sync: `faf_sync` (old name `faf_bi_sync` still works), `faf_update`, `faf_migrate`
-- AI: `faf_chat`
-- Help: `faf_index`, `faf_faq`, `faf_about`
-
-**Advanced Tools (30+):**
-Set `FAF_MCP_SHOW_ADVANCED: "true"` to enable:
-- Display variants: `faf_display`, `faf_show`, `faf_check`
-- Trust system: `faf_trust`, `faf_trust_confidence`, `faf_trust_garage`
-- File operations: `faf_read`, `faf_write`, `faf_list`, `faf_exists`, etc.
-- DNA tracking: `faf_dna`, `faf_log`, `faf_auth`, `faf_recover`
-- Utilities: `faf_choose`, `faf_clear`, `faf_share`, `faf_credit`
-
-## AI-Readiness Scoring
-
-**Championship Tiers:**
-- 🏆 **95-100%** - Championship (Gold)
-- 🥇 **85-94%** - Podium (Silver)
-- 🥈 **70-84%** - Points (Bronze)
-- 🥉 **55-69%** - Midfield
-- 🟢 **40-54%** - Backmarker
-- 🟡 **25-39%** - Struggling
-- 🔴 **10-24%** - Critical
-- 🤍 **0-9%** - DNF (Did Not Finish)
-
-**Target:** 85%+ for production projects
-
-## .faf File Structure
+`project.faf` is a small YAML file of a project's facts: name, goal, language, app type, stack, and the six W's (who, what, why, where, when, how). It sits beside `package.json`, is committed with the code, and is IANA-registered as `application/vnd.faf+yaml`. Memory lives beside it in `.fafm` (`application/vnd.fafm+yaml`).
 
 ```yaml
-# Basic .faf structure
-format: typescript-nextjs
-language: typescript
-framework: nextjs
-version: "14.0.0"
-
-structure:
-  - src/
-  - components/
-  - pages/
-
-dependencies:
-  react: "^18.0.0"
-  next: "^14.0.0"
-
-testing: jest
-deployment: vercel
-
-# v1.2.0+ additions
-project_name: "My Project"
-ai_readiness_score: 87
+faf_version: "3.0"
+project:
+  name: orders-api
+  goal: Track customer orders through a REST API
+  main_language: TypeScript
+  type: backend
+stack:
+  backend: Express
+  runtime: Node.js
+  database: slotignored   # not required for this app type
+human_context:
+  who: Backend developers on the orders team
 ```
 
-## Best Practices
+## Two servers: hosted and local
 
-1. **Start with `faf auto`** - Let it detect your stack
-2. **Review and refine** - Auto-detection is 85% accurate, tweak as needed
-3. **Run `faf score`** - Target 85%+ for championship context
-4. **Use `faf sync`** - Write CLAUDE.md from .faf after each change
-5. **Update regularly** - As project evolves, update context
-6. **Use core tools first** - Advanced tools are opt-in for specific needs
+| | Hosted | Local (stdio) |
+|---|---|---|
+| Where | `https://mcpaas.live/grok/mcp/v1` | `bunx grok-faf-mcp` (or `npx`) |
+| Does | Scores, validates, re-grounds `.faf` content | Everything, including reading and writing files |
+| Tools | live list at `https://mcpaas.live/grok/mcp/v1/info` | a core set by default; `FAF_TOOLS=all` adds file utilities |
 
-## The FAF Family
+Grok config for the hosted server (`~/.grok/config.toml`):
 
-**6 Championship Integrations:**
-- React (20M/week npm downloads) 🏆
-- TypeScript (40M/week) 🏆
-- Next.js (5M/week) 🏆
-- Vite (9M/week) 🥇
-- Svelte (400K/week) 🥇
-- n8n (401K/week - TURBO only) 🥇
-
-## Installation
-
-### faf-cli (npm)
-```bash
-npm install -g faf-cli
+```toml
+[mcp_servers.grok-faf-mcp]
+url = "https://mcpaas.live/grok/mcp/v1"
 ```
 
-### faf-cli (Homebrew)
-```bash
-brew install faf-cli
-```
+Local server in an MCP config:
 
-### claude-faf-mcp (MCP Server)
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 ```json
-{
-  "mcpServers": {
-    "faf": {
-      "command": "npx",
-      "args": ["-y", "claude-faf-mcp@latest"]
-    }
-  }
-}
+{ "mcpServers": { "grok-faf": { "command": "bunx", "args": ["grok-faf-mcp"] } } }
 ```
 
-**For advanced tools:**
-```json
-{
-  "mcpServers": {
-    "faf": {
-      "command": "npx",
-      "args": ["-y", "claude-faf-mcp@latest"],
-      "env": {
-        "FAF_MCP_SHOW_ADVANCED": "true"
-      }
-    }
-  }
-}
+## Local tools
+
+| Tool | What it does |
+|------|--------------|
+| `faf_init` | Create `project.faf` from the project's files, and score it |
+| `faf_score` | The 0–100% score and the empty slots |
+| `refresh_faf` | Re-read and re-score the live `.faf`, report drift |
+| `refresh_fafm` | Re-ground on `.fafm` memory: what changed since last time |
+| `refresh_blend` | `refresh_faf` and `refresh_fafm` together |
+| `faf_orchestrate_recommendation` | Advises whether to re-ground now; never acts on its own |
+| `faf_get_orchestration_policy` | The orchestration tier in force, without running it |
+| `faf_sync` | Write CLAUDE.md and the other context files from `project.faf` (one way) |
+| `faf_trust` | Validate `project.faf` |
+| `rag_query`, `rag_cache_stats`, `rag_cache_clear` | Context retrieval and its cache |
+
+With `FAF_TOOLS=all`: `faf_read`, `faf_write`, `faf_list`, `faf_clear`, `faf_debug`.
+
+## The usual order
+
+1. `faf_init` — create `project.faf`.
+2. `faf_score` — see which slots are empty.
+3. Fill the goal and six W's with what the user confirms. Never invent them.
+4. `faf_sync` — write CLAUDE.md and the other context files.
+5. `refresh_faf` — re-ground when the project changes.
+
+## Scoring
+
+```
+score = populated / active × 100        active = 33 − slotignored
 ```
 
-## v2.8.0 Tool Visibility System
+The app type (`project.type`) decides which slots count; the rest are `slotignored`. A placeholder such as `TBD` or `None` counts as empty.
 
-**Problem Solved:** Reduced cognitive load from 51 tools to 21 core tools.
+| Tier | Score |
+|------|-------|
+| ✪ Trophy | 100% |
+| ★ Gold | 99% |
+| ◆ Silver | 95% |
+| ◇ Bronze | 85% |
+| ● Green | 70% |
+| ● Yellow | 55% |
+| ○ Red | 1% |
+| ♡ White | 0% |
 
-**How It Works:**
-- **Default:** Shows 21 essential tools
-- **Opt-in:** Enable all 51 tools via environment variable
-- **Smart Filtering:** Tools categorized by purpose
-- **Backward Compatible:** Existing setups continue working
+The score is deterministic: the same file gets the same number from faf-cli, the hosted server and every FAF server.
 
-**Categories:**
-- `workflow` - Essential commands
-- `quality` - Scoring and validation
-- `intelligence` - Format/stack detection
-- `sync` - Context synchronization
-- `ai` - AI enhancement features
-- `help` - Documentation
-- `trust` - Trust validation
-- `file` - File operations
-- `utility` - Misc tools
+## More
 
-**Configuration Priority:**
-1. Environment variable (`FAF_MCP_SHOW_ADVANCED`)
-2. Config file (`~/.fafrc`)
-3. Default (core only)
-
-## Philosophy
-
-**The Noodle Philosophy 🍜**
-- YAML noodles for AI (machine-readable)
-- Converts to markdown/TXT for humans (human-readable)
-- Interconnected context, not flat data
-
-**Format-First**
-- The format is the foundation
-- Without .faf, there is no universal context
-- Format-driven architecture
-
-**Official Stewardship**
-- Anthropic-approved MCP server (PR #2759 MERGED)
-- Account Managers for all things .FAF in Anthropic ecosystem
-- Governance responsibility for format specification
-
-## Brand Values
-
-- **NO BS ZONE** - Only real stats, verified claims
-- **Championship Standards** - <50ms performance, 1,000+ tests
-- **Free Forever** - MIT license, open source
-- **Trust is Everything** - Built on credibility
-- **Professional, Boring, Trusted** - F1-grade engineering
-
-## Stats (Real, Verified - November 2025)
-
-- **11,000+ total downloads** (CLI + MCP combined)
-- **5,000+ MCP downloads** (weekly: 800+)
-- **6,000+ CLI downloads**
-- **79 tests passing** (57 MCP + 22 visibility)
-- **153+ formats validated** (TURBO-CAT engine)
-- **<10ms tool filtering** (5x better than 50ms target)
-- **Zero regressions** in v2.8.0 release
-- **WJTTC Gold Certified** - F1-inspired testing standards
-- **Anthropic-approved** MCP server (Official steward)
-
-## Version History
-
-- **v3.1.1** - faf-cli latest
-- **v2.8.0** - MCP Tool Visibility System (CURRENT)
-- **v2.7.3** - Previous MCP stable
-- **v1.2.0** - project.faf standard naming
-
-## Resources
-
-- **Website:** https://faf.one
-- **CLI npm:** https://npmjs.com/package/faf-cli
-- **MCP npm:** https://npmjs.com/package/claude-faf-mcp
-- **GitHub:** https://github.com/Wolfe-Jam/faf-cli
-- **Homebrew:** `brew install faf-cli`
-- **Chrome Extension:** Chrome Web Store (Google approved)
-
-## Testing Standards
-
-**WJTTC (WolfeJam Technical & Testing Center)**
-- F1-Inspired testing methodology
-- 3 Tiers: Brake Systems, Engine Systems, Aerodynamics
-- Philosophy: "We break things so others never have to know they were broken"
-- All tests reported and documented
-- Gold certification for production releases
-
-## Troubleshooting
-
-### MCP Server Not Loading
-```bash
-# Check logs
-tail -f ~/Library/Logs/Claude/mcp-server-claude-faf-mcp.log
-
-# Verify config
-cat ~/Library/Application\ Support/Claude/claude_desktop_config.json
-
-# Test locally
-node /path/to/claude-faf-mcp/dist/src/index.js
-```
-
-### Tool Count Verification
-```bash
-# Should show 21 core tools (default)
-# Or 51 tools (advanced mode)
-# Check console output when MCP loads
-```
-
-### CLI Not Found
-```bash
-# Install globally
-npm install -g faf-cli
-
-# Or via Homebrew
-brew install faf-cli
-
-# Verify installation
-faf --version
-```
-
-## Advanced Usage
-
-### Custom Config File
-Create `~/.fafrc`:
-```json
-{
-  "showAdvanced": true
-}
-```
-
-Or key=value format:
-```
-FAF_SHOW_ADVANCED=true
-```
-
-### Local Development
-```bash
-# Use local build
-{
-  "mcpServers": {
-    "faf": {
-      "command": "node",
-      "args": ["/path/to/claude-faf-mcp/dist/src/index.js"],
-      "env": {
-        "FAF_MCP_SHOW_ADVANCED": "false"
-      }
-    }
-  }
-}
-```
-
----
-
-## Skill Control
-
-**To disable this skill temporarily:**
-```bash
-# Rename directory to disable
-mv ~/.claude/skills/faf-expert ~/.claude/skills/faf-expert.disabled
-```
-
-**To re-enable:**
-```bash
-# Rename back to enable
-mv ~/.claude/skills/faf-expert.disabled ~/.claude/skills/faf-expert
-```
-
-**Or just delete the directory to remove completely.**
-
----
-
-## How to Get This Skill
-
-**Option 1: Manual Installation**
-1. Copy this SKILL.md file
-2. Create directory: `~/.claude/skills/faf-expert/`
-3. Save as: `~/.claude/skills/faf-expert/SKILL.md`
-4. Restart Claude Code
-
-**Option 2: Git Clone (if published)**
-```bash
-# Coming soon - published skills repository
-git clone [skills-repo] ~/.claude/skills/faf-expert
-```
-
-**Option 3: From FAF CLI (future)**
-```bash
-# Planned feature
-faf skill install faf-expert
-```
-
----
-
-*Made with 🧡 by wolfejam.dev*
-*Official Anthropic MCP Steward*
-*Championship Edition v2.8.0* 🏎️✨
-*IANA-Registered Format: application/vnd.faf+yaml*
+- The format: [github.com/Wolfe-Jam/faf](https://github.com/Wolfe-Jam/faf)
+- The CLI: `npx faf-cli init`, every command in [faf-cli docs/COMMANDS.md](https://github.com/Wolfe-Jam/faf-cli/blob/main/docs/COMMANDS.md)

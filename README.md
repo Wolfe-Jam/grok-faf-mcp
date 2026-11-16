@@ -147,38 +147,29 @@ With .faf     →  Grok already knows. Every session. Forever.
 
 ## One Command, Done Forever
 
-`faf_auto` detects your project, creates a `.faf`, and scores it — in one shot:
+`faf_init` detects your project, creates `project.faf`, and scores it (local stdio server, grok-faf-mcp 2.2.4):
 
 ```
-faf_auto
-━━━━━━━━━━━━━━━━━
-Score: 0% → 85% (+85) ◇ BRONZE
-Steps:
-  1. Created project.faf
-  2. Detected stack from package.json
-  3. Synced CLAUDE.md
-
-Path: /home/user/my-project
+✅ Created project.faf in ~/orders-api (type: backend)
+Score: 47% (always-33)
+💡 faf_score shows every slot; fill the empty ones to reach ✪ 100%.
 ```
 
-What it produces:
+What it writes (excerpt):
 
 ```yaml
-# project.faf — your project, machine-readable
-faf_version: "3.3"
+faf_version: "3.0"
 project:
-  name: my-api
-  goal: REST API for user management
+  name: orders-api
   main_language: TypeScript
+  type: backend
 stack:
+  frontend: slotignored
   backend: Express
-  database: PostgreSQL
-  testing: Jest
   runtime: Node.js
-human_context:
-  who: Backend developers
-  what: User CRUD with auth
-  why: Replace legacy PHP service
+  build: TypeScript (tsc)
+  database: ""
+  …
 ```
 
 Every AI agent reads this once and knows exactly what you're building.
@@ -190,7 +181,7 @@ Every AI agent reads this once and knows exactly what you're building.
 ```
 URL:     https://mcpaas.live/grok/mcp/v1
 Format:  IANA-registered .faf (application/vnd.faf+yaml)
-Tools:   12 core by default (bunx) — re-grounding (refresh_faf/fafm/blend), LAZY-RAG, orchestration substrate, FAF essentials · extended utilities via FAF_TOOLS=all · 19 hosted (WASM-pure, served by mcpaas-cf) on the URL
+Tools:   12 core by default (bunx) — re-grounding (refresh_faf/fafm/blend), LAZY-RAG, orchestration substrate, FAF essentials · extended utilities via FAF_TOOLS=all · hosted tools (WASM-pure, served by mcpaas-cf) on the URL; live list at `/info`
 Engine:  faf-cli 8 — faf-scoring-kernel 3.0.0 (Rust → WASM, always-33)
 Speed:   0.5ms average (was 19ms — 3,800% faster with Mk4)
 Tests: WJTTC parity (heavy local ↔ light hosted) + full suites. Runner: sh scripts/run-tests.sh (bun + flake retry)
@@ -264,9 +255,7 @@ bunx grok-faf-mcp
 | Tool | Purpose |
 |------|---------|
 | `faf_init` | Create project.faf from your project |
-| `faf_auto` | Auto-detect stack and populate context |
 | `faf_score` | AI-readiness score (0-100%) with breakdown |
-| `faf_status` | Check current AI-readability |
 | `refresh_faf` | Re-ground on the live `.faf` — re-read + re-score, report drift, return fresh DNA (drift → refresh → re-grounded). **Requested by Grok.** |
 
 **Drift & Orchestration (1.5 — the prestige release)**
@@ -300,9 +289,8 @@ bunx grok-faf-mcp
 | `rag_query` | RAG-powered context retrieval |
 | `rag_cache_stats` | RAG cache statistics |
 | `rag_cache_clear` | Clear RAG cache |
-| `grok_go_fast_af` | Auto-load .faf context for Grok |
 
-Plus 34 advanced tools available with `FAF_SHOW_ADVANCED=true`.
+`FAF_TOOLS=all` adds the file utilities: `faf_read`, `faf_write`, `faf_list`, `faf_clear`, `faf_debug`.
 
 ---
 

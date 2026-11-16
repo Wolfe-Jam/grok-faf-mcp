@@ -1,0 +1,26 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "grok-faf-mcp",
+  "description": "MCP server for xAI Grok. Keeps a project's facts (stack, goal, commands) in project.faf, an IANA-registered YAML file (application/vnd.faf+yaml). Runs hosted at a URL for scoring and validation, or locally over stdio with tools to create, score and fill project.faf and write CLAUDE.md and other context files from it.",
+  "excludeFolders": ["tests", "scripts", "assets", ".github", ".well-known", "bench", "demo", "dist", "node_modules", "archive", "deprecated", "legacy"],
+  "excludeFiles": [
+    "CHANGELOG.md",
+    "LICENSE.md",
+    "CODE_OF_CONDUCT.md",
+    "CONTRIBUTING.md",
+    "CLAUDE.md",
+    "AGENTS.md",
+    "GROK.md",
+    "ONE-PAGER.md",
+    "CI-SECURITY.md",
+    "THE-MISSING-FORMAT.md",
+    "THE-MISSING-FORMAT-SOCIAL.md",
+    "grok-faf-integration-spec-v0.2.md"
+  ],
+  "includeExtensions": [".faf"],
+  "rules": [
+    "The hosted server scores and validates .faf content; tools that read or write files, such as faf_init and faf_sync, need the local stdio server.",
+    "Call faf_init to create project.faf, then faf_score to see which slots are empty; fill the goal and six W's only with what the user confirms.",
+    "Treat project.faf as the source of the project's facts; faf_sync writes CLAUDE.md and the other context files from it and never writes project.faf."
+  ]
+}

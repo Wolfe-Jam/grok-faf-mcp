@@ -5,8 +5,10 @@ name: 📡 MCP Registry Publish (DNS)
 # authorises one.faf/*. Fires on every release so the registry stays current
 # automatically; no manual `mcp-publisher login dns` step in /pubpro.
 #
-# Requires repo secret FAF_ONE_MCP_PRIVATE_KEY = the ed25519 private key (64-hex)
-# whose public key is the `v=MCPv1; k=ed25519; p=...` TXT record at the faf.one apex.
+# The faf.one DNS key is not in this repo. After its checks, the last
+# step hands off to Wolfe-Jam/mcp-registry-publisher (repo secret
+# REGISTRY_PUBLISHER_DISPATCH_TOKEN), which holds the key and publishes after
+# your approval there.
 
 on:
   release:
@@ -70,10 +72,12 @@ jobs:
           done
           echo "::error::${PKG}@${VER} is not on npm after 10 minutes: publish it, then re-run this workflow"; exit 1
 
-      - name: Login via DNS (one.faf namespace; the key from the environment)
+      - name: Hand off to mcp-registry-publisher (the key lives there; publish waits for approval)
         env:
-          MCP_PRIVATE_KEY: ${{ secrets.FAF_ONE_MCP_PRIVATE_KEY }}
-        run: node .github/scripts/registry-login.mjs --domain faf.one
-
-      - name: Publish to MCP Registry
-        run: ./mcp-publisher publish server.json
+          GH_TOKEN: ${{ secrets.REGISTRY_PUBLISHER_DISPATCH_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          [ -n "$GH_TOKEN" ] || { echo "::error::REGISTRY_PUBLISHER_DISPATCH_TOKEN is not set in this repo"; exit 1; }
+          VER=$(jq -r .version server.json)
+          gh workflow run publish.yml -R Wolfe-Jam/mcp-registry-publisher -f repo="$REPO" -f tag="v$VER"
+          echo "::notice::Handed off $REPO v$VER. Approve it at https://github.com/Wolfe-Jam/mcp-registry-publisher/actions"
